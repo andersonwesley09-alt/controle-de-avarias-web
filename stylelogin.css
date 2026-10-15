@@ -1,0 +1,655 @@
+* {
+    box-sizing: border-box;
+}
+
+
+:root {
+
+    --roxo: #0000FF;
+
+    --roxo-claro: #3333FF;
+
+    --fundo: #f3f4f8;
+
+    --branco: #ffffff;
+
+    --texto: #202536;
+
+    --cinza: #777c89;
+
+    --borda: #dfe2ea;
+
+    --erro: #b42318;
+
+    --erro-fundo: #fff1f0;
+
+}
+
+
+body {
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    background:
+        linear-gradient(
+            135deg,
+            #f3f4f8,
+            #F0F0FF
+        );
+
+    color: var(--texto);
+
+}
+
+
+/* =========================
+   PÁGINA
+========================= */
+
+.login-page {
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    padding: 24px;
+
+}
+
+
+/* =========================
+   CARD
+========================= */
+
+.login-card {
+
+    width: 100%;
+
+    max-width: 410px;
+
+    background: var(--branco);
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 16px;
+
+    padding: 30px;
+
+    box-shadow:
+        0 14px 40px
+        rgba(30, 24, 65, 0.12);
+
+}
+
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+.login-header {
+
+    text-align: center;
+
+    margin-bottom: 26px;
+
+}
+
+
+.logo-box {
+
+    width: 58px;
+
+    height: 58px;
+
+    margin:
+        0 auto 14px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background:
+        linear-gradient(
+            135deg,
+            var(--roxo),
+            var(--roxo-claro)
+        );
+
+    color: white;
+
+    border-radius: 14px;
+
+    font-size: 27px;
+
+}
+
+
+.login-header h1 {
+
+    margin:
+        0 0 8px;
+
+    font-size: 23px;
+
+    color: var(--roxo);
+
+}
+
+
+.login-header p {
+
+    margin: 0;
+
+    color: var(--cinza);
+
+    line-height: 1.5;
+
+    font-size: 13px;
+
+}
+
+
+/* =========================
+   FORMULÁRIO
+========================= */
+
+.field {
+
+    margin-bottom: 17px;
+
+}
+
+
+label {
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+}
+
+
+input {
+
+    width: 100%;
+
+    height: 44px;
+
+    padding:
+        10px 12px;
+
+    border:
+        1px solid
+        var(--borda);
+
+    border-radius: 8px;
+
+    font-size: 14px;
+
+    outline: none;
+
+    transition: 0.15s;
+
+}
+
+
+input:focus {
+
+    border-color:
+        var(--roxo);
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0, 0, 255, 0.12);
+
+}
+
+
+/* =========================
+   SENHA
+========================= */
+
+.senha-box {
+
+    position: relative;
+
+}
+
+
+.senha-box input {
+
+    padding-right: 48px;
+
+}
+
+
+.btn-senha {
+
+    position: absolute;
+
+    top: 50%;
+
+    right: 8px;
+
+    transform:
+        translateY(-50%);
+
+    width: 34px;
+
+    height: 34px;
+
+    border: 0;
+
+    border-radius: 7px;
+
+    background: transparent;
+
+    cursor: pointer;
+
+    font-size: 16px;
+
+}
+
+
+.btn-senha:hover {
+
+    background: #EEEEFF;
+
+}
+
+
+/* =========================
+   ERRO
+========================= */
+
+.mensagem-erro {
+
+    display: none;
+
+    margin:
+        -3px 0 14px;
+
+    padding:
+        10px 12px;
+
+    background:
+        var(--erro-fundo);
+
+    color:
+        var(--erro);
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+}
+
+
+.mensagem-erro.ativo {
+
+    display: block;
+
+}
+
+
+/* =========================
+   BOTÃO ENTRAR
+========================= */
+
+.btn-entrar {
+
+    width: 100%;
+
+    height: 44px;
+
+    border: 0;
+
+    border-radius: 8px;
+
+    background:
+        var(--roxo);
+
+    color: white;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.15s;
+
+}
+
+
+.btn-entrar:hover {
+
+    background:
+        #0000B3;
+
+}
+
+
+/* =========================
+   RODAPÉ
+========================= */
+
+.login-footer {
+
+    margin-top: 20px;
+
+    padding-top: 18px;
+
+    border-top:
+        1px solid
+        #eeeeee;
+
+    text-align: center;
+
+}
+
+
+.login-footer a {
+
+    color:
+        var(--roxo);
+
+    text-decoration: none;
+
+    font-size: 13px;
+
+    font-weight: bold;
+
+}
+
+
+.login-footer a:hover {
+
+    text-decoration:
+        underline;
+
+}
+
+
+/* =========================
+   RESPONSIVO
+========================= */
+
+@media (max-width: 480px) {
+
+    .login-page {
+
+        padding: 14px;
+
+    }
+
+
+    .login-card {
+
+        padding:
+            24px 20px;
+
+    }
+
+
+    .login-header h1 {
+
+        font-size: 21px;
+
+    }
+
+}
+
+/* Identidade visual genérica do sistema. */
+body {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(0, 0, 255, 0.12),
+            rgba(0, 0, 0, 0.18)
+        ),
+        none;
+}
+
+.login-page {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 24px;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.24);
+}
+
+@media (max-width: 480px) {
+    body {
+        background-attachment: scroll;
+    }
+
+    .login-page {
+        padding: 16px 12px;
+    }
+}
+
+
+/* =====================================================
+   V20.5 - LOGIN + RESUMO DO SISTEMA
+   Mantém a identidade visual e posiciona o login à direita.
+===================================================== */
+.login-page {
+    width: min(1080px, 100%);
+    min-height: 100vh;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(360px, 410px);
+    align-items: center;
+    justify-content: center;
+    gap: 26px;
+    padding: 32px 24px;
+}
+
+.sistema-resumo-card {
+    min-height: 540px;
+    padding: 42px 42px 34px;
+    border-radius: 22px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.78);
+    box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.resumo-kicker {
+    width: fit-content;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-bottom: 16px;
+    padding: 7px 11px;
+    border-radius: 999px;
+    background: #eef0ff;
+    color: #0000d8;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .55px;
+}
+
+.resumo-kicker span {
+    display: grid;
+    place-items: center;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    color: #fff;
+    background: linear-gradient(135deg,#0000ff,#635bff);
+}
+
+.sistema-resumo-card h2 {
+    max-width: 590px;
+    margin: 0 0 12px;
+    color: #151a2a;
+    font-size: clamp(30px, 3.2vw, 43px);
+    line-height: 1.04;
+    letter-spacing: -1.2px;
+}
+
+.resumo-intro {
+    max-width: 590px;
+    margin: 0 0 28px;
+    color: #667085;
+    font-size: 15px;
+    line-height: 1.65;
+}
+
+.resumo-itens {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 11px;
+}
+
+.resumo-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    min-height: 92px;
+    padding: 14px;
+    border: 1px solid #e4e7ef;
+    border-radius: 14px;
+    background: rgba(255,255,255,.82);
+}
+
+.resumo-icone {
+    flex: 0 0 36px;
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 10px;
+    background: #eef0ff;
+    font-size: 18px;
+}
+
+.resumo-item strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #202536;
+    font-size: 13px;
+}
+
+.resumo-item span:not(.status-ponto):not(.resumo-kicker span) {
+    display: block;
+    color: #7a8291;
+    font-size: 11px;
+    line-height: 1.45;
+}
+
+.resumo-icone.ia-icone {
+    color: #fff;
+    background: linear-gradient(135deg,#0000ff,#6b5cff);
+    box-shadow: 0 7px 16px rgba(0,0,255,.2);
+}
+
+.resumo-rodape {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 22px;
+    color: #788190;
+    font-size: 11px;
+}
+
+.status-ponto {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #19a463;
+    box-shadow: 0 0 0 4px rgba(25,164,99,.11);
+}
+
+.login-card {
+    width: 100%;
+    max-width: 410px;
+    justify-self: end;
+    padding: 30px;
+}
+
+@media (max-width: 900px) {
+    .login-page {
+        grid-template-columns: 1fr;
+        max-width: 650px;
+        gap: 16px;
+    }
+
+    .sistema-resumo-card {
+        min-height: auto;
+        padding: 28px;
+        order: 2;
+    }
+
+    .login-card {
+        justify-self: center;
+        order: 1;
+    }
+}
+
+@media (max-width: 560px) {
+    .login-page {
+        padding: 16px 12px;
+    }
+
+    .sistema-resumo-card {
+        padding: 24px 20px;
+        border-radius: 18px;
+    }
+
+    .sistema-resumo-card h2 {
+        font-size: 29px;
+    }
+
+    .resumo-intro {
+        font-size: 13px;
+        margin-bottom: 20px;
+    }
+
+    .resumo-itens {
+        grid-template-columns: 1fr;
+    }
+
+    .login-card {
+        padding: 24px 20px;
+    }
+}
+
+/* V21.5 - versão genérica, sem identidade de empresa. */
+body {
+    background: linear-gradient(135deg, #f3f4f8, #f0f0ff);
+}

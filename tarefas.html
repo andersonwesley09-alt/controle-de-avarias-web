@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="bootstrap-server.js?v=20.3"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas Diárias - Controle de Avarias</title>
+    <link rel="stylesheet" href="styletarefas.css?v=20.3">
+    <link rel="stylesheet" href="stylenotificacoes.css?v=20.3">
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+<body>
+<header class="topbar">
+    <div class="header-container">
+        <div class="marca-header">
+            <div>
+                <div class="eyebrow">CONTROLE DE AVARIAS</div>
+                <h1>Tarefas Diárias</h1>
+                <p>Organize, acompanhe e conclua suas atividades.</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="notificacao-wrap" id="areaNotificacoesAdmin">
+    <button id="btnNotificacoesAdmin" class="btn-notificacao" type="button" aria-label="Notificações de tarefas" aria-expanded="false"><span class="icone-notificacao">🔔</span><span class="texto-notificacao">Avisos</span><span id="badgeNotificacoesAdmin" class="badge-notificacao">0</span></button>
+    <div id="painelNotificacoesAdmin" class="painel-notificacoes oculto" role="dialog" aria-label="Notificações de tarefas">
+        <div class="notificacoes-cabecalho">
+            <div><strong>Notificações</strong><span id="subtituloNotificacoesAdmin">Tarefas do dia</span></div>
+            <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Limpar</button>
+        </div>
+        <div id="listaNotificacoesAdmin" class="lista-notificacoes"><div class="notificacao-vazia">Carregando notificações...</div></div>
+    </div>
+</div>
+            <a href="sistema.html" class="btn-voltar">← Voltar</a>
+            <a href="perfil.html" class="btn-perfil">👤 Perfil</a>
+            <button id="btnSair" class="btn-sair" type="button">Sair</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="boas-vindas">
+        <div class="welcome-copy">
+            <div class="section-kicker">CHECKLIST DIÁRIO</div>
+            <h2 id="tituloPagina">Meu checklist</h2>
+            <p id="subtituloPagina">Acompanhe o que precisa ser feito e marque cada atividade assim que concluir.</p>
+        </div>
+        <div class="data-box">
+            <div class="date-label-row">
+                <label for="dataMinha">Visualizar dia</label>
+                <button id="btnHojeMinha" class="btn-hoje" type="button">Hoje</button>
+            </div>
+            <input id="dataMinha" type="date">
+        </div>
+    </section>
+
+    <section class="cards resumo-cards">
+        <article class="card card-pendente">
+            <div class="card-top"><span class="card-icon">⏳</span><span class="card-label">Pendentes</span></div>
+            <strong id="resumoPendentes">0</strong>
+            <small>Atividades que ainda precisam de atenção</small>
+        </article>
+        <article class="card card-concluida">
+            <div class="card-top"><span class="card-icon">✓</span><span class="card-label">Concluídas</span></div>
+            <strong id="resumoConcluidas">0</strong>
+            <small>Atividades finalizadas no dia</small>
+        </article>
+        <article class="card card-total">
+            <div class="card-top"><span class="card-icon">☷</span><span class="card-label">Total de tarefas</span></div>
+            <strong id="resumoTotal">0</strong>
+            <small>Atividades atribuídas para você</small>
+        </article>
+        <article class="card card-progresso">
+            <div class="card-top"><span class="card-icon">↗</span><span class="card-label">Progresso</span></div>
+            <strong id="resumoProgresso">0%</strong>
+            <small>Percentual concluído no dia</small>
+        </article>
+    </section>
+
+    <section class="painel checklist-panel">
+        <div class="painel-header checklist-header">
+            <div>
+                <div class="section-kicker">MINHAS ATIVIDADES</div>
+                <h2>Checklist do dia</h2>
+                <p>Marque cada atividade assim que concluir. Você pode consultar outros dias pelo seletor acima.</p>
+            </div>
+            <div class="status-resumo" id="statusResumoMini">0% concluído</div>
+        </div>
+        <div class="progresso-wrap">
+            <div class="progresso-barra"><div id="barraProgresso"></div></div>
+            <span id="textoProgresso">0 de 0 concluídas</span>
+        </div>
+        <div class="checklist-toolbar">
+            <div class="checklist-filtros" role="group" aria-label="Filtrar tarefas">
+                <button type="button" class="filtro-minha ativo" data-filtro-minha="todas">Todas <span id="contadorFiltroTodas">0</span></button>
+                <button type="button" class="filtro-minha" data-filtro-minha="pendentes">Pendentes <span id="contadorFiltroPendentes">0</span></button>
+                <button type="button" class="filtro-minha" data-filtro-minha="concluidas">Concluídas <span id="contadorFiltroConcluidas">0</span></button>
+            </div>
+            <div class="checklist-acoes">
+                <input id="buscaMinhas" class="busca-minhas" type="search" placeholder="Pesquisar tarefa..." aria-label="Pesquisar tarefa">
+                <button id="btnConcluirPendentes" class="btn-concluir-pendentes" type="button">✓ Concluir pendentes</button>
+            </div>
+        </div>
+        <div id="listaMinhasTarefas" class="checklist-lista">
+            <div class="estado-vazio">Carregando tarefas...</div>
+        </div>
+    </section>
+
+    <section id="painelAdmin" class="painel admin-panel oculto">
+        <div class="painel-header admin-header">
+            <div>
+                <div class="section-kicker">ADMINISTRAÇÃO</div>
+                <h2>Gerenciar tarefas diárias</h2>
+                <p>Crie atividades, acompanhe a execução por usuário e veja rapidamente o andamento do dia.</p>
+            </div>
+            <div class="admin-date-badge"><span>DATA</span><strong id="adminDataResumo">--/--/----</strong></div>
+        </div>
+
+        <section class="admin-summary" aria-label="Resumo administrativo">
+            <article><span>Tarefas do dia</span><strong id="adminTotal">0</strong><small>Total no filtro selecionado</small></article>
+            <article><span>Concluídas</span><strong id="adminConcluidas">0</strong><small>Atividades finalizadas</small></article>
+            <article><span>Pendentes</span><strong id="adminPendentes">0</strong><small>Precisam de acompanhamento</small></article>
+            <article><span>Conclusão</span><strong id="adminProgresso">0%</strong><small>Percentual concluído</small></article>
+        </section>
+
+        <div class="admin-form-title">
+            <div><strong>Nova tarefa</strong><span>Atribua uma atividade para um usuário ou para todos.</span></div>
+        </div>
+        <form id="formTarefa" class="form-tarefa" autocomplete="off">
+            <div class="grid-form">
+                <div class="field">
+                    <label for="usuarioTarefa">Usuário *</label>
+                    <select id="usuarioTarefa" required></select>
+                </div>
+                <div class="field">
+                    <label for="dataTarefa">Data *</label>
+                    <input id="dataTarefa" type="date" required>
+                </div>
+                <div class="field campo-titulo">
+                    <label for="tituloTarefa">Tarefa *</label>
+                    <input id="tituloTarefa" type="text" maxlength="255" placeholder="Ex: Conferir rebaixas do dia" required>
+                </div>
+                <div class="field campo-descricao">
+                    <label for="descricaoTarefa">Observação</label>
+                    <input id="descricaoTarefa" type="text" maxlength="1000" placeholder="Detalhe opcional da atividade">
+                </div>
+            </div>
+            <div class="form-acoes">
+                <button id="btnAdicionarTarefa" class="btn-principal" type="submit">+ Adicionar tarefa</button>
+                <button id="btnLimparTarefa" class="btn-secundario" type="reset">Limpar</button>
+            </div>
+        </form>
+
+        <div class="admin-list-header">
+            <div>
+                <strong>Atividades cadastradas</strong>
+                <span>Use os filtros para acompanhar a execução.</span>
+            </div>
+            <div class="admin-filters-inline">
+                <button id="btnCopiarOntem" class="btn-copiar-dia" type="button">↻ Copiar de ontem</button>
+                <button id="btnHojeAdmin" class="btn-hoje" type="button">Hoje</button>
+            </div>
+        </div>
+        <div class="admin-filtros">
+            <div class="field">
+                <label for="dataAdmin">Visualizar data</label>
+                <input id="dataAdmin" type="date">
+            </div>
+            <div class="field">
+                <label for="filtroUsuarioAdmin">Usuário</label>
+                <select id="filtroUsuarioAdmin"></select>
+            </div>
+            <div class="field busca-admin">
+                <label for="buscaAdmin">Pesquisar</label>
+                <input id="buscaAdmin" type="search" placeholder="Buscar por usuário ou tarefa...">
+            </div>
+            <div class="field">
+                <label for="filtroStatusAdmin">Status</label>
+                <select id="filtroStatusAdmin">
+                    <option value="todos">Todos</option>
+                    <option value="pendente">Pendentes</option>
+                    <option value="concluida">Concluídas</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Usuário</th>
+                        <th>Tarefa</th>
+                        <th>Observação</th>
+                        <th>Status</th>
+                        <th>Concluída em</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaAdminTarefas">
+                    <tr><td colspan="6" class="estado-vazio">Carregando...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<footer class="rodape-sistema"></footer>
+<script src="timezone.js?v=20.3"></script>
+    <script src="tarefas.js?v=20.3"></script>
+    <script src="notificacoes.js?v=20.3"></script>
+    <script src="rodape.js?v=20.3"></script>
+</body>
+</html>

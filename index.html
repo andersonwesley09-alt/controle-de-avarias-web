@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="bootstrap-server.js?v=20.6"></script>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard - Controle de Avarias</title><link rel="stylesheet" href="styledash.css?v=20.6">
+    <link rel="stylesheet" href="rodape.css?v=20.6">
+</head>
+<body>
+<header class="topbar"><div class="header-container"><div class="marca-header"><div class="titulo"><h1>Controle de Avarias</h1><p>Gestão de avarias e estoque armazenado</p></div></div><a id="btnAcessoDashboard" href="sistema.html" class="btn-login">← Voltar</a></div></header>
+<main>
+<div class="dashboard-header"><div><h2>Dashboard</h2><p>Visão gerencial clara das perdas e do estoque armazenado nas caixas.</p></div><span id="statusTempoReal" class="status-tempo-real">● Tempo real</span></div>
+<div class="dashboard-abas" role="tablist" aria-label="Visões do dashboard">
+<button type="button" class="dashboard-aba-btn ativo" data-dashboard-aba="principal" role="tab" aria-selected="true">📊 Avarias</button>
+<button type="button" class="dashboard-aba-btn" data-dashboard-aba="devolucoes" role="tab" aria-selected="false">📦 Caixas</button>
+</div>
+<div class="ia-flutuante" id="iaFlutuante">
+    <button type="button" id="btnAbrirIA" class="btn-ia-flutuante" aria-expanded="false" aria-controls="painelAnalistaIA" title="Abrir Assistente de IA">
+        <span class="ia-orbita" aria-hidden="true"><span class="ia-nucleo">✦</span><i></i><i></i><i></i></span>
+        <span class="ia-label">IA</span>
+        <span class="ia-online">online</span>
+    </button>
+    <section class="painel-analista-ia" id="painelAnalistaIA" aria-hidden="true">
+        <div class="analista-ia-cabecalho">
+            <div>
+                <span class="dashboard-kicker ia-kicker"><span class="ia-kicker-dot">✦</span> ASSISTENTE INTELIGENTE</span>
+                <h3>Analista IA</h3>
+                <p>Analise os dados atuais do dashboard sem sair da página.</p>
+            </div>
+            <button type="button" id="btnFecharIA" class="btn-ia-fechar" aria-label="Fechar Analista IA">×</button>
+        </div>
+        <div class="analista-ia-controles">
+            <div class="analista-ia-pergunta">
+                <label for="perguntaIA">Pergunte sobre os dados</label>
+                <input id="perguntaIA" type="text" maxlength="500" placeholder="Ex.: Qual fornecedor concentra mais valor nas caixas?">
+            </div>
+            <div class="analista-ia-acoes">
+                <button type="button" id="btnGerarAnaliseIA" class="btn-ia-gerar">✨ Analisar</button>
+                <div class="analista-ia-atalhos">
+                    <button type="button" class="atalho-ia" data-tipo="resumo" data-pergunta="Faça um resumo gerencial dos principais pontos dos dados atuais.">📋 Resumo</button>
+                    <button type="button" class="atalho-ia" data-tipo="concentracao" data-pergunta="Onde está concentrado o maior impacto dos dados atuais?">🎯 Concentração</button>
+                    <button type="button" class="atalho-ia" data-tipo="atencao" data-pergunta="Quais pontos merecem atenção imediata nos dados atuais?">🚨 Atenção</button>
+                    <button type="button" class="atalho-ia" data-tipo="tendencia" data-pergunta="O que está melhorando ou piorando na comparação com o período anterior?">📈 Tendência</button>
+                    <button type="button" class="atalho-ia" data-tipo="recomendacoes" data-pergunta="Quais são as principais prioridades e recomendações a partir dos dados atuais?">🎯 Recomendações</button>
+                    <button type="button" class="atalho-ia atalho-ia-completo" data-tipo="completa" data-pergunta="Faça uma análise completa dos dados atuais, com situação, concentração, tendência, pontos de atenção e prioridades.">✨ Análise completa</button>
+                </div>
+            </div>
+        </div>
+        <div id="resultadoAnaliseIA" class="resultado-analise-ia" aria-live="polite">
+            <div class="ia-vazio"><span class="ia-avatar-mini">✦</span><div><strong>Assistente pronto.</strong><small>Faça uma pergunta e eu analiso os dados atuais do dashboard.</small></div></div>
+        </div>
+    </section>
+</div>
+<section id="abaDashboardPrincipal" class="dashboard-aba-conteudo ativo">
+<section id="painelFiltrosDashboard" class="filtros-dashboard painel-filtros-dashboard">
+<div><label>Data inicial</label><input id="filtroDashboardDataInicial" type="date"></div><div><label>Data final</label><input id="filtroDashboardDataFinal" type="date"></div>
+<div><label>Categoria</label><select id="filtroDashboardCategoria"><option>Todos</option><option>Frios</option><option>Mercearia</option><option>Padaria</option><option>Limpeza</option><option>Bebidas</option></select></div>
+<div><label>Setor da avaria</label><select id="filtroDashboardSetor"><option>Todos</option><option>Loja</option><option>CD</option><option>Online</option><option>Estoque</option><option>Câmara</option><option>Refeito</option><option>Recepção</option><option>Pitstop</option></select></div>
+<div><label>Motivo</label><select id="filtroDashboardMotivo"><option>Todos</option></select></div><div><label>Fornecedor</label><select id="filtroDashboardFornecedor"><option>Todos</option></select></div>
+<div class="filtro-dashboard-produto"><label>Produto / código</label><input id="filtroDashboardProduto" type="search" placeholder="Pesquisar produto..."></div>
+<div><label>Status</label><select id="filtroDashboardStatus"><option value="Todos">Todos</option><option value="Baixa">Baixas</option><option value="Pendente">Pendentes</option></select></div>
+<div class="acoes-dashboard"><button id="btnLimparDashboard" type="button">Limpar filtros</button></div>
+</section>
+<button id="btnFiltrosDashboard" class="btn-filtros-dashboard-flutuante" type="button" aria-expanded="false">🔎 Filtros</button>
+<section id="painelFiltrosCaixasDashboard" class="filtros-dashboard painel-filtros-caixas-dashboard" aria-hidden="true">
+    <div class="filtros-caixas-cabecalho">
+        <div><span class="dashboard-kicker">FILTROS</span><h3>Estoque nas caixas</h3><p>Filtre o dashboard por fornecedor, categoria, caixa ou produto.</p></div>
+        <button id="btnFecharFiltrosCaixas" type="button" class="btn-fechar-filtros-caixas" aria-label="Fechar filtros">×</button>
+    </div>
+    <div><label for="filtroCaixaFornecedor">Fornecedor</label><select id="filtroCaixaFornecedor"><option value="Todos">Todos</option></select></div>
+    <div><label for="filtroCaixaCategoria">Categoria</label><select id="filtroCaixaCategoria"><option value="Todos">Todos</option></select></div>
+    <div><label for="filtroCaixaNumero">Caixa</label><select id="filtroCaixaNumero"><option value="Todos">Todas</option></select></div>
+    <div class="filtro-caixa-produto"><label for="filtroCaixaProduto">Produto / EAN</label><input id="filtroCaixaProduto" type="search" placeholder="Pesquisar produto ou EAN..."></div>
+    <div class="acoes-filtros-caixas"><button id="btnLimparFiltrosCaixas" type="button">Limpar filtros</button></div>
+</section>
+<div class="dashboard-secao-cabecalho dashboard-secao-cabecalho-principal"><div><span class="dashboard-kicker">VISÃO DO PERÍODO</span><h3>Resumo das perdas</h3><p>Indicadores principais considerando os filtros selecionados.</p></div></div>
+<section class="cards">
+<article class="card"><div class="card-top"><div class="icone">🧾</div><span class="card-titulo">Registros</span></div><strong id="cardRegistros">0</strong><small>lançamentos no período</small></article>
+<article class="card"><div class="card-top"><div class="icone">📦</div><span class="card-titulo">Quantidade</span></div><strong id="cardQuantidade">0</strong><small>unidades / kg</small></article>
+<article class="card"><div class="card-top"><div class="icone">💰</div><span class="card-titulo">Valor perdido</span></div><strong id="cardValor">R$ 0,00</strong><small>calculado pelo V. Custo</small></article>
+<article class="card"><div class="card-top"><div class="icone">🏭</div><span class="card-titulo">Fornecedores</span></div><strong id="cardFornecedores">0</strong><small>envolvidos no período</small></article>
+<article class="card"><div class="card-top"><div class="icone">🛒</div><span class="card-titulo">Produtos</span></div><strong id="cardProdutos">0</strong><small>produtos com perda</small></article>
+</section>
+<div class="dashboard-secao-cabecalho dashboard-secao-cabecalho-principal"><div><span class="dashboard-kicker">ANÁLISE</span><h3>Comportamento das perdas</h3><p>Acompanhe a evolução e entenda onde estão concentrados os valores.</p></div></div>
+<section class="painel"><div class="painel-titulo"><div><h3>Evolução das perdas</h3><p>Valor, quantidade ou número de registros por dia.</p></div><div class="alternador"><button class="modo-grafico ativo" data-modo="valor">Valor</button><button class="modo-grafico" data-modo="quantidade">Quantidade</button><button class="modo-grafico" data-modo="registros">Registros</button></div></div><div id="graficoEvolucao" class="grafico-evolucao"></div></section>
+<div class="grid-2"><section class="painel"><div class="painel-titulo"><div><h3>Perdas por categoria</h3><p>Frios, Mercearia, Padaria, Limpeza e Bebidas.</p></div></div><div id="graficoCategoria" class="grafico-barras"></div></section><section class="painel"><div class="painel-titulo"><div><h3>Perdas por setor</h3><p>Origem da avaria.</p></div></div><div id="graficoSetor" class="grafico-barras"></div></section></div>
+<div class="grid-2"><section class="painel"><div class="painel-titulo"><div><h3>Perdas por motivo</h3><p>Principais causas registradas.</p></div></div><div id="graficoMotivo" class="grafico-barras"></div></section><section class="painel"><div class="painel-titulo"><div><h3>Perdas por fornecedor</h3><p>Valor total perdido por empresa.</p></div></div><div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>Registros</th><th>Quantidade</th><th>Valor</th></tr></thead><tbody id="tabelaFornecedores"></tbody></table></div></section></div>
+<section class="painel"><div class="painel-titulo"><div><h3>Produtos com maior perda</h3><p>Consolidado por código do produto.</p></div><div class="alternador"><button class="modo-produto ativo" data-modo="valor">Maior valor</button><button class="modo-produto" data-modo="quantidade">Maior quantidade</button></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Produto</th><th>Categoria</th><th>Quantidade</th><th>Valor perdido</th></tr></thead><tbody id="produtosMaisBaixados"></tbody></table></div></section>
+<div class="dashboard-secao-cabecalho dashboard-secao-cabecalho-principal"><div><span class="dashboard-kicker">DETALHAMENTO</span><h3>Registros e movimentações</h3><p>Consulte os produtos e lançamentos que formam os indicadores.</p></div></div>
+<section class="painel"><div class="painel-titulo"><div><h3>Últimas movimentações</h3><p>Registros mais recentes dentro dos filtros.</p></div></div><div class="table-wrap"><table><thead><tr><th>Data</th><th>Produto</th><th>Categoria</th><th>Fornecedor</th><th>Setor</th><th>Motivo</th><th>Quantidade</th><th>Valor</th></tr></thead><tbody id="ultimasBaixas"></tbody></table></div></section>
+</section>
+<section id="abaDashboardDevolucoes" class="dashboard-aba-conteudo" role="tabpanel">
+<div class="dashboard-secao-cabecalho dashboard-secao-cabecalho-principal"><div><span class="dashboard-kicker">VISÃO GERAL</span><h3>Estoque armazenado nas caixas</h3><p>Acompanhe valor, quantidade, fornecedores, categorias e concentração do estoque em um único painel.</p></div></div>
+<section class="cards cards-caixas-dashboard">
+<article class="card card-caixa-gerencial"><div class="card-top"><div class="icone">💰</div><span class="card-titulo">Valor total armazenado</span></div><strong id="dashValorItens">R$ 0,00</strong><small>valor de custo nas caixas</small></article>
+<article class="card card-caixa-gerencial"><div class="card-top"><div class="icone">📦</div><span class="card-titulo">Quantidade armazenada</span></div><strong id="dashQuantidadeItens">0</strong><small>unidades / kg cadastrados</small></article>
+<article class="card card-caixa-gerencial"><div class="card-top"><div class="icone">🏷️</div><span class="card-titulo">Produtos distintos</span></div><strong id="dashProdutosDistintos">0</strong><small>códigos diferentes nas caixas</small></article>
+<article class="card card-caixa-gerencial"><div class="card-top"><div class="icone">🗃️</div><span class="card-titulo">Caixas com produtos</span></div><strong id="dashCaixasComProdutos">0</strong><small>caixas com estoque</small></article>
+<article class="card card-caixa-gerencial"><div class="card-top"><div class="icone">🏭</div><span class="card-titulo">Fornecedores</span></div><strong id="dashFornecedoresCaixas">0</strong><small>fornecedores representados</small></article>
+<article class="card card-caixa-gerencial"><div class="card-top"><div class="icone">🧾</div><span class="card-titulo">Categorias</span></div><strong id="dashCategoriasCaixas">0</strong><small>categorias com estoque</small></article>
+</section>
+
+<section class="painel painel-leitura-caixas">
+<div class="painel-titulo"><div><span class="dashboard-kicker">LEITURA GERENCIAL</span><h3>Onde está concentrado o estoque?</h3><p>Resumo automático dos maiores pontos de concentração.</p></div></div>
+<div class="insights-caixas-dashboard">
+<div class="insight-caixa"><span>🏭 Maior fornecedor</span><strong id="dashTopFornecedor">—</strong><small id="dashTopFornecedorValor">R$ 0,00</small></div>
+<div class="insight-caixa"><span>📦 Caixa de maior valor</span><strong id="dashTopCaixa">—</strong><small id="dashTopCaixaValor">R$ 0,00</small></div>
+<div class="insight-caixa"><span>🏷️ Categoria de maior valor</span><strong id="dashTopCategoria">—</strong><small id="dashTopCategoriaValor">R$ 0,00</small></div>
+</div>
+</section>
+
+<div class="dashboard-secao-cabecalho dashboard-secao-cabecalho-principal"><div><span class="dashboard-kicker">CONCENTRAÇÃO</span><h3>Distribuição do estoque</h3><p>Entenda quais fornecedores e categorias concentram o valor armazenado.</p></div></div>
+<div class="grid-2 estoque-grid-dashboard">
+<section class="painel"><div class="painel-titulo"><div><h3>Valor armazenado por fornecedor</h3><p>Participação de cada fornecedor no valor total das caixas.</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Fornecedor</th><th>Produtos</th><th>Quantidade</th><th>Participação</th><th>Valor</th></tr></thead><tbody id="tabelaFornecedoresCaixas"><tr><td colspan="6" class="vazio">Carregando...</td></tr></tbody></table></div></section>
+<section class="painel"><div class="painel-titulo"><div><h3>Valor armazenado por categoria</h3><p>Distribuição consolidada do estoque por categoria.</p></div></div><div id="graficoCategoriaCaixas" class="grafico-barras grafico-categorias-caixas"></div></section>
+</div>
+
+<div class="dashboard-secao-cabecalho dashboard-secao-cabecalho-principal"><div><span class="dashboard-kicker">RANKINGS</span><h3>Principais concentrações</h3><p>Use os rankings para identificar rapidamente onde está o maior estoque.</p></div></div>
+<div class="grid-2 estoque-grid-dashboard">
+<section class="painel"><div class="painel-titulo"><div><h3>Ranking de produtos armazenados</h3><p>Produtos com maior valor ou quantidade atualmente armazenados.</p></div><div class="alternador"><button class="modo-caixa-produto ativo" data-modo="valor">Maior valor</button><button class="modo-caixa-produto" data-modo="quantidade">Maior quantidade</button></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Produto</th><th>Categoria</th><th>Fornecedor</th><th>Caixas</th><th>Qtd.</th><th>Valor</th></tr></thead><tbody id="tabelaProdutosCaixas"><tr><td colspan="7" class="vazio">Carregando...</td></tr></tbody></table></div></section>
+<section class="painel"><div class="painel-titulo"><div><h3>Caixas com maior valor</h3><p>Caixas que concentram o maior valor de produtos.</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Caixa</th><th>Fornecedor</th><th>Localização</th><th>Produtos</th><th>Qtd.</th><th>Valor</th></tr></thead><tbody id="tabelaTopCaixas"><tr><td colspan="7" class="vazio">Carregando...</td></tr></tbody></table></div></section>
+</div>
+</section>
+</main><script src="timezone.js?v=20.6"></script>
+    <script src="dashboard.js?v=20.6"></script>    <script src="rodape.js?v=20.6"></script>
+</body></html>

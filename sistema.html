@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bootstrap-server.js?v=20.4"></script>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Sistema - Controle de Avarias
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="stylesistema.css?v=20.4"
+    >
+    <link rel="stylesheet" href="stylenotificacoes.css?v=20.4">
+
+    <link rel="stylesheet" href="rodape.css?v=20.4">
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
+
+    <header class="topbar">
+
+        <div class="header-container">
+
+            <div class="marca-header">
+
+                <div class="titulo">
+
+                    <h1>
+                        Controle de Avarias
+                    </h1>
+
+                    <p>
+                        Gestão interna de avarias e baixas
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="usuario-area">
+
+                <div class="usuario-info">
+
+                    <span>
+                        Usuário
+                    </span>
+
+                    <strong id="nomeUsuario">
+                        -
+                    </strong>
+
+                </div>
+
+
+                <div class="notificacao-wrap" id="areaNotificacoesAdmin">
+
+                    <button
+                        id="btnNotificacoesAdmin"
+                        class="btn-notificacao"
+                        type="button"
+                        aria-label="Notificações de tarefas"
+                        aria-expanded="false"
+                    >
+                        <span class="icone-notificacao">🔔</span>
+                        <span class="texto-notificacao">Avisos</span>
+                        <span id="badgeNotificacoesAdmin" class="badge-notificacao">0</span>
+                    </button>
+
+                    <div
+                        id="painelNotificacoesAdmin"
+                        class="painel-notificacoes oculto"
+                        role="dialog"
+                        aria-label="Notificações de tarefas"
+                    >
+                        <div class="notificacoes-cabecalho">
+                            <div>
+                                <strong>Notificações</strong>
+                                <span id="subtituloNotificacoesAdmin">Tarefas do dia</span>
+                            </div>
+                            <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Limpar</button>
+                        </div>
+                        <div id="listaNotificacoesAdmin" class="lista-notificacoes">
+                            <div class="notificacao-vazia">Nenhuma notificação nova.</div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <a href="perfil.html" class="btn-perfil">👤 Perfil</a>
+
+                <button
+                    id="btnSair"
+                    class="btn-sair"
+                    type="button"
+                >
+                    Sair
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         CONTEÚDO
+    ========================== -->
+
+    <main>
+
+
+        <!-- BOAS-VINDAS -->
+
+        <section class="boas-vindas">
+
+            <h2 id="mensagemBoasVindas">
+                Bem-vindo
+            </h2>
+
+            <p>
+                Escolha uma opção abaixo para acessar
+                o controle de avarias.
+            </p>
+
+        </section>
+
+
+
+        <!-- =========================
+             MÓDULOS
+        ========================== -->
+
+        <section class="modulos">
+
+
+            <!-- DASHBOARD -->
+
+            <button
+                id="moduloDashboard"
+                class="modulo-card"
+                type="button"
+                data-modulo="dashboard"
+            >
+
+                <div class="modulo-icone">📊</div>
+
+                <div class="modulo-conteudo">
+                    <h3>Dashboard</h3>
+                    <p>Acompanhar perdas, avarias e estoque armazenado nas caixas.</p>
+                </div>
+
+                <span class="seta">→</span>
+
+            </button>
+
+
+            <!-- AVARIAS E BAIXAS -->
+
+            <button
+                class="modulo-card"
+                type="button"
+                data-modulo="avarias"
+            >
+
+                <div class="modulo-icone">
+                    📋
+                </div>
+
+                <div class="modulo-conteudo">
+
+                    <h3>
+                        Avarias e Baixas
+                    </h3>
+
+                    <p>
+                        Cadastrar avarias, consultar
+                        registros e acompanhar as baixas.
+                    </p>
+
+                </div>
+
+                <span class="seta">
+                    →
+                </span>
+
+            </button>
+
+
+
+            <!-- CAIXAS -->
+
+            <button
+                class="modulo-card"
+                type="button"
+                data-modulo="caixas"
+            >
+
+                <div class="modulo-icone">
+                    📦
+                </div>
+
+                <div class="modulo-conteudo">
+
+                    <h3>
+                        Caixas
+                    </h3>
+
+                    <p>
+                        Organizar as caixas
+                        utilizadas no setor.
+                    </p>
+
+                </div>
+
+                <span class="seta">
+                    →
+                </span>
+
+            </button>
+
+
+
+            <!-- TAREFAS DIÁRIAS -->
+
+            <button
+                id="moduloTarefas"
+                class="modulo-card"
+                type="button"
+                data-modulo="tarefas"
+            >
+
+                <div class="modulo-icone">
+                    ☑️
+                </div>
+
+                <div class="modulo-conteudo">
+
+                    <h3>
+                        Tarefas Diárias
+                    </h3>
+
+                    <p>
+                        Confira e conclua seu checklist diário de atividades.
+                    </p>
+
+                    <span
+                        id="tarefasPendentes"
+                        class="badge-tarefa"
+                    >
+                        Carregando...
+                    </span>
+
+                </div>
+
+                <span class="seta">
+                    →
+                </span>
+
+            </button>
+
+
+            <!-- ATUALIZAÇÃO DOS PRODUTOS -->
+
+            <button
+                id="moduloProdutos"
+                class="modulo-card modulo-admin oculto"
+                type="button"
+                data-modulo="produtos"
+            >
+
+                <div class="modulo-icone">
+                    🗃️
+                </div>
+
+                <div class="modulo-conteudo">
+
+                    <h3>
+                        Atualização dos Produtos
+                    </h3>
+
+                    <p>
+                        Importar e atualizar
+                        produtos pelo Excel.
+                    </p>
+
+                </div>
+
+                <span class="seta">
+                    →
+                </span>
+
+            </button>
+
+
+            <!-- AUDITORIA - SOMENTE ADMIN -->
+
+            <button
+                id="moduloAuditoria"
+                class="modulo-card modulo-admin oculto"
+                type="button"
+                data-modulo="auditoria"
+            >
+
+                <div class="modulo-icone">
+                    🕵️
+                </div>
+
+                <div class="modulo-conteudo">
+
+                    <h3>
+                        Histórico de alterações
+                    </h3>
+
+                    <p>
+                        Consulte as alterações e exclusões realizadas pelos administradores.
+                    </p>
+
+                </div>
+
+                <span class="seta">→</span>
+
+            </button>
+
+
+            <!-- USUÁRIOS - SOMENTE ADMIN -->
+
+            <button
+                id="moduloUsuarios"
+                class="modulo-card modulo-admin oculto"
+                type="button"
+                data-modulo="usuarios"
+            >
+
+                <div class="modulo-icone">
+                    👥
+                </div>
+
+                <div class="modulo-conteudo">
+
+                    <h3>
+                        Usuários
+                    </h3>
+
+                    <p>
+                        Criar usuários, redefinir senhas
+                        e controlar o acesso ao sistema.
+                    </p>
+
+                </div>
+
+                <span class="seta">
+                    →
+                </span>
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             ÁREA DE INFORMAÇÕES
+        ========================== -->
+
+        <section class="painel">
+
+            <h3>
+                Sistema de Controle de Avarias
+            </h3>
+
+            <p>
+                Controle centralizado de avarias,
+                baixas, caixas e produtos.
+            </p>
+
+        </section>
+
+
+    </main>
+
+
+
+    <footer class="rodape-sistema"></footer>
+
+
+
+    <script src="timezone.js?v=20.4"></script>
+    <script src="sistema.js?v=20.4"></script>
+    <script src="notificacoes.js?v=20.4"></script>
+
+
+    <script src="rodape.js?v=20.4"></script>
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="bootstrap-server.js?v=20.3"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histórico de alterações - Controle de Avarias</title>
+<link rel="stylesheet" href="auditoria.css?v=20.3">
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+<body>
+<header class="topbar">
+  <div class="header-container">
+    <div class="marca-header">
+      <div><h1>Histórico de alterações</h1><p>Auditoria administrativa do Controle de Avarias</p></div>
+    </div>
+    <div class="acoes-header"><a href="sistema.html">← Voltar</a><button id="btnSair">Sair</button></div>
+  </div>
+</header>
+<main>
+  <section class="painel">
+    <div class="cabecalho-painel">
+      <div><h2>Alterações realizadas</h2><p>Somente administradores podem consultar este histórico.</p></div>
+      <button id="btnAtualizar" type="button">↻ Atualizar</button>
+    </div>
+    <div class="resumo"><strong id="totalAuditoria">0</strong><span>registros de auditoria carregados</span></div>
+    <div class="tabela-wrap">
+      <table>
+        <thead><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Entidade</th><th>Registro</th><th>Detalhes</th><th>Resultado</th></tr></thead>
+        <tbody id="tabelaAuditoria"><tr><td colspan="7" class="vazio">Carregando...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<div id="toast" class="toast"></div>
+<script src="timezone.js?v=20.3"></script>
+    <script src="auditoria.js?v=20.3"></script>
+    <script src="rodape.js?v=20.3"></script>
+</body>
+</html>

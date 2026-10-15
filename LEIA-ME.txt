@@ -1,0 +1,36 @@
+CONTROLE DE AVARIAS — V21.5 — VERSÃO GENÉRICA
+
+Esta é uma cópia genérica do sistema Controle de Avarias, preparada para uso em outras operações.
+
+IDENTIDADE
+- Não possui logo, foto de fachada ou referência visual ao Supermercado Manaíra.
+- Os documentos PDF de avarias/baixas usam somente a identificação genérica do sistema.
+
+FUNCIONALIDADES MANTIDAS
+- Login e sessão
+- Usuários e permissões
+- Dashboard
+- Avarias e baixas
+- Devoluções
+- Caixas
+- Produtos
+- Tarefas
+- Auditoria
+- Mapeamento
+- Exportações XLSX e PDF
+- Analista IA
+- PostgreSQL/API
+
+CONFIGURAÇÃO
+1. Copie .env.example para .env.
+2. Configure o PostgreSQL e as demais variáveis do ambiente.
+3. Execute npm start ou use INICIAR_SERVIDOR.bat.
+
+DADOS
+Esta versão não inclui o .env original, backups do banco nem a planilha de produtos da operação original.
+Isso é intencional para evitar vínculo com a operação anterior.
+
+BANCO EXISTENTE
+Usar esta pasta não zera nem recria automaticamente um banco PostgreSQL existente. Se você apontar o .env para
+um banco já existente e compatível, o sistema continuará acessando os dados daquele banco conforme as regras
+atuais do projeto.

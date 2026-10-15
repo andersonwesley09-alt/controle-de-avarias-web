@@ -1,0 +1,23 @@
+{
+  "name": "projeto-app",
+  "version": "2.0.7",
+  "description": "Controle de Avarias - V21.5, setores de origem e filtros por setor.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node scripts/verificarProjeto.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.3",
+    "express": "^5.2.1",
+    "multer": "^2.4.0",
+    "pg": "^8.23.0",
+    "xlsx": "^0.18.5"
+  }
+}

@@ -1,0 +1,22 @@
+CONTROLE DE AVARIAS - V21.5 | VERSAO GENERICA
+
+Esta copia foi preparada para uso em outras operacoes, sem identidade visual ou referencias ao Supermercado Manaira.
+
+Mantidos:
+- funcionalidades do sistema;
+- PostgreSQL/API;
+- login, usuarios, auditoria, produtos, caixas, avarias, baixas, devolucoes, tarefas e dashboard;
+- exportacao de dados e PDF de avarias/baixas.
+
+Removidos:
+- logo do Supermercado Manaira;
+- foto da fachada;
+- referencias visuais ao Supermercado Manaira;
+- credenciais do arquivo .env;
+- backups com dados da operacao original.
+
+IMPORTANTE:
+1. Copie .env.example para .env.
+2. Preencha as credenciais do PostgreSQL e demais configuracoes do ambiente.
+3. O banco de dados nao e recriado nem zerado pelo simples fato de usar esta copia.
+4. Se for conectar a um banco existente, use as mesmas credenciais/DB do ambiente que deseja acessar.

@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bootstrap-server.js?v=20.3"></script>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Caixas - Controle de Avarias
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="stylecaixas.css?v=20.3"
+    >
+
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
+
+    <header class="topbar">
+
+        <div class="header-container">
+
+            <div class="marca-header">
+
+                <div>
+
+                    <h1>
+                        Controle de Caixas
+                    </h1>
+
+                    <p>
+                        Organização das caixas utilizadas nas avarias
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="sistema.html"
+                    class="btn-voltar"
+                >
+                    ← Voltar
+                </a>
+
+
+                <button
+                    id="btnSair"
+                    class="btn-sair"
+                    type="button"
+                >
+                    Sair
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+    <nav class="subnav">
+
+        <div class="subnav-inner">
+
+            <a href="caixas.html" class="subnav-btn ativo">📦 Caixas</a>
+
+            <a href="mapeamento.html" class="subnav-btn">🗺️ Mapeamento</a>
+
+        </div>
+
+    </nav>
+
+
+
+    <main>
+
+
+        <!-- =========================
+             ÁREA PRINCIPAL — 50/50
+        ========================== -->
+
+        <div class="caixas-layout">
+
+            <div class="caixas-coluna cadastro-coluna">
+
+        <!-- =========================
+             CADASTRO
+        ========================== -->
+
+        <section class="painel">
+
+            <div class="painel-header">
+
+                <div>
+
+                    <h2>
+                        Cadastrar caixa
+                    </h2>
+
+                    <p>
+                        Informe somente os dados básicos. O fornecedor define quais produtos poderão ser vinculados à caixa.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <form id="formCaixa">
+
+
+                <div class="grid">
+
+
+                    <!-- REGISTRO DA CAIXA -->
+
+                    <div class="field">
+
+                        <label for="nomeCaixa">
+                            Nome da caixa *
+                        </label>
+
+                        <input
+                            id="nomeCaixa"
+                            type="text"
+                            placeholder="Ex: Ébano"
+                            maxlength="30"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- LOCALIZAÇÃO -->
+
+                    <div class="field">
+
+                        <label for="localCaixa">
+                            Localização *
+                        </label>
+
+                        <input
+                            id="localCaixa"
+                            type="text"
+                            placeholder="Ex: Depósito - Prateleira 2"
+                            maxlength="100"
+                            required
+                        >
+
+                    </div>
+
+
+
+                    <!-- FORNECEDOR -->
+
+                    <div class="field">
+
+                        <label for="fornecedorCaixa">
+                            Fornecedor
+                        </label>
+
+                        <input
+                            id="fornecedorCaixa"
+                            type="text"
+                            placeholder="Nome do fornecedor"
+                            maxlength="100"
+                        >
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="form-actions">
+
+                    <button
+                        class="btn-salvar"
+                        type="submit"
+                    >
+                        Registrar caixa
+                    </button>
+
+
+                    <button
+                        class="btn-limpar"
+                        type="reset"
+                    >
+                        Limpar
+                    </button>
+
+                </div>
+
+
+            </form>
+
+        </section>
+
+
+
+
+
+            </div>
+
+
+            <div class="caixas-coluna listagem-coluna">
+
+        <!-- =========================
+             LISTAGEM
+        ========================== -->
+
+        <section class="painel">
+
+            <div class="painel-header painel-header-flex">
+
+                <div>
+
+                    <h2>
+                        Caixas cadastradas
+                    </h2>
+
+                    <p>
+                        Quantidade e valor dos produtos mostram o estoque armazenado em cada caixa.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filtros">
+
+                <input
+                    id="busca"
+                    type="search"
+                    placeholder="Pesquisar caixa, localização ou fornecedor..."
+                >
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table class="tabela-caixas">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Caixa
+                            </th>
+
+                            <th>
+                                Localização
+                            </th>
+
+                            <th>
+                                Fornecedor
+                            </th>
+
+                            <th>
+                                Qtd. itens
+                            </th>
+
+                            <th>
+                                Valor dos itens
+                            </th>
+
+                            <th>
+                                Ação
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabelaCaixas">
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="vazio"
+                            >
+                                Nenhuma caixa cadastrada.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ADICIONAR PRODUTO À CAIXA
+        ========================== -->
+
+        <section class="painel painel-adicionar-produto-pagina">
+
+            <div class="painel-header painel-header-adicionar-rapido">
+                <div>
+                    <span class="kicker-caixa">LANÇAMENTO RÁPIDO</span>
+                    <h2>Adicionar produto à caixa</h2>
+                    <p>Bipe o EAN. O sistema identifica o fornecedor e direciona para a caixa correspondente automaticamente.</p>
+                </div>
+                <div class="atalho-bip-caixa">
+                    <span>⚡</span>
+                    <strong>EAN → fornecedor → caixa</strong>
+                </div>
+            </div>
+
+            <div class="produto-adicionar-grid produto-adicionar-grid-pagina">
+
+                <div class="field campo-produto-caixa">
+                    <label for="produtoBuscaModal">Produto / EAN *</label>
+                    <input
+                        id="produtoBuscaModal"
+                        type="text"
+                        inputmode="numeric"
+                        autocomplete="off"
+                        placeholder="Bipe ou digite o EAN e pressione Enter"
+                    >
+                    <small class="ajuda-campo-caixa">O leitor pode enviar o Enter automaticamente.</small>
+                </div>
+
+                <div class="field campo-quantidade-caixa">
+                    <label for="quantidadeProdutoModal">Quantidade / peso *</label>
+                    <input
+                        id="quantidadeProdutoModal"
+                        type="number"
+                        min="0.001"
+                        step="0.001"
+                        value="1"
+                        disabled
+                    >
+                </div>
+
+                <div class="campo-botao-produto">
+                    <button
+                        id="btnAdicionarProdutoModal"
+                        class="btn-adicionar-produto"
+                        type="button"
+                        disabled
+                    >
+                        + Adicionar produto
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="destino-caixa-grid">
+                <div class="destino-caixa-card">
+                    <span>Fornecedor identificado</span>
+                    <select id="fornecedorProdutoCaixa" disabled>
+                        <option value="">Aguardando EAN...</option>
+                    </select>
+                </div>
+                <div class="destino-caixa-card">
+                    <span>Caixa destino</span>
+                    <select id="caixaProdutoSelecionada" disabled>
+                        <option value="">Aguardando identificação do produto...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="produtoPreviewModal" class="produto-preview-caixa oculto"></div>
+
+            <div class="produto-lancamento-dados-grid produto-lancamento-dados-grid-pagina">
+
+                <div class="field">
+                    <label for="motivoProdutoModal">Motivo *</label>
+                    <select id="motivoProdutoModal" disabled>
+                        <option value="">Selecione o motivo</option>
+                        <option value="Produto avariado">Produto avariado</option>
+                        <option value="Degustação de cliente">Degustação de cliente</option>
+                        <option value="Fermentado">Fermentado</option>
+                        <option value="Vencido">Vencido</option>
+                        <option value="Próximo do vencimento">Próximo do vencimento</option>
+                        <option value="Embalagem danificada">Embalagem danificada</option>
+                        <option value="Quebra">Quebra</option>
+                        <option value="Outro">Outro</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="categoriaProdutoModal">Categoria *</label>
+                    <select id="categoriaProdutoModal" disabled>
+                        <option value="">Selecione a categoria</option>
+                        <option value="Frios">Frios</option>
+                        <option value="Mercearia">Mercearia</option>
+                        <option value="Padaria">Padaria</option>
+                        <option value="Limpeza">Limpeza</option>
+                        <option value="Bebidas">Bebidas</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="setorProdutoModal">Setor de origem *</label>
+                    <select id="setorProdutoModal" disabled>
+                        <option value="">Selecione o setor</option>
+                        <option value="CD">CD</option>
+                        <option value="Online">Online</option>
+                        <option value="Estoque">Estoque</option>
+                        <option value="Loja">Loja</option>
+                        <option value="Câmara">Câmara</option>
+                    </select>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             RESUMO
+        ========================== -->
+
+        <section class="cards">
+
+
+            <article class="card">
+
+                <span>
+                    Caixas cadastradas
+                </span>
+
+                <strong id="totalCaixas">
+                    0
+                </strong>
+
+            </article>
+
+
+            <article class="card">
+
+                <span>
+                    Caixas em uso
+                </span>
+
+                <strong id="caixasEmUso">
+                    0
+                </strong>
+
+            </article>
+
+
+            <article class="card">
+
+                <span>
+                    Avarias pendentes
+                </span>
+
+                <strong id="avariasPendentes">
+                    0
+                </strong>
+
+            </article>
+
+
+        </section>
+
+
+
+
+
+    </main>
+
+
+
+    <!-- =========================
+         MODAL PRODUTOS DA CAIXA
+    ========================== -->
+
+    <div
+        id="modalProdutos"
+        class="modal-backdrop oculto"
+        aria-hidden="true"
+    >
+
+        <section
+            class="modal-caixa modal-produtos-caixa"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloModalProdutos"
+        >
+
+            <div class="modal-header">
+
+                <div>
+                    <h2 id="tituloModalProdutos">Conteúdo da caixa</h2>
+                    <p id="subtituloModalProdutos">Consulte os produtos armazenados nesta caixa.</p>
+                </div>
+
+                <button
+                    id="btnFecharModalProdutos"
+                    class="btn-fechar-modal"
+                    type="button"
+                    aria-label="Fechar"
+                >×</button>
+
+            </div>
+
+            <div class="modal-secao-produtos-header">
+
+                <div>
+                    <h3>Produtos da caixa</h3>
+                    <p>Consulte os produtos armazenados, confira fornecedor, categoria, motivo e setor, e remova itens quando necessário.</p>
+                </div>
+
+                <div class="acoes-produtos-modal">
+                    <span id="contadorProdutosModal" class="contador-produtos-modal">0 itens</span>
+                    <button
+                        id="btnExcluirProdutosMarcados"
+                        class="btn-excluir-marcados"
+                        type="button"
+                        disabled
+                    >
+                        Excluir marcados (0)
+                    </button>
+                </div>
+
+            </div>
+
+            <div class="resumo-produtos-modal">
+                <article class="mini-card mini-card-produto">
+                    <span>Itens</span>
+                    <strong id="modalProdutosItens">0</strong>
+                </article>
+                <article class="mini-card mini-card-produto">
+                    <span>Quantidade</span>
+                    <strong id="modalProdutosQuantidade">0</strong>
+                </article>
+                <article class="mini-card mini-card-produto">
+                    <span>Valor total</span>
+                    <strong id="modalProdutosValor">R$ 0,00</strong>
+                </article>
+            </div>
+
+            <div class="table-wrap table-wrap-modal">
+
+                <table class="tabela-produtos-caixa">
+                    <thead>
+                        <tr>
+                            <th class="col-selecao"><input id="checkboxTodosProdutos" type="checkbox" aria-label="Selecionar todos os produtos"></th>
+                            <th>EAN</th>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Motivo</th>
+                            <th>Setor</th>
+                            <th>Quantidade</th>
+                            <th>V. custo</th>
+                            <th>Valor total</th>
+                            <th>Status</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaProdutosCaixa">
+                        <tr>
+                            <td colspan="11" class="vazio">Nenhum produto cadastrado nesta caixa.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnFecharModalProdutosRodape" class="btn-secundario" type="button">Fechar</button>
+            </div>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================
+         MODAL CONTEÚDO DA CAIXA
+    ========================== -->
+
+    <div
+        id="modalConteudo"
+        class="modal-backdrop oculto"
+        aria-hidden="true"
+    >
+
+        <section
+            class="modal-caixa"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloModalCaixa"
+        >
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2 id="tituloModalCaixa">
+                        Conteúdo da caixa
+                    </h2>
+
+                    <p id="subtituloModalCaixa">
+                        -
+                    </p>
+
+                </div>
+
+
+                <button
+                    id="btnFecharModal"
+                    class="btn-fechar-modal"
+                    type="button"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <div class="resumo-conteudo">
+
+                <article class="mini-card">
+
+                    <span>
+                        Registros
+                    </span>
+
+                    <strong id="modalTotalRegistros">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="mini-card">
+
+                    <span>
+                        Quantidade
+                    </span>
+
+                    <strong id="modalQuantidade">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="mini-card">
+
+                    <span>
+                        Valor acumulado
+                    </span>
+
+                    <strong id="modalValor">
+                        R$ 0,00
+                    </strong>
+
+                </article>
+
+
+                <article class="mini-card">
+
+                    <span>
+                        Pendentes
+                    </span>
+
+                    <strong id="modalPendentes">
+                        0
+                    </strong>
+
+                </article>
+
+            </div>
+
+
+            <div class="table-wrap table-wrap-modal">
+
+                <table class="tabela-conteudo">
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Data
+                            </th>
+
+                            <th>
+                                Código
+                            </th>
+
+                            <th>
+                                Produto
+                            </th>
+
+                            <th>
+                                Qtd.
+                            </th>
+
+                            <th>
+                                V. custo
+                            </th>
+
+                            <th>
+                                Valor
+                            </th>
+
+                            <th>
+                                Motivo
+                            </th>
+
+                            <th>
+                                Status
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabelaConteudoCaixa">
+
+                        <tr>
+
+                            <td
+                                colspan="8"
+                                class="vazio"
+                            >
+                                Nenhum produto vinculado.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    id="btnFecharModalRodape"
+                    class="btn-secundario"
+                    type="button"
+                >
+                    Fechar
+                </button>
+
+            </div>
+
+        </section>
+
+    </div>
+
+
+
+    <!-- NOTIFICAÇÃO -->
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+
+    <script src="timezone.js?v=20.3"></script>
+    <script src="caixas.js?v=20.3"></script>
+
+
+    <script src="rodape.js?v=20.3"></script>
+</body>
+
+</html>

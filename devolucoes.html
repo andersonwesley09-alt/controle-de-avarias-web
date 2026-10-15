@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bootstrap-server.js?v=20.3"></script>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Devoluções - Controle de Avarias
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="styledevolucoes.css?v=13.6"
+    >
+
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
+
+    <header class="topbar">
+
+        <div class="header-container">
+
+            <div class="marca-header">
+
+                <div>
+
+                    <h1>
+                        Controle de Devoluções
+                    </h1>
+
+                    <p>
+                        Produtos devolvidos aos fornecedores
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <a
+                    href="sistema.html"
+                    class="btn-voltar"
+                >
+                    ← Voltar
+                </a>
+
+
+                <button
+                    id="btnSair"
+                    class="btn-sair"
+                    type="button"
+                >
+                    Sair
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <main>
+
+
+        <!-- =========================
+             RESUMO
+        ========================== -->
+
+        <section class="cards">
+
+
+            <article class="card">
+
+                <span>
+                    Aguardando movimentação
+                </span>
+
+                <strong id="totalPendentes">
+                    0
+                </strong>
+
+                <small>
+                    Avarias pendentes
+                </small>
+
+            </article>
+
+
+
+            <article class="card">
+
+                <span>
+                    Valor pendente
+                </span>
+
+                <strong id="valorPendente">
+                    R$ 0,00
+                </strong>
+
+                <small>
+                    Valor disponível para movimentação
+                </small>
+
+            </article>
+
+
+
+            <article class="card">
+
+                <span>
+                    Devoluções realizadas
+                </span>
+
+                <strong id="totalDevolucoes">
+                    0
+                </strong>
+
+                <small>
+                    Registros devolvidos
+                </small>
+
+            </article>
+
+
+
+            <article class="card">
+
+                <span>
+                    Valor das devoluções
+                </span>
+
+                <strong id="valorDevolucoes">
+                    R$ 0,00
+                </strong>
+
+                <small>
+                    Total devolvido aos fornecedores
+                </small>
+
+            </article>
+
+
+        </section>
+
+
+
+        <!-- =========================
+             PENDENTES
+        ========================== -->
+
+        <section class="painel">
+
+            <div class="painel-header">
+
+                <div>
+
+                    <h2>
+                        Aguardando devolução
+                    </h2>
+
+                    <p>
+                        Selecione uma avaria pendente
+                        para registrar a devolução.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="filtros">
+
+                <input
+                    id="buscaPendentes"
+                    type="search"
+                    placeholder="Pesquisar produto, fornecedor, setor ou caixa..."
+                >
+
+            </div>
+
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>Data</th>
+
+                            <th>Produto</th>
+
+                            <th>Fornecedor</th>
+
+                            <th>Qtd.</th>
+
+                            <th>V. Unit.</th>
+
+                            <th>Total</th>
+
+                            <th>Tipo</th>
+
+                            <th>Setor</th>
+
+                            <th>Caixa</th>
+
+                            <th>Ação</th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabelaPendentes">
+
+                        <tr>
+
+                            <td
+                                colspan="10"
+                                class="vazio"
+                            >
+                                Nenhuma avaria pendente.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             HISTÓRICO
+        ========================== -->
+
+        <section class="painel">
+
+            <div class="painel-header">
+
+                <div>
+
+                    <h2>
+                        Histórico de devoluções
+                    </h2>
+
+                    <p>
+                        Registros já devolvidos
+                        aos fornecedores.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="filtros">
+
+                <input
+                    id="buscaHistorico"
+                    type="search"
+                    placeholder="Pesquisar no histórico..."
+                >
+
+            </div>
+
+
+            <div class="table-wrap">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                Data da devolução
+                            </th>
+
+                            <th>
+                                Produto
+                            </th>
+
+                            <th>
+                                Fornecedor
+                            </th>
+
+                            <th>
+                                Qtd.
+                            </th>
+
+                            <th>
+                                V. Unit.
+                            </th>
+
+                            <th>
+                                Total
+                            </th>
+
+                            <th>
+                                Tipo
+                            </th>
+
+                            <th>
+                                Setor
+                            </th>
+
+                            <th>
+                                Caixa
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="tabelaHistorico">
+
+                        <tr>
+
+                            <td
+                                colspan="9"
+                                class="vazio"
+                            >
+                                Nenhuma devolução registrada.
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+    </main>
+
+
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+
+    <script src="timezone.js?v=20.3"></script>
+    <script src="devolucoes.js?v=20.3"></script>
+
+
+    <script src="rodape.js?v=20.3"></script>
+</body>
+
+</html>

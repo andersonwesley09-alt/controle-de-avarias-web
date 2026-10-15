@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bootstrap-server.js?v=20.3"></script>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>
+    Atualização de Produtos
+</title>
+
+<link
+    rel="stylesheet"
+    href="styleprodutos.css?v=13.6"
+>
+
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+
+
+<body>
+
+
+<header class="topbar">
+
+    <div class="marca-header">
+
+        <div>
+
+            <h1>
+                Base de Produtos
+            </h1>
+
+            <p>
+                Importação e atualização pelo Excel
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <a
+        href="sistema.html"
+        class="btn-voltar"
+    >
+        ← Voltar
+    </a>
+
+</header>
+
+
+<main>
+
+
+<section class="painel">
+
+
+    <h2>
+        Base atual
+    </h2>
+
+
+    <div class="cards">
+
+        <div class="card">
+
+            <span>
+                Produtos cadastrados
+            </span>
+
+            <strong id="totalProdutos">
+                -
+            </strong>
+
+        </div>
+
+
+        <div class="card">
+
+            <span>
+                Produtos ativos
+            </span>
+
+            <strong id="produtosAtivos">
+                -
+            </strong>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<section class="painel">
+
+
+    <h2>
+        Atualizar produtos
+    </h2>
+
+
+    <p class="descricao">
+
+        Selecione a planilha atualizada de produtos.
+
+        Produtos novos serão cadastrados e produtos
+        que já existem serão atualizados pelo código EAN.
+        Se a planilha tiver códigos duplicados, o sistema consolida as ocorrências
+        e prioriza o registro com custo válido.
+
+    </p>
+
+
+    <div class="upload-area">
+
+
+        <input
+            type="file"
+            id="arquivoProdutos"
+            accept=".xlsx,.xls"
+        >
+
+
+        <button
+            id="btnImportar"
+            disabled
+        >
+            Importar / Atualizar
+        </button>
+
+
+    </div>
+
+
+    <div
+        id="carregando"
+        class="carregando oculto"
+    >
+        Atualizando produtos...
+        Aguarde.
+    </div>
+
+
+    <div
+        id="resultado"
+        class="resultado oculto"
+    >
+    </div>
+
+
+</section>
+
+
+</main>
+
+
+<script src="timezone.js?v=20.3"></script>
+    <script src="produtos.js?v=20.3"></script>
+
+
+    <script src="rodape.js?v=20.3"></script>
+</body>
+
+</html>
