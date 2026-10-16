@@ -2,8 +2,6 @@
 <html lang="pt-BR">
 
 <head>
-    <script src="bootstrap-server.js?v=20.3"></script>
-
 <meta charset="UTF-8">
 
 <meta
@@ -17,10 +15,10 @@
 
 <link
     rel="stylesheet"
-    href="styleprodutos.css?v=13.6"
+    href="styleprodutos.css?v=21.6"
 >
 
-    <link rel="stylesheet" href="rodape.css?v=20.3">
+    <link rel="stylesheet" href="rodape.css?v=21.6">
 </head>
 
 
@@ -38,7 +36,7 @@
             </h1>
 
             <p>
-                Importação e atualização pelo Excel
+                Importação e cadastro local de produtos
             </p>
 
         </div>
@@ -111,7 +109,7 @@
 
     <p class="descricao">
 
-        Selecione a planilha atualizada de produtos.
+        Selecione uma planilha CSV para atualizar a base ou cadastre um produto manualmente abaixo.
 
         Produtos novos serão cadastrados e produtos
         que já existem serão atualizados pelo código EAN.
@@ -127,7 +125,7 @@
         <input
             type="file"
             id="arquivoProdutos"
-            accept=".xlsx,.xls"
+            accept=".csv,.xlsx,.xls"
         >
 
 
@@ -161,14 +159,33 @@
 </section>
 
 
+
+<section class="painel painel-produto-local">
+    <h2>Cadastrar produto manualmente</h2>
+    <p class="descricao">Ideal para a versão web. Os produtos ficam salvos somente neste navegador.</p>
+    <form id="formProdutoLocal" class="upload-area" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:end;">
+        <label>Código / EAN<input id="produtoLocalCodigo" required maxlength="50" placeholder="789..."></label>
+        <label>Descrição<input id="produtoLocalDescricao" required maxlength="255" placeholder="Nome do produto"></label>
+        <label>Fornecedor<input id="produtoLocalFornecedor" maxlength="255" placeholder="Fornecedor"></label>
+        <label>Cód. fornecedor<input id="produtoLocalCodigoFornecedor" maxlength="50"></label>
+        <label>Custo<input id="produtoLocalCusto" type="number" min="0" step="0.0001" required value="0"></label>
+        <label>Venda<input id="produtoLocalVenda" type="number" min="0" step="0.0001" value="0"></label>
+        <label>Categoria<select id="produtoLocalCategoria"><option>Mercearia</option><option>Frios</option><option>Padaria</option><option>Limpeza</option><option>Bebidas</option></select></label>
+        <label>Estoque<input id="produtoLocalEstoque" type="number" step="0.001" value="0"></label>
+        <button id="btnCadastrarProdutoLocal" type="submit">+ Cadastrar produto</button>
+    </form>
+</section>
+
 </main>
 
 
-<script src="timezone.js?v=20.3"></script>
-    <script src="produtos.js?v=20.3"></script>
+<script src="local-api-216.js?v=21.6.1"></script>
+    <script src="timezone.js?v=21.6"></script>
+    <script src="produtos.js?v=21.6"></script>
 
 
-    <script src="rodape.js?v=20.3"></script>
+    <script src="produto-local.js?v=21.6"></script>
+    <script src="rodape.js?v=21.6"></script>
 </body>
 
 </html>

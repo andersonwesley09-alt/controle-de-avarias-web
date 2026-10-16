@@ -2,9 +2,7 @@
 <html lang="pt-BR">
 
 <head>
-    <script src="bootstrap-server.js?v=20.4"></script>
-
-    <meta charset="UTF-8">
+<meta charset="UTF-8">
 
     <meta
         name="viewport"
@@ -17,11 +15,11 @@
 
     <link
         rel="stylesheet"
-        href="stylesistema.css?v=20.4"
+        href="stylesistema.css?v=21.6"
     >
-    <link rel="stylesheet" href="stylenotificacoes.css?v=20.4">
+    <link rel="stylesheet" href="stylenotificacoes.css?v=21.6">
 
-    <link rel="stylesheet" href="rodape.css?v=20.4">
+    <link rel="stylesheet" href="rodape.css?v=21.6">
 </head>
 
 
@@ -395,7 +393,23 @@
         </section>
 
 
-    </main>
+    
+<section class="painel dados-locais-painel">
+    <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;">
+        <div>
+            <h3>Dados locais</h3>
+            <p>Esta versão web guarda os dados neste navegador. Faça um backup regularmente para não depender apenas do armazenamento local.</p>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button type="button" id="btnExportarDadosLocais">💾 Exportar backup</button>
+            <button type="button" id="btnImportarDadosLocais">📂 Restaurar backup</button>
+            <input type="file" id="arquivoBackupLocal" accept="application/json,.json" hidden>
+        </div>
+    </div>
+    <small id="statusBackupLocal" style="display:block;margin-top:10px;opacity:.75;">Os dados permanecem neste navegador mesmo após fechar a página.</small>
+</section>
+
+</main>
 
 
 
@@ -403,12 +417,14 @@
 
 
 
-    <script src="timezone.js?v=20.4"></script>
-    <script src="sistema.js?v=20.4"></script>
-    <script src="notificacoes.js?v=20.4"></script>
+    <script src="local-api-216.js?v=21.6.1"></script>
+    <script src="timezone.js?v=21.6"></script>
+    <script src="sistema.js?v=21.6"></script>
+    <script src="notificacoes.js?v=21.6"></script>
 
 
-    <script src="rodape.js?v=20.4"></script>
+    <script src="local-backup.js?v=21.6"></script>
+    <script src="rodape.js?v=21.6"></script>
 </body>
 
 </html>

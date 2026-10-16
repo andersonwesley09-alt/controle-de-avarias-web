@@ -1,7 +1,7 @@
-/* BUILD V19.1 - Dashboard protegido e sessão centralizada */
+/* BUILD V21.6 WEB - Dashboard protegido e sessão local */
 /* =========================================================
    LOGIN
-   AUTENTICAÇÃO PELO POSTGRESQL
+   AUTENTICAÇÃO LOCAL (GITHUB PAGES / LOCALSTORAGE)
 ========================================================= */
 
 
@@ -272,7 +272,7 @@ formLogin.addEventListener(
             } else {
                 const trecho = textoResposta.replace(/\s+/g, " ").slice(0, 180);
                 throw new Error(
-                    `O endereço consultado não é a API do Controle de Avarias (HTTP ${resposta.status}). Resposta: ${trecho || "vazia"}. Execute INICIAR_SERVIDOR.bat da V20.0 e abra http://localhost:3000.`
+                    `O endereço consultado não é a API do Controle de Avarias (HTTP ${resposta.status}). Resposta: ${trecho || "vazia"}. Verifique se o modo Web local foi carregado e recarregue a página com Ctrl+F5.`
                 );
             }
 

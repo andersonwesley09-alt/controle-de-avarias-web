@@ -4649,7 +4649,7 @@ async function exportarBaixasXlsx() {
         const url = URL.createObjectURL(arquivo);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `baixas_${new Date().toISOString().slice(0,10)}.xlsx`;
+        link.download = `baixas_${new Date().toISOString().slice(0,10)}.csv`;
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -4661,7 +4661,7 @@ async function exportarBaixasXlsx() {
         mostrarToast(erro.message);
     } finally {
         btnExportarBaixasXlsx.disabled = false;
-        btnExportarBaixasXlsx.textContent = "📊 Exportar Excel";
+        btnExportarBaixasXlsx.textContent = "📊 Exportar CSV (Excel)";
     }
 }
 
@@ -4763,7 +4763,7 @@ async function exportarRegistrosXlsx() {
     const selecionadosParaExportar = obterRegistrosSelecionadosParaCompartilhar();
     if (!selecionadosParaExportar) return;
 
-    const textoOriginal = btnCompartilharXlsx?.textContent || "📊 Excel (XLSX)";
+    const textoOriginal = btnCompartilharXlsx?.textContent || "📊 CSV (Excel)";
     if (btnCompartilharXlsx) {
         btnCompartilharXlsx.disabled = true;
         btnCompartilharXlsx.textContent = "Gerando Excel...";
@@ -4829,7 +4829,7 @@ async function exportarRegistrosXlsx() {
         const url = URL.createObjectURL(arquivo);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `avarias_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        link.download = `avarias_${new Date().toISOString().slice(0, 10)}.csv`;
         document.body.appendChild(link);
         link.click();
         link.remove();
