@@ -1,20 +1,39 @@
-# Controle de Avarias — V21.6 Web
+# Controle de Avarias — V25
 
-Versão estática para GitHub Pages. Mantém a interface da V21.5 e substitui PostgreSQL/API por armazenamento local no navegador.
+Sistema web para registro e acompanhamento de avarias, baixas, caixas, recuperações, doações, documentos operacionais, histórico e auditoria.
 
-## Primeiro acesso
-- Usuário: `admin`
-- Senha: `admin123`
+## Requisitos
 
-Troque a senha em **Perfil** depois do primeiro acesso.
+- Node.js
+- PostgreSQL
 
-## Dados
-Os lançamentos ficam no `localStorage` do navegador. Eles continuam após fechar a página, mas não são compartilhados automaticamente entre computadores ou navegadores.
+## Configuração
 
-Use **Sistema → Dados locais → Exportar backup** regularmente.
+1. Copie `.env.example` para `.env`.
+2. Preencha as credenciais do PostgreSQL no `.env`.
+3. Execute `npm install`.
+4. Execute `npm start` ou use `INICIAR_SERVIDOR.bat` no Windows.
 
-## Produtos
-A versão web permite cadastro manual e importação de **CSV**. Para usar Excel, salve a planilha como CSV antes da importação.
+O arquivo `.env` não deve ser versionado.
 
-## Segurança
-Esta versão não deve ser usada como sistema corporativo com dados sensíveis ou multiusuário real. O login é apenas uma camada de organização local, pois o código e o armazenamento do navegador são acessíveis ao usuário.
+## Banco de dados
+
+As migrações SQL estão em `database/` e devem ser aplicadas no banco da instalação.
+
+## Verificação
+
+```bash
+npm run check
+```
+
+## Estrutura
+
+- `server.js` — servidor/API
+- páginas HTML — interface
+- arquivos JS/CSS — módulos e estilos
+- `database/` — migrações
+- `scripts/` — utilitários
+
+## Versão
+
+V25 — documento aberto editável, recuperação e doações com documentos operacionais, histórico e auditoria.

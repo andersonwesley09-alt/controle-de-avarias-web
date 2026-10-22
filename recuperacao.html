@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+ <head>
+  <script src="bootstrap-server.js?v=24.11">
+  </script>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Recupera&ccedil;&atilde;o de Produtos
+  </title>
+  <link href="styleavarias.css?v=24.11" rel="stylesheet"/>
+  <link href="stylerecuperacao.css?v=24.11" rel="stylesheet"/>
+  <link href="rodape.css?v=24.11" rel="stylesheet"/>
+ </head>
+ <body>
+  <header class="topbar">
+   <div class="header-container">
+    <div class="marca-header">
+     <img alt="Controle de Avarias" class="logo-controle-header" src="logo-controle.svg"/>
+     <div>
+      <h1>
+       Recupera&ccedil;&atilde;o de Produtos
+      </h1>
+      <p>
+       Registro, acompanhamento e resultado dos produtos recuperados
+      </p>
+     </div>
+    </div>
+    <div class="header-actions">
+     <span class="status-conexao status-online" id="statusConexao">
+      ● Sistema
+     </span>
+     <a class="btn-voltar" href="sistema.html">
+      &larr; Voltar
+     </a>
+     <button class="btn-sair" id="btnSair" type="button">
+      Sair
+     </button>
+    </div>
+   </div>
+  </header>
+  <nav class="abas recuperacao-abas">
+   <div class="abas-container">
+    <button class="aba-btn ativo" data-aba="recuperacao" type="button">
+     ♻️ Recupera&ccedil;&atilde;o de Produtos
+    </button>
+    <button class="aba-btn" data-aba="doacoes" type="button">
+     🤝 Doa&ccedil;&otilde;es
+    </button>
+   </div>
+  </nav>
+  <main>
+   <!-- RECUPERAÇÃO -->
+   <section class="aba-conteudo ativo" id="abaRecuperacao">
+    <div class="cadastro-grid cadastro-grid-unico">
+     <section class="painel painel-cadastro-recuperacao">
+      <div class="painel-header">
+       <h2>
+        Cadastrar recupera&ccedil;&atilde;o
+       </h2>
+       <p>
+        Abra o cadastro para lan&ccedil;ar os produtos recuperados.
+       </p>
+      </div>
+      <div class="card-acao-recuperacao">
+       <div class="card-acao-recuperacao-icone">
+        ♻️
+       </div>
+       <div class="card-acao-recuperacao-texto">
+        <strong>
+         Novo lan&ccedil;amento
+        </strong>
+        <span>
+         Bipe ou digite o c&oacute;digo do produto, informe a quantidade e registre a recupera&ccedil;&atilde;o.
+        </span>
+       </div>
+       <button class="btn btn-abrir-cadastro-recuperacao" id="btnAbrirCadastroRecuperacao" type="button">
+        ➕ Cadastrar recupera&ccedil;&atilde;o
+       </button>
+      </div>
+     </section>
+    </div>
+    <section class="resumo-baixas resumo-recuperacoes">
+     <article class="card-resumo">
+      <span>
+       Documentos exibidos
+      </span>
+      <strong id="totalRecuperacoes">
+       0
+      </strong>
+     </article>
+     <article class="card-resumo">
+      <span>
+       Quantidade recuperada
+      </span>
+      <strong id="quantidadeRecuperadaHistorico">
+       0
+      </strong>
+     </article>
+     <article class="card-resumo">
+      <span>
+       Valor total recuperado
+      </span>
+      <strong id="valorRecuperadoHistorico">
+       R$ 0,00
+      </strong>
+     </article>
+    </section>
+    <section class="painel painel-historico">
+     <div class="painel-header painel-header-flex">
+      <div>
+       <h2>
+        Hist&oacute;rico de recupera&ccedil;&otilde;es
+       </h2>
+       <p>
+        Consulte os documentos di&aacute;rios das recupera&ccedil;&otilde;es realizadas.
+       </p>
+      </div>
+      <div class="historico-header-acoes">
+       <div class="export-dropdown">
+        <button aria-expanded="false" class="btn-exportar" id="btnExportarRecuperacao" type="button">
+         📤 Exportar &dtrif;
+        </button>
+        <div class="export-menu" hidden="" id="menuExportarRecuperacao">
+         <button id="btnExportarRecuperacaoExcel" type="button">
+          📊 Excel
+         </button>
+         <button id="btnExportarRecuperacaoPdf" type="button">
+          📄 PDF
+         </button>
+        </div>
+       </div>
+       <div class="contador">
+        <span>
+         Hist&oacute;rico
+        </span>
+        <strong id="contadorRecuperacoes">
+         0
+        </strong>
+       </div>
+      </div>
+     </div>
+     <div class="historico-filtros filtros-recuperacao-historico">
+      <div class="historico-pesquisa filtro-historico-pesquisa">
+       <label for="filtroRecuperacaoBusca">
+        Pesquisa geral
+       </label>
+       <input id="filtroRecuperacaoBusca" placeholder="Pesquisar produto, c&oacute;digo ou fornecedor..." type="search"/>
+      </div>
+      <div class="filtro-historico-item">
+       <label for="filtroRecuperacaoFornecedor">
+        Fornecedor
+       </label>
+       <input id="filtroRecuperacaoFornecedor" placeholder="Fornecedor" type="search"/>
+      </div>
+      <div class="filtro-historico-item">
+       <label for="filtroRecuperacaoDataInicial">
+        Data inicial
+       </label>
+       <input id="filtroRecuperacaoDataInicial" type="date"/>
+      </div>
+      <div class="filtro-historico-item">
+       <label for="filtroRecuperacaoDataFinal">
+        Data final
+       </label>
+       <input id="filtroRecuperacaoDataFinal" type="date"/>
+      </div>
+      <div class="historico-acoes-filtros acoes-filtros-recuperacao">
+       <button class="btn" id="btnFiltrarRecuperacao" type="button">
+        Filtrar
+       </button>
+       <button class="btn-limpar-filtros" id="btnLimparFiltrosRecuperacao" type="button">
+        Limpar filtros
+       </button>
+      </div>
+     </div>
+     <div class="table-wrap historico-table-wrap">
+      <table class="tabela-historico tabela-historico-recuperacao">
+       <thead>
+        <tr>
+         <th>
+          Data
+         </th>
+         <th>
+          Documento
+         </th>
+         <th>
+          Itens
+         </th>
+         <th>
+          Quantidade
+         </th>
+         <th>
+          Valor
+         </th>
+         <th>
+          A&ccedil;&atilde;o
+         </th>
+        </tr>
+       </thead>
+       <tbody id="tabelaRecuperacoes">
+        <tr>
+         <td class="vazio" colspan="6">
+          Carregando...
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <div aria-label="Pagina&ccedil;&atilde;o do hist&oacute;rico de recupera&ccedil;&otilde;es" class="paginacao-tabela" id="paginacaoRecuperacao">
+     </div>
+    </section>
+   </section>
+   <!-- DOAÇÕES -->
+   <section class="aba-conteudo" id="abaDoacoes">
+    <div class="cadastro-grid cadastro-grid-unico">
+     <section class="painel painel-cadastro-recuperacao">
+      <div class="painel-header">
+       <h2>
+        Cadastrar doa&ccedil;&atilde;o
+       </h2>
+       <p>
+        Abra o cadastro para lan&ccedil;ar os produtos doados.
+       </p>
+      </div>
+      <div class="card-acao-recuperacao card-acao-doacao">
+       <div class="card-acao-recuperacao-icone">
+        🤝
+       </div>
+       <div class="card-acao-recuperacao-texto">
+        <strong>
+         Novo lan&ccedil;amento
+        </strong>
+        <span>
+         Bipe ou digite o c&oacute;digo do produto, informe a quantidade e registre a doa&ccedil;&atilde;o.
+        </span>
+       </div>
+       <button class="btn btn-abrir-cadastro-recuperacao" id="btnAbrirCadastroDoacao" type="button">
+        ➕ Cadastrar doa&ccedil;&atilde;o
+       </button>
+      </div>
+     </section>
+    </div>
+    <section class="painel">
+     <div class="painel-header painel-header-flex">
+      <div>
+       <h2>
+        Resumo de doa&ccedil;&otilde;es
+       </h2>
+       <p>
+        Resultado do per&iacute;odo selecionado.
+       </p>
+      </div>
+     </div>
+     <div class="metric-grid" id="resumoDoacaoCards">
+     </div>
+    </section>
+    <section class="painel">
+     <div class="painel-header painel-header-flex">
+      <div>
+       <h2>
+        Hist&oacute;rico de doa&ccedil;&otilde;es
+       </h2>
+       <p>
+        Consulte os documentos di&aacute;rios das doa&ccedil;&otilde;es realizadas.
+       </p>
+      </div>
+      <div class="historico-header-acoes">
+       <div class="export-dropdown">
+        <button aria-expanded="false" class="btn-exportar" id="btnExportarDoacao" type="button">
+         📤 Exportar &dtrif;
+        </button>
+        <div class="export-menu" hidden="" id="menuExportarDoacao">
+         <button id="btnExportarDoacaoExcel" type="button">
+          📊 Excel
+         </button>
+         <button id="btnExportarDoacaoPdf" type="button">
+          📄 PDF
+         </button>
+        </div>
+       </div>
+       <div class="contador">
+        <span>
+         Hist&oacute;rico
+        </span>
+        <strong id="contadorDoacoes">
+         0
+        </strong>
+       </div>
+      </div>
+     </div>
+     <div class="historico-filtros filtros-doacao-historico">
+      <div class="historico-pesquisa filtro-historico-pesquisa">
+       <label for="filtroDoacaoBusca">
+        Pesquisa geral
+       </label>
+       <input id="filtroDoacaoBusca" placeholder="Pesquisar produto, c&oacute;digo, fornecedor ou benefici&aacute;rio..." type="search"/>
+      </div>
+      <div class="filtro-historico-item">
+       <label for="filtroDoacaoInicio">
+        Data inicial
+       </label>
+       <input id="filtroDoacaoInicio" type="date"/>
+      </div>
+      <div class="filtro-historico-item">
+       <label for="filtroDoacaoFim">
+        Data final
+       </label>
+       <input id="filtroDoacaoFim" type="date"/>
+      </div>
+      <div class="historico-acoes-filtros acoes-filtros-recuperacao">
+       <button class="btn" id="btnFiltrarDoacao" type="button">
+        Filtrar
+       </button>
+       <button class="btn-limpar-filtros" id="btnLimparFiltrosDoacao" type="button">
+        Limpar filtros
+       </button>
+      </div>
+     </div>
+     <div class="resumo-linha" id="resumoHistoricoDoacao">
+     </div>
+     <div class="table-wrap historico-table-wrap">
+      <table class="tabela-historico tabela-historico-recuperacao tabela-doacoes-beneficiario">
+       <thead>
+        <tr>
+         <th>
+          Data
+         </th>
+         <th>
+          Documento
+         </th>
+         <th>
+          Benefici&aacute;rio
+         </th>
+         <th>
+          Itens
+         </th>
+         <th>
+          Quantidade
+         </th>
+         <th>
+          Valor
+         </th>
+         <th>
+          A&ccedil;&atilde;o
+         </th>
+        </tr>
+       </thead>
+       <tbody id="tabelaDoacoes">
+        <tr>
+         <td class="vazio" colspan="7">
+          Carregando...
+         </td>
+        </tr>
+       </tbody>
+      </table>
+     </div>
+     <div class="paginacao-tabela paginacao-modulo" id="paginacaoDoacao">
+     </div>
+    </section>
+   </section>
+  </main>
+  <!-- MODAL DE CADASTRO DE RECUPERAÇÃO -->
+  <div aria-hidden="true" class="modal-recuperacao" id="modalCadastroRecuperacao">
+   <div class="modal-recuperacao-overlay" data-fechar-modal-recuperacao="true">
+   </div>
+   <div aria-labelledby="tituloModalCadastroRecuperacao" aria-modal="true" class="modal-recuperacao-card" role="dialog">
+    <div class="modal-recuperacao-header">
+     <div>
+      <h2 id="tituloModalCadastroRecuperacao">
+       Cadastrar recupera&ccedil;&atilde;o
+      </h2>
+      <p>
+       Bipe ou digite o c&oacute;digo do produto e informe a quantidade recuperada.
+      </p>
+     </div>
+     <button aria-label="Fechar cadastro de recupera&ccedil;&atilde;o" class="modal-fechar" id="btnFecharCadastroRecuperacao" type="button">
+      &times;
+     </button>
+    </div>
+    <div class="modal-recuperacao-body">
+     <form autocomplete="off" id="formRecuperacao">
+      <div class="grid grid-2">
+       <div class="field">
+        <label for="codigoRecuperacao">
+         C&oacute;digo de barras / balan&ccedil;a
+        </label>
+        <input autocomplete="off" id="codigoRecuperacao" placeholder="Bipe ou digite o c&oacute;digo" type="text"/>
+       </div>
+       <div class="field">
+        <label for="quantidadeRecuperacao">
+         Quantidade / peso
+        </label>
+        <input disabled="" id="quantidadeRecuperacao" min="0.001" placeholder="Quantidade ou kg" step="0.001" type="number"/>
+       </div>
+      </div>
+      <div class="produto-info oculto" id="produtoInfoRecuperacao">
+       <div class="produto-dado">
+        <span>
+         C&oacute;digo do produto
+        </span>
+        <strong id="codigoProdutoInfoRecuperacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado produto-dado-principal">
+        <span>
+         Descri&ccedil;&atilde;o do produto
+        </span>
+        <strong id="nomeProdutoRecuperacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         Empresa / Fornecedor
+        </span>
+        <strong id="nomeFornecedorRecuperacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         C&oacute;d. fornecedor
+        </span>
+        <strong id="codigoFornecedorInfoRecuperacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         Categoria
+        </span>
+        <strong id="categoriaProdutoInfoRecuperacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         Valor de custo
+        </span>
+        <strong id="valorProdutoRecuperacao">
+         R$ 0,00
+        </strong>
+       </div>
+       <div class="produto-dado destaque-total">
+        <span>
+         Valor da recupera&ccedil;&atilde;o
+        </span>
+        <strong id="valorTotalRecuperacao">
+         R$ 0,00
+        </strong>
+       </div>
+      </div>
+      <div class="produto-alerta produto-alerta-erro oculto" id="produtoNaoEncontradoRecuperacao">
+       <strong>
+        ⚠ Produto n&atilde;o encontrado
+       </strong>
+       <span id="mensagemProdutoNaoEncontradoRecuperacao">
+        Confira o c&oacute;digo informado e a base de produtos.
+       </span>
+      </div>
+      <div class="produto-alerta produto-alerta-aviso oculto" id="produtoSemCustoRecuperacao">
+       <strong>
+        ⚠ Produto sem custo v&aacute;lido
+       </strong>
+       <span>
+        O produto foi encontrado, mas n&atilde;o possui valor de custo v&aacute;lido. O lan&ccedil;amento est&aacute; bloqueado.
+       </span>
+      </div>
+      <div class="recuperacao-preview recuperacao-preview-unico">
+       <div>
+        <span>
+         Valor recuperado
+        </span>
+        <strong id="valorRecuperadoPreview">
+         R$ 0,00
+        </strong>
+       </div>
+      </div>
+      <div class="field">
+       <label for="obsRecuperacao">
+        Observa&ccedil;&atilde;o
+       </label>
+       <textarea id="obsRecuperacao" placeholder="Observa&ccedil;&otilde;es sobre a recupera&ccedil;&atilde;o" rows="3"></textarea>
+      </div>
+      <div class="form-actions">
+       <div class="acoes-recuperacao">
+        <button class="btn-salvar" disabled="" id="btnSalvarEGerarDocumentoRecuperacao" type="submit">
+         Lan&ccedil;ar recupera&ccedil;&atilde;o
+        </button>
+        <button class="btn gray oculto" id="btnCancelarEdicaoRecuperacao" type="button">Cancelar edi&ccedil;&atilde;o</button>
+       </div>
+       <div class="atalhos-cadastro">
+        <span>
+         <kbd>
+          F2
+         </kbd>
+         ir para c&oacute;digo
+        </span>
+        <span>
+         <kbd>
+          Esc
+         </kbd>
+         fechar janela
+        </span>
+        <span>
+         <kbd>
+          F4
+         </kbd>
+         finalizar documento
+        </span>
+       </div>
+      </div>
+     </form>
+     <section aria-labelledby="tituloProdutosLancadosRecuperacao" class="produtos-lancados-box">
+      <div class="produtos-lancados-header">
+       <div>
+        <h3 id="tituloProdutosLancadosRecuperacao">
+         Produtos lan&ccedil;ados
+        </h3>
+        <p>
+         Itens adicionados ao documento de hoje.
+        </p>
+       </div>
+       <span class="produtos-lancados-contador" id="contadorProdutosRecuperacao">
+        0 itens
+       </span>
+      </div>
+      <div class="lista-produtos-lancados" id="listaProdutosRecuperacao">
+       <div class="lista-produtos-vazia">
+        Nenhum produto lan&ccedil;ado ainda.
+       </div>
+      </div>
+     </section>
+     <div class="modal-documento-footer">
+      <div class="modal-documento-status">
+       <span class="status-documento status-aberto" id="statusDocumentoRecuperacao">
+        Nenhum documento hoje
+       </span>
+       <span class="modal-documento-resumo" id="resumoDocumentoRecuperacao">
+        0 itens · 0 unidades · R$ 0,00
+       </span>
+      </div>
+      <div class="modal-documento-botoes">
+       <button class="btn" disabled="disabled" id="btnFinalizarDocumentoRecuperacao" type="button">
+        Finalizar documento
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <!-- MODAL DE CADASTRO DE DOAÇÃO -->
+  <div aria-hidden="true" class="modal-recuperacao" id="modalCadastroDoacao">
+   <div class="modal-recuperacao-overlay" data-fechar-modal-doacao="true">
+   </div>
+   <div aria-labelledby="tituloModalCadastroDoacao" aria-modal="true" class="modal-recuperacao-card" role="dialog">
+    <div class="modal-recuperacao-header">
+     <div>
+      <h2 id="tituloModalCadastroDoacao">
+       Cadastrar doa&ccedil;&atilde;o
+      </h2>
+      <p>
+       Bipe ou digite o c&oacute;digo do produto, informe a quantidade e os dados da doa&ccedil;&atilde;o.
+      </p>
+     </div>
+     <button aria-label="Fechar cadastro de doa&ccedil;&atilde;o" class="modal-fechar" id="btnFecharCadastroDoacao" type="button">
+      &times;
+     </button>
+    </div>
+    <div class="modal-recuperacao-body">
+     <form autocomplete="off" id="formDoacao">
+      <div class="grid grid-2">
+       <div class="field">
+        <label for="codigoDoacao">
+         C&oacute;digo de barras / balan&ccedil;a
+        </label>
+        <input autocomplete="off" id="codigoDoacao" placeholder="Bipe ou digite o c&oacute;digo" type="text"/>
+       </div>
+       <div class="field">
+        <label for="quantidadeDoacao">
+         Quantidade / peso
+        </label>
+        <input disabled="" id="quantidadeDoacao" min="0.001" placeholder="Quantidade ou kg" step="0.001" type="number"/>
+       </div>
+      </div>
+      <div class="produto-info oculto" id="produtoInfoDoacao">
+       <div class="produto-dado">
+        <span>
+         C&oacute;digo do produto
+        </span>
+        <strong id="codigoProdutoInfoDoacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado produto-dado-principal">
+        <span>
+         Descri&ccedil;&atilde;o do produto
+        </span>
+        <strong id="nomeProdutoDoacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         Empresa / Fornecedor
+        </span>
+        <strong id="nomeFornecedorDoacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         C&oacute;d. fornecedor
+        </span>
+        <strong id="codigoFornecedorInfoDoacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         Categoria
+        </span>
+        <strong id="categoriaProdutoInfoDoacao">
+         -
+        </strong>
+       </div>
+       <div class="produto-dado">
+        <span>
+         Valor de custo
+        </span>
+        <strong id="valorProdutoDoacao">
+         R$ 0,00
+        </strong>
+       </div>
+       <div class="produto-dado destaque-total">
+        <span>
+         Valor estimado da doa&ccedil;&atilde;o
+        </span>
+        <strong id="valorTotalDoacao">
+         R$ 0,00
+        </strong>
+       </div>
+      </div>
+      <div class="produto-alerta produto-alerta-erro oculto" id="produtoNaoEncontradoDoacao">
+       <strong>
+        ⚠ Produto n&atilde;o encontrado
+       </strong>
+       <span id="mensagemProdutoNaoEncontradoDoacao">
+        Confira o c&oacute;digo informado e a base de produtos.
+       </span>
+      </div>
+      <div class="produto-alerta produto-alerta-aviso oculto" id="produtoSemCustoDoacao">
+       <strong>
+        ⚠ Produto sem custo v&aacute;lido
+       </strong>
+       <span>
+        O produto foi encontrado, mas n&atilde;o possui valor de custo v&aacute;lido. O lan&ccedil;amento est&aacute; bloqueado.
+       </span>
+      </div>
+      <div class="grid grid-2">
+       <div class="field">
+        <label for="beneficiarioDoacao">
+         Institui&ccedil;&atilde;o / benefici&aacute;rio
+        </label>
+        <input id="beneficiarioDoacao" maxlength="255" placeholder="Nome da institui&ccedil;&atilde;o ou benefici&aacute;rio" type="text"/>
+       </div>
+       <div class="field">
+        <label for="dataDoacao">
+         Data da doa&ccedil;&atilde;o
+        </label>
+        <input id="dataDoacao" type="date"/>
+       </div>
+      </div>
+      <div class="field">
+       <label for="obsDoacao">
+        Observa&ccedil;&atilde;o
+       </label>
+       <textarea id="obsDoacao" placeholder="Observa&ccedil;&otilde;es sobre a doa&ccedil;&atilde;o" rows="3"></textarea>
+      </div>
+      <div class="form-actions">
+       <div class="acoes-recuperacao">
+        <button class="btn-salvar" disabled="" id="btnSalvarDoacao" type="submit">
+         Lan&ccedil;ar doa&ccedil;&atilde;o
+        </button>
+        <button class="btn gray oculto" id="btnCancelarEdicaoDoacao" type="button">Cancelar edi&ccedil;&atilde;o</button>
+       </div>
+       <div class="atalhos-cadastro">
+        <span>
+         <kbd>
+          F2
+         </kbd>
+         ir para c&oacute;digo
+        </span>
+        <span>
+         <kbd>
+          Esc
+         </kbd>
+         fechar janela
+        </span>
+        <span>
+         <kbd>
+          F4
+         </kbd>
+         finalizar documento
+        </span>
+       </div>
+      </div>
+     </form>
+     <section aria-labelledby="tituloProdutosLancadosDoacao" class="produtos-lancados-box">
+      <div class="produtos-lancados-header">
+       <div>
+        <h3 id="tituloProdutosLancadosDoacao">
+         Produtos lan&ccedil;ados
+        </h3>
+        <p>
+         Itens adicionados ao documento da data selecionada.
+        </p>
+       </div>
+       <div class="produtos-lancados-acoes">
+        <span class="produtos-lancados-contador" id="contadorProdutosDoacao">
+         0 itens
+        </span>
+       </div>
+      </div>
+      <div class="lista-produtos-lancados" id="listaProdutosDoacao">
+       <div class="lista-produtos-vazia">
+        Nenhum produto lan&ccedil;ado ainda.
+       </div>
+      </div>
+     </section>
+     <div class="modal-documento-footer">
+      <div class="modal-documento-status">
+       <span class="status-documento status-aberto" id="statusDocumentoDoacao">
+        Nenhum documento para a data
+       </span>
+       <span class="modal-documento-resumo" id="resumoDocumentoDoacao">
+        0 itens · 0 unidades · R$ 0,00
+       </span>
+      </div>
+      <div class="modal-documento-botoes">
+       <button class="btn" disabled="disabled" id="btnFinalizarDocumentoDoacao" type="button">
+        Finalizar documento
+       </button>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+  <div class="toast" id="toast">
+  </div>
+  <footer class="rodape-sistema">
+  </footer>
+  <script src="timezone.js?v=25">
+  </script>
+  <script src="recuperacao.js?v=25">
+  </script>
+  <script src="rodape.js?v=24.11">
+  </script>
+ </body>
+</html>

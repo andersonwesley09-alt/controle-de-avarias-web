@@ -469,6 +469,10 @@ tbody tr:hover {
 }
 
 
+/* =========================
+   IDENTIDADE VISUAL - V8
+========================= */
+
 .marca-header {
     display: flex;
     align-items: center;
@@ -476,7 +480,22 @@ tbody tr:hover {
     min-width: 0;
 }
 
+.logo-controle-header {
+    display: block;
+    width: 145px;
+    max-width: 28vw;
+    height: 72px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 650px) {
+    .logo-controle-header {
+        width: 105px;
+        height: 58px;
+    }
+
     .marca-header {
         gap: 10px;
     }

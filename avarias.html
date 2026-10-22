@@ -2,7 +2,9 @@
 <html lang="pt-BR">
 
 <head>
-<meta charset="UTF-8">
+    <script src="bootstrap-server.js?v=21.6"></script>
+
+    <meta charset="UTF-8">
 
     <meta
         name="viewport"
@@ -35,6 +37,8 @@
 
             <div class="marca-header">
 
+                <img src="logo-controle.svg" alt="Controle de Avarias" class="logo-controle-header">
+
                 <div>
 
                     <h1>
@@ -52,7 +56,7 @@
 
             <div class="header-actions">
 
-                <span id="statusConexao" class="status-conexao status-online">● Dados locais</span>
+                <span id="statusConexao" class="status-conexao status-online">● Tempo real</span>
 
                 <a
                     href="sistema.html"
@@ -612,6 +616,26 @@
                      FILTROS
                 ========================== -->
 
+                <div class="resumo-registros">
+
+                    <article class="card-resumo">
+                        <span>Registros filtrados</span>
+                        <strong id="resumoRegistrosFiltrados">0</strong>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Quantidade filtrada</span>
+                        <strong id="resumoQuantidadeRegistros">0</strong>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Valor filtrado</span>
+                        <strong id="resumoValorRegistros" class="valor-perdido">R$ 0,00</strong>
+                    </article>
+
+                </div>
+
+
                 <div id="painelFiltrosRegistros" class="barra-filtros painel-filtros-flutuante">
 
 
@@ -684,6 +708,26 @@
                         <label for="filtroFornecedorRegistros">Fornecedor</label>
                         <select id="filtroFornecedorRegistros">
                             <option value="Todos">Todos os fornecedores</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroStatusRegistros">Status</label>
+                        <select id="filtroStatusRegistros">
+                            <option value="Todos">Todos os status</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Baixa">Baixas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroCaixaRegistros">Caixa</label>
+                        <select id="filtroCaixaRegistros">
+                            <option value="Todos">Todas</option>
+                            <option value="com-caixa">Com caixa</option>
+                            <option value="sem-caixa">Sem caixa</option>
                         </select>
                     </div>
 
@@ -919,57 +963,57 @@
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="data">
                                     Data
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="codigo">
                                     Código
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="produto">
                                     Produto
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="fornecedor">
                                     Empresa
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="categoria">
                                     Categoria
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="codigoFornecedor">
                                     Cód. fornecedor
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="quantidade">
                                     Qtd.
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="valor">
                                     Valor total
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="setor">
                                     Setor
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="tipo">
                                     Motivo
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="usuario">
                                     Usuário
                                 </th>
 
@@ -991,6 +1035,8 @@
                     </table>
 
                 </div>
+
+                <div id="paginacaoRegistros" class="paginacao-tabela" aria-label="Paginação dos registros"></div>
 
 
             </section>
@@ -1171,6 +1217,34 @@
 
 
                     <div class="filtro-historico-item">
+                        <label for="filtroHistoricoStatus">Status</label>
+                        <select id="filtroHistoricoStatus">
+                            <option value="">Todos</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Baixa">Baixas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoTipo">Motivo</label>
+                        <select id="filtroHistoricoTipo">
+                            <option value="">Todos os motivos</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoCaixa">Caixa</label>
+                        <select id="filtroHistoricoCaixa">
+                            <option value="">Todas</option>
+                            <option value="com-caixa">Com caixa</option>
+                            <option value="sem-caixa">Sem caixa</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
                         <label for="filtroHistoricoCategoria">Categoria</label>
                         <select id="filtroHistoricoCategoria">
                             <option value="">Todas</option>
@@ -1227,9 +1301,34 @@
                     </div>
 
 
+                    <div class="filtro-historico-item">
+                        <label for="ordemHistorico">Ordenar por</label>
+                        <select id="ordemHistorico">
+                            <option value="data" selected>Data</option>
+                            <option value="codigo">Código</option>
+                            <option value="produto">Produto</option>
+                            <option value="fornecedor">Fornecedor</option>
+                            <option value="quantidade">Quantidade</option>
+                            <option value="valor">Valor</option>
+                            <option value="setor">Setor</option>
+                            <option value="tipo">Motivo</option>
+                            <option value="usuario">Usuário</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="direcaoHistorico">Ordem</label>
+                        <select id="direcaoHistorico">
+                            <option value="desc" selected>Maior → Menor</option>
+                            <option value="asc">Menor → Maior</option>
+                        </select>
+                    </div>
+
+
                     <div class="historico-acoes-filtros">
 
-                        <span class="exportacao-aviso">Selecione os itens para exportar.</span>
+                        <span class="exportacao-aviso">Sem seleção, exporta todos os filtrados.</span>
 
                         <button
                             id="btnExportarBaixasXlsx"
@@ -1285,17 +1384,17 @@
                                     >
                                 </th>
 
-                                <th>Data</th>
-                                <th>Código</th>
-                                <th>Produto</th>
-                                <th>Empresa</th>
-                                <th>Categoria</th>
-                                <th>Cód. fornecedor</th>
-                                <th>Qtd.</th>
-                                <th>Valor</th>
-                                <th>Setor</th>
-                                <th>Motivo</th>
-                                <th>Usuário</th>
+                                <th class="th-ordenavel" data-sort-key="data">Data</th>
+                                <th class="th-ordenavel" data-sort-key="codigo">Código</th>
+                                <th class="th-ordenavel" data-sort-key="produto">Produto</th>
+                                <th class="th-ordenavel" data-sort-key="fornecedor">Empresa</th>
+                                <th class="th-ordenavel" data-sort-key="categoria">Categoria</th>
+                                <th class="th-ordenavel" data-sort-key="codigoFornecedor">Cód. fornecedor</th>
+                                <th class="th-ordenavel" data-sort-key="quantidade">Qtd.</th>
+                                <th class="th-ordenavel" data-sort-key="valor">Valor</th>
+                                <th class="th-ordenavel" data-sort-key="setor">Setor</th>
+                                <th class="th-ordenavel" data-sort-key="tipo">Motivo</th>
+                                <th class="th-ordenavel" data-sort-key="usuario">Usuário</th>
                                 <th class="somente-admin-historico">Editar</th>
 
                             </tr>
@@ -1310,6 +1409,8 @@
                     </table>
 
                 </div>
+
+                <div id="paginacaoHistorico" class="paginacao-tabela" aria-label="Paginação do histórico de baixas"></div>
 
             </section>
         </section>
@@ -1503,7 +1604,6 @@
 
 
 
-    <script src="local-api-216.js?v=21.6.1"></script>
     <script src="timezone.js?v=21.6"></script>
     <script src="avarias.js?v=21.6"></script>
 

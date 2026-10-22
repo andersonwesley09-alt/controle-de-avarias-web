@@ -2461,6 +2461,10 @@ body:not(.perfil-admin) .aviso-admin-historico {
     }
 }
 
+/* =========================
+   IDENTIDADE VISUAL - V8
+========================= */
+
 .marca-header {
     display: flex;
     align-items: center;
@@ -2468,7 +2472,22 @@ body:not(.perfil-admin) .aviso-admin-historico {
     min-width: 0;
 }
 
+.logo-controle-header {
+    display: block;
+    width: 145px;
+    max-width: 28vw;
+    height: 72px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 650px) {
+    .logo-controle-header {
+        width: 105px;
+        height: 58px;
+    }
+
     .marca-header {
         gap: 10px;
     }
@@ -3045,4 +3064,35 @@ body.modal-aberto {
 /* Cadastro responsivo com categoria */
 @media (max-width: 1050px) {
     .cadastro-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   V21.6 - RESUMO, PAGINAÇÃO E CABEÇALHOS ORDENÁVEIS
+========================================================= */
+.resumo-registros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 15px}
+.resumo-registros .card-resumo{min-height:78px}
+.th-ordenavel{cursor:pointer;user-select:none;white-space:nowrap}
+.th-ordenavel::after{content:' ↕';font-size:9px;opacity:.6}
+.th-ordenavel.ordenado::after{content:' ↓';opacity:1}
+.th-ordenavel:hover{filter:brightness(.94)}
+.paginacao-tabela{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:10px 2px 0;border-top:1px solid var(--borda);font-size:11px;color:var(--cinza)}
+.paginacao-info strong{color:var(--texto)}
+.paginacao-controles{display:flex;align-items:center;gap:10px}
+.paginacao-controles label{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700}
+.paginacao-tamanho{height:30px;padding:0 7px;border:1px solid var(--borda);border-radius:7px;background:#fff;color:var(--texto);font-size:10px}
+.paginacao-botoes{display:flex;align-items:center;gap:4px}
+.pagina-btn{min-width:30px;height:30px;padding:0 7px;border:1px solid var(--borda);border-radius:7px;background:#fff;color:var(--texto);font-size:10px;font-weight:800;cursor:pointer}
+.pagina-btn:hover{border-color:var(--roxo);color:var(--roxo);background:#f7f8ff}
+.pagina-btn.ativo{border-color:var(--roxo);background:var(--roxo);color:#fff}
+.pagina-btn.desabilitado{opacity:.4;cursor:not-allowed}
+.pagina-reticencias{display:inline-flex;width:20px;justify-content:center;color:var(--cinza)}
+
+@media(max-width:800px){
+    .resumo-registros{grid-template-columns:1fr}
+    .paginacao-tabela{align-items:flex-start;flex-direction:column}
+    .paginacao-controles{width:100%;justify-content:space-between}
+}
+@media(max-width:600px){
+    .paginacao-controles{align-items:flex-start;flex-direction:column}
+    .paginacao-botoes{flex-wrap:wrap}
 }

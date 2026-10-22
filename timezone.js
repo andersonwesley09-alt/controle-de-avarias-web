@@ -1,6 +1,6 @@
 /* =========================================================
    HORÁRIO OFICIAL DO SISTEMA
-   Os horários exibidos ao usuário usam America/Sao_Paulo.
+   Todos os horários exibidos ao usuário usam America/Sao_Paulo.
 ========================================================= */
 (function (global) {
     const TIME_ZONE = "America/Sao_Paulo";

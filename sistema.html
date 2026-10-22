@@ -2,7 +2,9 @@
 <html lang="pt-BR">
 
 <head>
-<meta charset="UTF-8">
+    <script src="bootstrap-server.js?v=21.7"></script>
+
+    <meta charset="UTF-8">
 
     <meta
         name="viewport"
@@ -15,11 +17,11 @@
 
     <link
         rel="stylesheet"
-        href="stylesistema.css?v=21.6"
+        href="stylesistema.css?v=21.7"
     >
-    <link rel="stylesheet" href="stylenotificacoes.css?v=21.6">
+    <link rel="stylesheet" href="stylenotificacoes.css?v=21.7">
 
-    <link rel="stylesheet" href="rodape.css?v=21.6">
+    <link rel="stylesheet" href="rodape.css?v=21.7">
 </head>
 
 
@@ -35,6 +37,8 @@
         <div class="header-container">
 
             <div class="marca-header">
+
+                <img src="logo-controle.svg" alt="Controle de Avarias" class="logo-controle-header">
 
                 <div class="titulo">
 
@@ -91,7 +95,10 @@
                                 <strong>Notificações</strong>
                                 <span id="subtituloNotificacoesAdmin">Tarefas do dia</span>
                             </div>
-                            <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Limpar</button>
+                            <div class="acoes-notificacoes">
+                <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Marcar todas como lidas</button>
+                <button id="btnLimparNotificacoesLidas" type="button" class="btn-limpar-notificacoes btn-apagar-lidas">Limpar lidas</button>
+            </div>
                         </div>
                         <div id="listaNotificacoesAdmin" class="lista-notificacoes">
                             <div class="notificacao-vazia">Nenhuma notificação nova.</div>
@@ -234,6 +241,27 @@
 
             </button>
 
+
+
+            <!-- RECUPERAÇÃO DE PRODUTOS -->
+
+            <button
+                id="moduloRecuperacao"
+                class="modulo-card"
+                type="button"
+                data-modulo="recuperacao"
+            >
+
+                <div class="modulo-icone">♻️</div>
+
+                <div class="modulo-conteudo">
+                    <h3>Recuperação de Produtos</h3>
+                    <p>Registrar produtos recuperados e acompanhar resultados.</p>
+                </div>
+
+                <span class="seta">→</span>
+
+            </button>
 
 
             <!-- TAREFAS DIÁRIAS -->
@@ -393,23 +421,7 @@
         </section>
 
 
-    
-<section class="painel dados-locais-painel">
-    <div style="display:flex;justify-content:space-between;gap:20px;align-items:flex-start;flex-wrap:wrap;">
-        <div>
-            <h3>Dados locais</h3>
-            <p>Esta versão web guarda os dados neste navegador. Faça um backup regularmente para não depender apenas do armazenamento local.</p>
-        </div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-            <button type="button" id="btnExportarDadosLocais">💾 Exportar backup</button>
-            <button type="button" id="btnImportarDadosLocais">📂 Restaurar backup</button>
-            <input type="file" id="arquivoBackupLocal" accept="application/json,.json" hidden>
-        </div>
-    </div>
-    <small id="statusBackupLocal" style="display:block;margin-top:10px;opacity:.75;">Os dados permanecem neste navegador mesmo após fechar a página.</small>
-</section>
-
-</main>
+    </main>
 
 
 
@@ -417,14 +429,12 @@
 
 
 
-    <script src="local-api-216.js?v=21.6.1"></script>
-    <script src="timezone.js?v=21.6"></script>
-    <script src="sistema.js?v=21.6"></script>
-    <script src="notificacoes.js?v=21.6"></script>
+    <script src="timezone.js?v=21.7"></script>
+    <script src="sistema.js?v=21.7"></script>
+    <script src="notificacoes.js?v=21.7"></script>
 
 
-    <script src="local-backup.js?v=21.6"></script>
-    <script src="rodape.js?v=21.6"></script>
+    <script src="rodape.js?v=21.7"></script>
 </body>
 
 </html>

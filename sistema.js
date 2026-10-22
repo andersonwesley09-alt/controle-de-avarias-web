@@ -356,6 +356,16 @@ function abrirModulo(modulo) {
 
 
     /* =========================
+       RECUPERAÇÃO DE PRODUTOS
+    ========================= */
+
+    if (modulo === "recuperacao") {
+        window.location.href = "recuperacao.html";
+        return;
+    }
+
+
+    /* =========================
        USUÁRIOS - ADMIN
     ========================= */
 

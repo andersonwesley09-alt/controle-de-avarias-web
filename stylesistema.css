@@ -619,6 +619,10 @@ footer {
 }
 
 
+/* =========================
+   IDENTIDADE VISUAL - V8
+========================= */
+
 .marca-header {
     display: flex;
     align-items: center;
@@ -626,7 +630,22 @@ footer {
     min-width: 0;
 }
 
+.logo-controle-header {
+    display: block;
+    width: 145px;
+    max-width: 28vw;
+    height: 72px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 650px) {
+    .logo-controle-header {
+        width: 105px;
+        height: 58px;
+    }
+
     .marca-header {
         gap: 10px;
     }
@@ -878,8 +897,19 @@ footer {
 }
 
 
-/* V21.6 Web - pequenos complementos para armazenamento local */
-.acesso-local-hint{margin:12px 0 0;text-align:center;font-size:12px;opacity:.7}
-.painel-produto-local label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600}
-.painel-produto-local input,.painel-produto-local select{width:100%;box-sizing:border-box}
-@media(max-width:760px){.painel-produto-local form{grid-template-columns:1fr!important}.dados-locais-painel button{width:100%}}
+/* =========================================================
+   V21.7 - CARD PREPARADO PARA RECUPERAÇÃO DE PRODUTOS
+========================================================= */
+.modulo-em-breve {
+    position: relative;
+}
+.badge-modulo-em-breve {
+    display: inline-flex;
+    margin-top: 8px;
+    padding: 4px 8px;
+    border-radius: 999px;
+    background: #eef0ff;
+    color: var(--roxo);
+    font-size: 10px;
+    font-weight: 800;
+}
