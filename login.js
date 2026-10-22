@@ -1,4 +1,4 @@
-/* BUILD V19.1 - Dashboard protegido e sessão centralizada */
+/* BUILD V25.1 - Dashboard protegido, sessão centralizada e API compatível com GitHub Pages */
 /* =========================================================
    LOGIN
    AUTENTICAÇÃO PELO POSTGRESQL
@@ -10,18 +10,38 @@
 ========================= */
 
 const API = (() => {
+    const chave = "controleAvariasServidor";
+    const configurado = (() => {
+        try {
+            const valor = localStorage.getItem(chave);
+            if (!valor) return "";
+            const u = new URL(valor);
+            return /^https?:$/.test(u.protocol) && !/\.github\.io$/i.test(u.hostname) && !/\.pages\.dev$/i.test(u.hostname) ? u.origin : "";
+        } catch { return ""; }
+    })();
     const protocolo = window.location.protocol;
     const hostname = window.location.hostname;
     const porta = window.location.port;
+    const origemHttp = (protocolo === "http:" || protocolo === "https:") ? window.location.origin : "";
 
-    // Quando a página é servida pelo Node, use a mesma origem.
-    if (protocolo === "http:" || protocolo === "https:") {
-        if (porta === "3000") return window.location.origin;
-        if (hostname) return `${protocolo}//${hostname}:3000`;
+    // Se o servidor já está sendo executado na porta 3000, usa a própria origem.
+    if (origemHttp && porta === "3000") return origemHttp;
+
+    // Em GitHub Pages (ou outro frontend estático), nunca acrescente :3000 ao domínio público.
+    // Use o servidor configurado ou, por padrão, o servidor local.
+    if (/\.github\.io$/i.test(hostname) || /\.pages\.dev$/i.test(hostname)) {
+        return configurado || "http://localhost:3000";
     }
 
-    // Compatibilidade para login.html aberto por duplo clique.
-    return window.localStorage.getItem("controleAvariasServidor") || "http://localhost:3000";
+    // Se houver um servidor configurado manualmente, ele tem prioridade.
+    if (configurado) return configurado;
+
+    // Frontend servido por outro host/porta: mantém compatibilidade com o servidor local da rede.
+    if (origemHttp && hostname && hostname !== "localhost" && hostname !== "127.0.0.1") {
+        return `${protocolo}//${hostname}:3000`;
+    }
+
+    return origemHttp || "http://localhost:3000";
 })();
 
 // Permite corrigir o endereço do servidor sem editar o código.

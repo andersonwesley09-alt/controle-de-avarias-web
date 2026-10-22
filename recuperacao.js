@@ -1,5 +1,5 @@
 /* =========================================================
-   CONTROLE DE AVARIAS - V25
+   CONTROLE DE AVARIAS - V25.1
    Recuperações e Doações: documentos numerados, múltiplos lançamentos,
    fechamento, reimpressão, histórico por documento e auditoria.
 ========================================================= */
@@ -8,7 +8,7 @@ if(!sessaoRaw) window.location.href="login.html";
 let sessao=null;try{sessao=JSON.parse(sessaoRaw||"null");}catch{sessao=null;}
 if(!sessao) window.location.href="login.html";
 
-const API=(()=>window.location.origin&&/^https?:$/.test(window.location.protocol)?window.location.origin:"http://localhost:3000")();
+const API=(()=>{const c=(()=>{try{const v=localStorage.getItem("controleAvariasServidor");if(!v)return"";const u=new URL(v);return/^https?:$/.test(u.protocol)&&!/\.github\.io$/i.test(u.hostname)&&!/\.pages\.dev$/i.test(u.hostname)?u.origin:""}catch{return""}})(),p=window.location.protocol,h=window.location.hostname,o=window.location.origin,port=window.location.port;if((p==="http:"||p==="https:")&&port==="3000")return o;if(/\.github\.io$/i.test(h)||/\.pages\.dev$/i.test(h))return c||"http://localhost:3000";if(c)return c;if((p==="http:"||p==="https:")&&h&&h!=="localhost"&&h!=="127.0.0.1")return `${p}//${h}:3000`;return o&&o!=="null"?o:"http://localhost:3000"})();
 const authHeaders=()=>sessao?.token?{Authorization:`Bearer ${sessao.token}`}:{};
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));

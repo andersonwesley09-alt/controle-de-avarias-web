@@ -22,12 +22,24 @@
     if (!area || !botao || !badge || !painel || !lista || !subtitulo || !btnLidas || !btnLimparLidas) return;
 
     const API = (() => {
+        const chave = "controleAvariasServidor";
+        let configurado = "";
+        try {
+            const valor = localStorage.getItem(chave);
+            if (valor) {
+                const u = new URL(valor);
+                if (/^https?:$/.test(u.protocol) && !/\.github\.io$/i.test(u.hostname) && !/\.pages\.dev$/i.test(u.hostname)) configurado = u.origin;
+            }
+        } catch {}
         const protocolo = window.location.protocol;
         const hostname = window.location.hostname;
         const porta = window.location.port;
-        if ((protocolo === "http:" || protocolo === "https:") && porta === "3000") return window.location.origin;
-        if ((protocolo === "http:" || protocolo === "https:") && hostname) return `${protocolo}//${hostname}:3000`;
-        return "http://localhost:3000";
+        const origemHttp = (protocolo === "http:" || protocolo === "https:") ? window.location.origin : "";
+        if (origemHttp && porta === "3000") return origemHttp;
+        if (/\.github\.io$/i.test(hostname) || /\.pages\.dev$/i.test(hostname)) return configurado || "http://localhost:3000";
+        if (configurado) return configurado;
+        if (origemHttp && hostname && hostname !== "localhost" && hostname !== "127.0.0.1") return `${protocolo}//${hostname}:3000`;
+        return origemHttp || "http://localhost:3000";
     })();
 
     let notificacoes = [];

@@ -1,11 +1,13 @@
-/* CONTROLE DE AVARIAS - V25
+/* CONTROLE DE AVARIAS - V25.1
    Quando um HTML for aberto por duplo clique (file://), o navegador
    nao sabe qual PC hospeda o servidor. Nesta situacao pedimos o endereco
    somente uma vez e validamos /api/versao antes de redirecionar.
    Quando o sistema ja esta em http://, nao fazemos absolutamente nada.
 */
 (() => {
-    if (window.location.protocol !== "file:") return;
+    const hostnameAtual = String(window.location.hostname || "");
+    const paginaEstatica = /\.github\.io$/i.test(hostnameAtual) || /\.pages\.dev$/i.test(hostnameAtual);
+    if (window.location.protocol !== "file:" && !paginaEstatica) return;
 
     const CHAVE = "controleAvariasServidor";
     const DEFAULT_SERVER = "http://localhost:3000";
@@ -14,6 +16,7 @@
         try {
             const u = new URL(String(valor || "").trim());
             if (!/^https?:$/.test(u.protocol)) return "";
+            if (/\.github\.io$/i.test(u.hostname) || /\.pages\.dev$/i.test(u.hostname)) return "";
             return u.origin;
         } catch {
             return "";

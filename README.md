@@ -1,4 +1,4 @@
-# Controle de Avarias — V25
+# Controle de Avarias — V25.1
 
 Sistema web para registro e acompanhamento de avarias, baixas, caixas, recuperações, doações, documentos operacionais, histórico e auditoria.
 
@@ -36,4 +36,4 @@ npm run check
 
 ## Versão
 
-V25 — documento aberto editável, recuperação e doações com documentos operacionais, histórico e auditoria.
+V25.1 — correção de acesso quando o frontend é publicado em GitHub Pages, mantendo o backend Node.js local/rede.

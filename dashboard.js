@@ -7,19 +7,38 @@ const formatarDataHoraSistema = (valor) => {
 
 /* BUILD V20.6 - IA analítica isolada sobre a base V20.5 */
 const API = (() => {
-    const origin = window.location.origin;
+    const chave = "controleAvariasServidor";
+    const configurado = (() => {
+        try {
+            const valor = localStorage.getItem(chave);
+            if (!valor) return "";
+            const u = new URL(valor);
+            return /^https?:$/.test(u.protocol) && !/\.github\.io$/i.test(u.hostname) && !/\.pages\.dev$/i.test(u.hostname) ? u.origin : "";
+        } catch { return ""; }
+    })();
+    const protocolo = window.location.protocol;
+    const hostname = window.location.hostname;
+    const porta = window.location.port;
+    const origemHttp = (protocolo === "http:" || protocolo === "https:") ? window.location.origin : "";
 
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
+    // Se o servidor já está sendo executado na porta 3000, usa a própria origem.
+    if (origemHttp && porta === "3000") return origemHttp;
+
+    // Em GitHub Pages (ou outro frontend estático), nunca acrescente :3000 ao domínio público.
+    // Use o servidor configurado ou, por padrão, o servidor local.
+    if (/\.github\.io$/i.test(hostname) || /\.pages\.dev$/i.test(hostname)) {
+        return configurado || "http://localhost:3000";
     }
 
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
+    // Se houver um servidor configurado manualmente, ele tem prioridade.
+    if (configurado) return configurado;
+
+    // Frontend servido por outro host/porta: mantém compatibilidade com o servidor local da rede.
+    if (origemHttp && hostname && hostname !== "localhost" && hostname !== "127.0.0.1") {
+        return `${protocolo}//${hostname}:3000`;
+    }
+
+    return origemHttp || "http://localhost:3000";
 })();
 let avarias=[];let estoqueCaixas={total:{},fornecedores:[],produtos:[],categorias:[],caixas:[]};let modoGrafico="valor";let modoProdutos="valor";let modoCaixaProdutos="valor";
 const $=id=>document.getElementById(id);
