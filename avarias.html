@@ -2,7 +2,12 @@
 <html lang="pt-BR">
 
 <head>
-<meta charset="UTF-8">
+    <script src="local-api-standalone.js?v=25.1.21"></script>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
+
+    <meta charset="UTF-8">
 
     <meta
         name="viewport"
@@ -15,10 +20,10 @@
 
     <link
         rel="stylesheet"
-        href="styleavarias.css?v=21.6"
+        href="styleavarias.css?v=25.1.5"
     >
 
-    <link rel="stylesheet" href="rodape.css?v=21.6">
+    <link rel="stylesheet" href="rodape.css?v=25.1">
 </head>
 
 
@@ -34,6 +39,8 @@
         <div class="header-container">
 
             <div class="marca-header">
+
+                <img src="logo-manaira.png" alt="Supermercado Manaíra" class="logo-manaira-header">
 
                 <div>
 
@@ -52,7 +59,7 @@
 
             <div class="header-actions">
 
-                <span id="statusConexao" class="status-conexao status-online">● Dados locais</span>
+                <span id="statusConexao" class="status-conexao status-online">● Tempo real</span>
 
                 <a
                     href="sistema.html"
@@ -189,7 +196,7 @@
                                 step="0.001"
                                 placeholder="Quantidade ou kg"
                                 disabled
-                            >
+                             max="100000">
 
                         </div>
 
@@ -612,6 +619,26 @@
                      FILTROS
                 ========================== -->
 
+                <div class="resumo-registros">
+
+                    <article class="card-resumo">
+                        <span>Registros filtrados</span>
+                        <strong id="resumoRegistrosFiltrados">0</strong>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Quantidade filtrada</span>
+                        <strong id="resumoQuantidadeRegistros">0</strong>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Valor filtrado</span>
+                        <strong id="resumoValorRegistros" class="valor-perdido">R$ 0,00</strong>
+                    </article>
+
+                </div>
+
+
                 <div id="painelFiltrosRegistros" class="barra-filtros painel-filtros-flutuante">
 
 
@@ -684,6 +711,26 @@
                         <label for="filtroFornecedorRegistros">Fornecedor</label>
                         <select id="filtroFornecedorRegistros">
                             <option value="Todos">Todos os fornecedores</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroStatusRegistros">Status</label>
+                        <select id="filtroStatusRegistros">
+                            <option value="Todos">Todos os status</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Baixa">Baixas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroCaixaRegistros">Caixa</label>
+                        <select id="filtroCaixaRegistros">
+                            <option value="Todos">Todas</option>
+                            <option value="com-caixa">Com caixa</option>
+                            <option value="sem-caixa">Sem caixa</option>
                         </select>
                     </div>
 
@@ -855,6 +902,18 @@
                     </button>
 
 
+                    <button
+                        id="btnEnviarDoacaoSelecionados"
+                        class="btn-enviar-doacao-selecionados"
+                        type="button"
+                        disabled
+                        title="Enviar os registros selecionados para uma doação"
+                    >
+                        → Enviar para doação
+                        <span id="qtdDoacaoSelecionados">(0)</span>
+                    </button>
+
+
                     <div class="compartilhar-registros">
 
                         <button
@@ -919,57 +978,57 @@
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="data">
                                     Data
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="codigo">
                                     Código
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="produto">
                                     Produto
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="fornecedor">
                                     Empresa
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="categoria">
                                     Categoria
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="codigoFornecedor">
                                     Cód. fornecedor
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="quantidade">
                                     Qtd.
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="valor">
                                     Valor total
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="setor">
                                     Setor
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="tipo">
                                     Motivo
                                 </th>
 
 
-                                <th>
+                                <th class="th-ordenavel" data-sort-key="usuario">
                                     Usuário
                                 </th>
 
@@ -991,6 +1050,8 @@
                     </table>
 
                 </div>
+
+                <div id="paginacaoRegistros" class="paginacao-tabela" aria-label="Paginação dos registros"></div>
 
 
             </section>
@@ -1171,6 +1232,34 @@
 
 
                     <div class="filtro-historico-item">
+                        <label for="filtroHistoricoStatus">Status</label>
+                        <select id="filtroHistoricoStatus">
+                            <option value="">Todos</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Baixa">Baixas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoTipo">Motivo</label>
+                        <select id="filtroHistoricoTipo">
+                            <option value="">Todos os motivos</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoCaixa">Caixa</label>
+                        <select id="filtroHistoricoCaixa">
+                            <option value="">Todas</option>
+                            <option value="com-caixa">Com caixa</option>
+                            <option value="sem-caixa">Sem caixa</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
                         <label for="filtroHistoricoCategoria">Categoria</label>
                         <select id="filtroHistoricoCategoria">
                             <option value="">Todas</option>
@@ -1227,9 +1316,34 @@
                     </div>
 
 
+                    <div class="filtro-historico-item">
+                        <label for="ordemHistorico">Ordenar por</label>
+                        <select id="ordemHistorico">
+                            <option value="data" selected>Data</option>
+                            <option value="codigo">Código</option>
+                            <option value="produto">Produto</option>
+                            <option value="fornecedor">Fornecedor</option>
+                            <option value="quantidade">Quantidade</option>
+                            <option value="valor">Valor</option>
+                            <option value="setor">Setor</option>
+                            <option value="tipo">Motivo</option>
+                            <option value="usuario">Usuário</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="direcaoHistorico">Ordem</label>
+                        <select id="direcaoHistorico">
+                            <option value="desc" selected>Maior → Menor</option>
+                            <option value="asc">Menor → Maior</option>
+                        </select>
+                    </div>
+
+
                     <div class="historico-acoes-filtros">
 
-                        <span class="exportacao-aviso">Selecione os itens para exportar.</span>
+                        <span class="exportacao-aviso">Sem seleção, exporta todos os filtrados.</span>
 
                         <button
                             id="btnExportarBaixasXlsx"
@@ -1285,17 +1399,17 @@
                                     >
                                 </th>
 
-                                <th>Data</th>
-                                <th>Código</th>
-                                <th>Produto</th>
-                                <th>Empresa</th>
-                                <th>Categoria</th>
-                                <th>Cód. fornecedor</th>
-                                <th>Qtd.</th>
-                                <th>Valor</th>
-                                <th>Setor</th>
-                                <th>Motivo</th>
-                                <th>Usuário</th>
+                                <th class="th-ordenavel" data-sort-key="data">Data</th>
+                                <th class="th-ordenavel" data-sort-key="codigo">Código</th>
+                                <th class="th-ordenavel" data-sort-key="produto">Produto</th>
+                                <th class="th-ordenavel" data-sort-key="fornecedor">Empresa</th>
+                                <th class="th-ordenavel" data-sort-key="categoria">Categoria</th>
+                                <th class="th-ordenavel" data-sort-key="codigoFornecedor">Cód. fornecedor</th>
+                                <th class="th-ordenavel" data-sort-key="quantidade">Qtd.</th>
+                                <th class="th-ordenavel" data-sort-key="valor">Valor</th>
+                                <th class="th-ordenavel" data-sort-key="setor">Setor</th>
+                                <th class="th-ordenavel" data-sort-key="tipo">Motivo</th>
+                                <th class="th-ordenavel" data-sort-key="usuario">Usuário</th>
                                 <th class="somente-admin-historico">Editar</th>
 
                             </tr>
@@ -1310,6 +1424,8 @@
                     </table>
 
                 </div>
+
+                <div id="paginacaoHistorico" class="paginacao-tabela" aria-label="Paginação do histórico de baixas"></div>
 
             </section>
         </section>
@@ -1493,6 +1609,71 @@
 
 
     <!-- =========================
+         MODAL - ENCAMINHAR PARA DOAÇÃO
+    ========================== -->
+
+    <div
+        id="modalEncaminharDoacao"
+        class="modal-editar-baixa"
+        aria-hidden="true"
+    >
+        <div class="modal-editar-baixa-overlay" data-fechar-modal-doacao="true"></div>
+        <section
+            class="modal-editar-baixa-card modal-doacao-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloEncaminharDoacao"
+        >
+            <div class="modal-editar-baixa-header">
+                <div>
+                    <h2 id="tituloEncaminharDoacao">Enviar para doação</h2>
+                    <p>Os registros originais permanecem em Avarias e Baixas. Aqui você define apenas a quantidade destinada à doação.</p>
+                </div>
+                <button id="btnFecharEncaminharDoacao" class="modal-fechar" type="button" aria-label="Fechar">×</button>
+            </div>
+
+            <div class="modal-doacao-conteudo">
+                <div class="modal-doacao-info">
+                    <div>Itens selecionados <strong id="resumoItensDoacao">0</strong></div>
+                    <div>Quantidade para doação <strong id="resumoQuantidadeDoacao">0</strong></div>
+                </div>
+
+                <div class="campo-doacao-beneficiario">
+                    <label for="beneficiarioEncaminharDoacao">Beneficiário / instituição</label>
+                    <input id="beneficiarioEncaminharDoacao" type="text" maxlength="180" placeholder="Informe para quem será destinada a doação">
+                </div>
+
+                <div class="tabela-doacao-wrap">
+                    <table class="tabela-doacao-selecao">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Disponível</th>
+                                <th>Para doação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaItensEncaminharDoacao"></tbody>
+                    </table>
+                </div>
+
+                <div class="modal-doacao-observacao">
+                    <label for="observacaoEncaminharDoacao">Observação</label>
+                    <textarea id="observacaoEncaminharDoacao" rows="2" maxlength="500" placeholder="Opcional"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-editar-acoes">
+                <div></div>
+                <div class="modal-editar-acoes-direita">
+                    <button id="btnCancelarEncaminharDoacao" class="btn-modal-cancelar" type="button">Cancelar</button>
+                    <button id="btnConfirmarEncaminharDoacao" class="btn-modal-salvar" type="button">→ Criar doação</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- =========================
          TOAST
     ========================== -->
 
@@ -1503,12 +1684,11 @@
 
 
 
-    <script src="local-api-216.js?v=21.6.1"></script>
-    <script src="timezone.js?v=21.6"></script>
-    <script src="avarias.js?v=21.6"></script>
+    <script src="timezone.js?v=25.1"></script>
+    <script src="avarias.js?v=25.1"></script>
 
 
-    <script src="rodape.js?v=21.6"></script>
+    <script src="rodape.js?v=25.1"></script>
 </body>
 
 </html>

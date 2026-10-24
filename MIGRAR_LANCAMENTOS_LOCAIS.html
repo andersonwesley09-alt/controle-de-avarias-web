@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <script src="local-api-standalone.js?v=25.1.21"></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Recuperar lançamentos locais — Controle de Avarias</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f7fb;font-family:Segoe UI,Arial,sans-serif;color:#1f2937}
+main{max-width:900px;margin:40px auto;padding:24px}
+.card{background:#fff;border:1px solid #e4e7ec;border-radius:16px;padding:24px;margin-bottom:18px;box-shadow:0 8px 24px rgba(0,0,0,.05)}
+h1{margin:0 0 8px;font-size:25px}
+h2{margin:0 0 12px;font-size:18px}
+p{line-height:1.5}
+.aviso{background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:14px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.stat{background:#f8fafc;border-radius:12px;padding:14px}
+.stat b{display:block;font-size:24px;margin-top:4px}
+label{display:block;font-weight:600;margin-bottom:6px}
+input{width:100%;padding:12px;border:1px solid #cfd5df;border-radius:9px;font-size:14px}
+button{border:0;border-radius:9px;padding:12px 16px;font-weight:700;cursor:pointer}
+.primary{background:#5b3bb6;color:white}
+.secondary{background:#eef1f6;color:#253047}
+.danger{background:#b42318;color:#fff}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+pre{white-space:pre-wrap;background:#111827;color:#e5e7eb;padding:14px;border-radius:10px;max-height:360px;overflow:auto}
+.ok{color:#087443;font-weight:700}
+.err{color:#b42318;font-weight:700}
+.small{font-size:13px;color:#667085}
+@media(max-width:700px){main{margin:10px auto;padding:12px}.grid{grid-template-columns:1fr}.card{padding:18px}}
+</style>
+</head>
+<body>
+<main>
+  <div class="card">
+    <h1>Recuperar lançamentos locais</h1>
+    <p>Esta ferramenta serve para recuperar os lançamentos que ficaram no navegador durante o período em que o sistema estava em modo Web Local.</p>
+    <div class="aviso">
+      <b>IMPORTANTE:</b> abra este arquivo no <b>mesmo PC e no mesmo navegador</b> onde os lançamentos que sumiram ainda existiam.
+      <br><br>
+      <b>Não limpe os dados do navegador</b> antes de executar a migração.
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>1. Dados encontrados neste navegador</h2>
+    <div class="grid">
+      <div class="stat">Registros locais<b id="qtdAvarias">0</b></div>
+      <div class="stat">Histórico local<b id="qtdHistorico">0</b></div>
+      <div class="stat">Último lançamento<b id="ultimoLancamento">—</b></div>
+    </div>
+    <p id="origem" class="small"></p>
+  </div>
+
+  <div class="card">
+    <h2>2. Servidor central</h2>
+    <label for="servidor">Endereço do servidor</label>
+    <input id="servidor" value="http://10.10.70.163:3000" placeholder="http://192.168.0.10:3000">
+    <p class="small">Se esta máquina for o PC servidor, use o endereço do PC servidor. O padrão desta instalação é http://10.10.70.163:3000.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div>
+        <label for="usuario">Usuário administrador</label>
+        <input id="usuario" autocomplete="username">
+      </div>
+      <div>
+        <label for="senha">Senha</label>
+        <input id="senha" type="password" autocomplete="current-password">
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="secondary" onclick="testarServidor()">Testar servidor</button>
+      <button class="secondary" onclick="baixarBackupLocal()">Baixar backup dos dados locais</button>
+      <button class="primary" onclick="migrar()">RECUPERAR LANÇAMENTOS</button>
+    </div>
+    <p id="status" class="small"></p>
+  </div>
+
+  <div class="card">
+    <h2>3. Resultado</h2>
+    <pre id="resultado">Aguardando.</pre>
+  </div>
+</main>
+
+<script>
+const KEYS = {
+  avarias: "avarias",
+  historico: "historicoAvarias",
+  recuperacoes: "ca_v25_recuperacoes",
+  doacoes: "ca_v25_doacoes",
+  documentosRecuperacao: "ca_v25_documentos_recuperacao",
+  documentosDoacao: "ca_v25_documentos_doacao"
+};
+
+function ler(chave, fallback=[]) {
+  try {
+    const v = JSON.parse(localStorage.getItem(chave) || "null");
+    return v ?? fallback;
+  } catch (_) {
+    return fallback;
+  }
+}
+
+const dadosLocais = {
+  avarias: ler(KEYS.avarias),
+  historicoAvarias: ler(KEYS.historico),
+  recuperacoes: ler(KEYS.recuperacoes),
+  doacoes: ler(KEYS.doacoes),
+  documentosRecuperacao: ler(KEYS.documentosRecuperacao),
+  documentosDoacao: ler(KEYS.documentosDoacao)
+};
+
+function dataItem(x) {
+  const d = x?.criadoEm || x?.criado_em || x?.movimentadoEm || x?.movimentado_em || x?.dataDoacao || x?.data_doacao;
+  const dt = new Date(d);
+  return Number.isNaN(dt.getTime()) ? 0 : dt.getTime();
+}
+
+function fmtData(ts) {
+  if (!ts) return "—";
+  return new Date(ts).toLocaleString("pt-BR");
+}
+
+function atualizarResumo() {
+  document.getElementById("qtdAvarias").textContent = dadosLocais.avarias.length.toLocaleString("pt-BR");
+  document.getElementById("qtdHistorico").textContent = dadosLocais.historicoAvarias.length.toLocaleString("pt-BR");
+
+  const todos = [
+    ...dadosLocais.avarias.map(x => ({...x, origem:"Registros"})),
+    ...dadosLocais.historicoAvarias.map(x => ({...x, origem:"Histórico"}))
+  ].sort((a,b) => dataItem(b)-dataItem(a));
+
+  const ultimo = todos[0];
+  document.getElementById("ultimoLancamento").textContent = ultimo
+    ? fmtData(dataItem(ultimo))
+    : "—";
+
+  document.getElementById("origem").textContent =
+    `Página aberta por: ${location.protocol} | chave de dados local: ${localStorage.length} itens de armazenamento.`;
+
+  if (location.protocol !== "file:") {
+    document.getElementById("origem").innerHTML =
+      '<span class="err">ATENÇÃO: abra este arquivo diretamente (file://) no navegador que contém os dados locais. Se abrir pelo servidor, o localStorage será o do servidor e não o antigo.</span>';
+  }
+}
+
+function mostrar(msg, erro=false) {
+  const el = document.getElementById("status");
+  el.className = erro ? "err" : "ok";
+  el.textContent = msg;
+}
+
+async function testarServidor() {
+  const base = document.getElementById("servidor").value.trim().replace(/\/$/,"");
+  if (!base) return mostrar("Informe o endereço do servidor.", true);
+
+  try {
+    const r = await fetch(base + "/api/saude", {cache:"no-store"});
+    const d = await r.json();
+    if (!r.ok) throw new Error(d?.erro || `HTTP ${r.status}`);
+    mostrar(`Servidor encontrado: ${d.servidor || "OK"} | banco: ${d.banco || "central"} | avarias: ${d.totais?.avarias ?? "?"} | histórico: ${d.totais?.historico ?? "?"}`);
+  } catch (e) {
+    mostrar("Não foi possível conectar ao servidor: " + e.message, true);
+  }
+}
+
+function baixarBackupLocal() {
+  const blob = new Blob([JSON.stringify({
+    exportadoEm:new Date().toISOString(),
+    origem:"localStorage",
+    dados:dadosLocais
+  },null,2)], {type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="backup_lancamentos_locais_controle_avarias.json";
+  a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  mostrar("Backup dos dados locais baixado. Não apague o arquivo.");
+}
+
+async function migrar() {
+  const base = document.getElementById("servidor").value.trim().replace(/\/$/,"");
+  const usuario = document.getElementById("usuario").value.trim();
+  const senha = document.getElementById("senha").value;
+
+  if (!base || !usuario || !senha) {
+    mostrar("Preencha servidor, usuário administrador e senha.", true);
+    return;
+  }
+
+  if (location.protocol !== "file:") {
+    mostrar("Abra este HTML diretamente pelo arquivo (file://) no navegador que possui os lançamentos locais.", true);
+    return;
+  }
+
+  const total = dadosLocais.avarias.length + dadosLocais.historicoAvarias.length;
+  if (!total) {
+    mostrar("Este navegador não possui lançamentos locais para recuperar.", true);
+    return;
+  }
+
+  const confirmar = confirm(
+    `Serão enviados ${total.toLocaleString("pt-BR")} registros locais para o servidor.\n\n` +
+    "Registros existentes no banco não serão sobrescritos.\n" +
+    "Lançamentos que já existiam no histórico central não serão ressuscitados na aba Registros.\n\n" +
+    "Continuar?"
+  );
+  if (!confirmar) return;
+
+  mostrar("Entrando no servidor e preparando a migração...");
+  document.getElementById("resultado").textContent = "Processando...";
+
+  try {
+    const login = await fetch(base + "/api/login", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      credentials:"include",
+      body:JSON.stringify({usuario,senha})
+    });
+
+    const loginData = await login.json().catch(()=>({}));
+    if (!login.ok || !loginData.token) {
+      throw new Error(loginData.erro || "Não foi possível autenticar no servidor.");
+    }
+
+    mostrar("Login administrativo confirmado. Migrando somente o que estiver faltando...");
+
+    const payload = {
+      historicoAvarias: dadosLocais.historicoAvarias,
+      avarias: dadosLocais.avarias
+    };
+
+    const r = await fetch(base + "/api/migracao-local", {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer " + loginData.token
+      },
+      credentials:"include",
+      body:JSON.stringify(payload)
+    });
+
+    const data = await r.json().catch(()=>({}));
+    if (!r.ok) throw new Error(data.erro || data.detalhe || `HTTP ${r.status}`);
+
+    document.getElementById("resultado").textContent = JSON.stringify(data,null,2);
+    mostrar("Migração concluída. Agora recarregue o sistema nos PCs.", false);
+  } catch(e) {
+    document.getElementById("resultado").textContent = String(e.stack || e);
+    mostrar("A migração não foi concluída.", true);
+  }
+}
+
+atualizarResumo();
+</script>
+</body>
+</html>

@@ -14,7 +14,7 @@ let usuarioLogado = null;
 try {
     usuarioLogado = JSON.parse(sessao || "null");
 } catch {
-    fetch("/api/logout", {
+    fetch(`${API}/api/logout`, {
         method: "POST",
         credentials: "include",
         keepalive: true
@@ -23,21 +23,7 @@ try {
     window.location.href = "login.html";
 }
 
-const API = (() => {
-    const origin = window.location.origin;
-
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
-    }
-
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 const mapa = document.getElementById("mapa");
 const modal = document.getElementById("modalEditar");
@@ -501,7 +487,7 @@ btnLimparPesquisa?.addEventListener("click", limparPesquisaMapa);
 
 btnSair.addEventListener("click", () => {
     if (!confirm("Deseja sair do sistema?")) return;
-    fetch("/api/logout", {
+    fetch(`${API}/api/logout`, {
         method: "POST",
         credentials: "include",
         keepalive: true

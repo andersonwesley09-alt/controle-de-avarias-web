@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="local-api-standalone.js?v=25.1.21"></script>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard - Controle de Avarias</title><link rel="stylesheet" href="styledash.css?v=21.6">
-    <link rel="stylesheet" href="rodape.css?v=21.6">
+<title>Dashboard - Controle de Avarias</title><link rel="stylesheet" href="styledash.css?v=20.6">
+    <link rel="stylesheet" href="rodape.css?v=20.6">
 </head>
 <body>
-<header class="topbar"><div class="header-container"><div class="marca-header"><div class="titulo"><h1>Controle de Avarias</h1><p>Gestão de avarias e estoque armazenado</p></div></div><a id="btnAcessoDashboard" href="sistema.html" class="btn-login">← Voltar</a></div></header>
+<header class="topbar"><div class="header-container"><div class="marca-header"><img src="logo-manaira.png" alt="Supermercado Manaíra" class="logo-manaira-header"><div class="titulo"><h1>Controle de Avarias</h1><p>Gestão de avarias e estoque armazenado</p></div></div><a id="btnAcessoDashboard" href="sistema.html" class="btn-login">← Voltar</a></div></header>
 <main>
-<div class="dashboard-header"><div><h2>Dashboard</h2><p>Visão gerencial clara das perdas e do estoque armazenado nas caixas.</p></div><span id="statusTempoReal" class="status-tempo-real">● Dados locais</span></div>
+<div class="dashboard-header"><div><h2>Dashboard</h2><p>Visão gerencial clara das perdas e do estoque armazenado nas caixas.</p></div><span id="statusTempoReal" class="status-tempo-real">● Tempo real</span></div>
 <div class="dashboard-abas" role="tablist" aria-label="Visões do dashboard">
 <button type="button" class="dashboard-aba-btn ativo" data-dashboard-aba="principal" role="tab" aria-selected="true">📊 Avarias</button>
 <button type="button" class="dashboard-aba-btn" data-dashboard-aba="devolucoes" role="tab" aria-selected="false">📦 Caixas</button>
@@ -120,7 +124,6 @@
 <section class="painel"><div class="painel-titulo"><div><h3>Caixas com maior valor</h3><p>Caixas que concentram o maior valor de produtos.</p></div></div><div class="table-wrap"><table><thead><tr><th>#</th><th>Caixa</th><th>Fornecedor</th><th>Localização</th><th>Produtos</th><th>Qtd.</th><th>Valor</th></tr></thead><tbody id="tabelaTopCaixas"><tr><td colspan="7" class="vazio">Carregando...</td></tr></tbody></table></div></section>
 </div>
 </section>
-</main><script src="local-api-216.js?v=21.6.1"></script>
-    <script src="timezone.js?v=21.6"></script>
-    <script src="dashboard.js?v=21.6"></script>    <script src="rodape.js?v=21.6"></script>
+</main><script src="timezone.js?v=20.6"></script>
+    <script src="dashboard.js?v=20.6"></script>    <script src="rodape.js?v=20.6"></script>
 </body></html>

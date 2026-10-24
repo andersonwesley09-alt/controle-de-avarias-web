@@ -1,7 +1,7 @@
-/* BUILD V21.6 WEB - Dashboard protegido e sessão local */
+/* BUILD V19.1 - Dashboard protegido e sessão centralizada */
 /* =========================================================
    LOGIN
-   AUTENTICAÇÃO LOCAL (GITHUB PAGES / LOCALSTORAGE)
+   AUTENTICAÇÃO PELO POSTGRESQL
 ========================================================= */
 
 
@@ -9,20 +9,7 @@
    API
 ========================= */
 
-const API = (() => {
-    const protocolo = window.location.protocol;
-    const hostname = window.location.hostname;
-    const porta = window.location.port;
-
-    // Quando a página é servida pelo Node, use a mesma origem.
-    if (protocolo === "http:" || protocolo === "https:") {
-        if (porta === "3000") return window.location.origin;
-        if (hostname) return `${protocolo}//${hostname}:3000`;
-    }
-
-    // Compatibilidade para login.html aberto por duplo clique.
-    return window.localStorage.getItem("controleAvariasServidor") || "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 // Permite corrigir o endereço do servidor sem editar o código.
 try {
@@ -272,7 +259,7 @@ formLogin.addEventListener(
             } else {
                 const trecho = textoResposta.replace(/\s+/g, " ").slice(0, 180);
                 throw new Error(
-                    `O endereço consultado não é a API do Controle de Avarias (HTTP ${resposta.status}). Resposta: ${trecho || "vazia"}. Verifique se o modo Web local foi carregado e recarregue a página com Ctrl+F5.`
+                    `Não foi possível validar o acesso ao sistema no modo Web local (HTTP ${resposta.status}). Resposta: ${trecho || "vazia"}.`
                 );
             }
 

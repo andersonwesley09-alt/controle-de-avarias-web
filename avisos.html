@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="local-api-standalone.js?v=25.1.21"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avisos - Controle de Avarias</title>
+    <link rel="stylesheet" href="stylesistema.css?v=25.1.17">
+    <link rel="stylesheet" href="avisos.css?v=25.1.19">
+    <link rel="stylesheet" href="rodape.css?v=25.1.17">
+</head>
+<body>
+    <header class="topbar">
+        <div class="header-container">
+            <div class="marca-header">
+                <img src="logo-manaira.png" alt="Supermercado Manaíra" class="logo-manaira-header">
+                <div class="titulo">
+                    <h1>Avisos</h1>
+                    <p>Comunicados compartilhados da equipe</p>
+                </div>
+            </div>
+            <div class="usuario-area">
+                <div class="usuario-info">
+                    <span>Usuário</span>
+                    <strong id="nomeUsuario">-</strong>
+                </div>
+                <a href="sistema.html" class="btn-perfil">← Voltar</a>
+                <button id="btnSair" class="btn-sair" type="button">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="avisos-main">
+        <section class="avisos-painel publicar-painel">
+            <div class="secao-titulo">
+                <div>
+                    <span class="etiqueta">MURAL DA EQUIPE</span>
+                    <h2>Publicar aviso</h2>
+                    <p>Todos os usuários podem publicar e visualizar os avisos.</p>
+                </div>
+            </div>
+
+            <form id="formAviso" class="form-aviso" autocomplete="off">
+                <div class="campo-aviso">
+                    <label for="tituloAviso">Título</label>
+                    <input id="tituloAviso" name="titulo" type="text" maxlength="160" placeholder="Ex.: Alteração no horário de recebimento" required>
+                </div>
+                <div class="campo-aviso">
+                    <label for="mensagemAviso">Aviso</label>
+                    <textarea id="mensagemAviso" name="mensagem" maxlength="5000" rows="4" placeholder="Digite o comunicado que todos precisam ver..." required></textarea>
+                </div>
+                <div class="acoes-form-aviso">
+                    <span id="contadorAviso">0 / 5000</span>
+                    <button id="btnPublicarAviso" class="btn-publicar-aviso" type="submit">📢 Publicar aviso</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="avisos-painel">
+            <div class="secao-titulo lista-titulo">
+                <div>
+                    <span class="etiqueta">AVISOS PUBLICADOS</span>
+                    <h2>Comunicados da equipe</h2>
+                </div>
+                <button id="btnAtualizarAvisos" class="btn-atualizar-aviso" type="button">↻ Atualizar</button>
+            </div>
+            <div id="statusAvisos" class="status-avisos">Carregando avisos...</div>
+            <div id="listaAvisos" class="lista-avisos"></div>
+        </section>
+    </main>
+
+    <footer class="rodape-sistema"></footer>
+
+    <script src="timezone.js?v=25.1.19"></script>
+    <script src="avisos.js?v=25.1.19"></script>
+    <script src="rodape.js?v=25.1.17"></script>
+</body>
+</html>

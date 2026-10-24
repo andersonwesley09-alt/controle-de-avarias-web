@@ -2461,6 +2461,10 @@ body:not(.perfil-admin) .aviso-admin-historico {
     }
 }
 
+/* =========================
+   IDENTIDADE MANAÍRA - V8
+========================= */
+
 .marca-header {
     display: flex;
     align-items: center;
@@ -2468,7 +2472,22 @@ body:not(.perfil-admin) .aviso-admin-historico {
     min-width: 0;
 }
 
+.logo-manaira-header {
+    display: block;
+    width: 145px;
+    max-width: 28vw;
+    height: 72px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 650px) {
+    .logo-manaira-header {
+        width: 105px;
+        height: 58px;
+    }
+
     .marca-header {
         gap: 10px;
     }
@@ -3045,4 +3064,149 @@ body.modal-aberto {
 /* Cadastro responsivo com categoria */
 @media (max-width: 1050px) {
     .cadastro-grid { grid-template-columns: 1fr; }
+}
+
+/* =========================================================
+   V21.6 - RESUMO, PAGINAÇÃO E CABEÇALHOS ORDENÁVEIS
+========================================================= */
+.resumo-registros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 15px}
+.resumo-registros .card-resumo{min-height:78px}
+.th-ordenavel{cursor:pointer;user-select:none;white-space:nowrap}
+.th-ordenavel::after{content:' ↕';font-size:9px;opacity:.6}
+.th-ordenavel.ordenado::after{content:' ↓';opacity:1}
+.th-ordenavel:hover{filter:brightness(.94)}
+.paginacao-tabela{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px;padding:10px 2px 0;border-top:1px solid var(--borda);font-size:11px;color:var(--cinza)}
+.paginacao-info strong{color:var(--texto)}
+.paginacao-controles{display:flex;align-items:center;gap:10px}
+.paginacao-controles label{display:flex;align-items:center;gap:6px;font-size:10px;font-weight:700}
+.paginacao-tamanho{height:30px;padding:0 7px;border:1px solid var(--borda);border-radius:7px;background:#fff;color:var(--texto);font-size:10px}
+.paginacao-botoes{display:flex;align-items:center;gap:4px}
+.pagina-btn{min-width:30px;height:30px;padding:0 7px;border:1px solid var(--borda);border-radius:7px;background:#fff;color:var(--texto);font-size:10px;font-weight:800;cursor:pointer}
+.pagina-btn:hover{border-color:var(--roxo);color:var(--roxo);background:#f7f8ff}
+.pagina-btn.ativo{border-color:var(--roxo);background:var(--roxo);color:#fff}
+.pagina-btn.desabilitado{opacity:.4;cursor:not-allowed}
+.pagina-reticencias{display:inline-flex;width:20px;justify-content:center;color:var(--cinza)}
+
+@media(max-width:800px){
+    .resumo-registros{grid-template-columns:1fr}
+    .paginacao-tabela{align-items:flex-start;flex-direction:column}
+    .paginacao-controles{width:100%;justify-content:space-between}
+}
+@media(max-width:600px){
+    .paginacao-controles{align-items:flex-start;flex-direction:column}
+    .paginacao-botoes{flex-wrap:wrap}
+}
+
+
+/* =========================================================
+   V25.1 - ENCAMINHAR PARA DOAÇÃO
+========================================================= */
+.acoes-registro-linha{display:flex;align-items:center;justify-content:center;gap:5px;min-width:86px}
+.btn-enviar-doacao-linha{width:30px;height:30px;border:0;border-radius:7px;background:#0000ff;color:#fff;font-size:18px;font-weight:800;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.btn-enviar-doacao-linha:hover{filter:brightness(.92)}
+.btn-enviar-doacao-linha:disabled{opacity:.38;cursor:not-allowed;filter:none}
+.btn-enviar-doacao-selecionados{border:0;border-radius:8px;background:#198754;color:#fff;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer;white-space:nowrap}
+.btn-enviar-doacao-selecionados:hover{filter:brightness(.95)}
+.btn-enviar-doacao-selecionados:disabled{opacity:.45;cursor:not-allowed}
+.modal-doacao-card{width:min(900px,100%)}
+.modal-doacao-conteudo{padding:20px 22px}
+.modal-doacao-info{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.modal-doacao-info>div{padding:11px 12px;border:1px solid #e3e5ef;border-radius:9px;background:#f7f8ff;color:#747985;font-size:11px}
+.modal-doacao-info strong{display:block;color:#0000ff;font-size:18px;margin-top:3px}
+.campo-doacao-beneficiario label,.modal-doacao-observacao label{display:block;margin-bottom:6px;font-size:12px;font-weight:700;color:#202536}
+.campo-doacao-beneficiario input,.modal-doacao-observacao textarea{width:100%;border:1px solid #e0e3eb;border-radius:8px;background:#fff;color:#202536;font:inherit;font-size:13px;outline:none;padding:9px 10px}
+.campo-doacao-beneficiario input{height:40px}.modal-doacao-observacao textarea{min-height:62px;resize:vertical}
+.campo-doacao-beneficiario input:focus,.modal-doacao-observacao textarea:focus{border-color:#0000ff;box-shadow:0 0 0 3px rgba(0,0,255,.1)}
+.tabela-doacao-wrap{margin:14px 0;border:1px solid #e0e3eb;border-radius:10px;overflow:auto;max-height:360px}
+.tabela-doacao-selecao{width:100%;border-collapse:collapse;font-size:11px}.tabela-doacao-selecao th{padding:9px 10px;background:#f1f2ff;color:#202536;text-align:left;font-size:10px}.tabela-doacao-selecao td{padding:9px 10px;border-top:1px solid #eceef4;vertical-align:middle}.tabela-doacao-selecao td:first-child{min-width:320px}.tabela-doacao-selecao small{display:block;color:#747985;font-size:9px;margin-top:3px}.input-qtd-doacao{width:110px;height:34px;border:1px solid #e0e3eb;border-radius:7px;padding:6px 8px;text-align:center;font:inherit;font-size:12px;outline:none}.input-qtd-doacao:focus{border-color:#0000ff;box-shadow:0 0 0 3px rgba(0,0,255,.08)}
+.modal-doacao-observacao{margin-top:12px}
+@media(max-width:700px){.modal-doacao-info{grid-template-columns:1fr}.tabela-doacao-selecao td:first-child{min-width:230px}.acoes-registro-linha{gap:3px}.btn-enviar-doacao-selecionados{width:100%}}
+
+
+/* =========================================================
+   V25.1.5 - PADRÃO DOS BOTÕES DA BARRA DE REGISTROS
+   Somente visual: não altera funções nem eventos.
+========================================================= */
+.acoes-registros > .btn-limpar-filtros,
+.acoes-registros > .btn-excluir-selecionados,
+.acoes-registros > .btn-enviar-doacao-selecionados,
+.acoes-registros > .compartilhar-registros > .btn-compartilhar {
+    height: 40px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
+}
+
+/* Limpar filtros — padrão secundário */
+.acoes-registros > .btn-limpar-filtros {
+    border-color: var(--borda);
+    background: #fff;
+    color: var(--texto);
+}
+.acoes-registros > .btn-limpar-filtros:hover {
+    border-color: var(--roxo);
+    color: var(--roxo);
+}
+
+/* Excluir — vermelho quando disponível */
+.acoes-registros > .btn-excluir-selecionados {
+    border-color: var(--vermelho);
+    background: var(--vermelho);
+    color: #fff;
+}
+.acoes-registros > .btn-excluir-selecionados:hover:not(:disabled) {
+    background: #a93226;
+    border-color: #a93226;
+}
+
+/* Ações desabilitadas — mesmo padrão, aparência neutra */
+.acoes-registros > .btn-excluir-selecionados:disabled,
+.acoes-registros > .btn-enviar-doacao-selecionados:disabled {
+    border-color: #d9dce4;
+    background: #f1f2f5;
+    color: #a2a6b0;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+/* Enviar para doação — azul do sistema quando disponível */
+.acoes-registros > .btn-enviar-doacao-selecionados {
+    border-color: var(--roxo);
+    background: var(--roxo);
+    color: #fff;
+}
+.acoes-registros > .btn-enviar-doacao-selecionados:hover:not(:disabled) {
+    background: var(--roxo-claro);
+    border-color: var(--roxo-claro);
+}
+
+/* Compartilhar — mesmo padrão azul do sistema */
+.acoes-registros > .compartilhar-registros > .btn-compartilhar {
+    border-color: var(--roxo);
+    background: var(--roxo);
+    color: #fff;
+}
+.acoes-registros > .compartilhar-registros > .btn-compartilhar:hover {
+    background: var(--roxo-claro);
+    border-color: var(--roxo-claro);
+}
+
+/* O container não cria uma segunda altura/padding */
+.acoes-registros > .compartilhar-registros {
+    display: inline-flex;
+    align-items: center;
+    height: 40px;
 }

@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+    <script src="local-api-standalone.js?v=25.1.21"></script>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapeamento - Controle de Avarias</title>
-    <link rel="stylesheet" href="stylecaixas.css?v=21.6">
-    <link rel="stylesheet" href="styleMapeamento.css?v=21.6">
-    <link rel="stylesheet" href="rodape.css?v=21.6">
+    <link rel="stylesheet" href="stylecaixas.css?v=13.25">
+    <link rel="stylesheet" href="styleMapeamento.css?v=13.25">
+    <link rel="stylesheet" href="rodape.css?v=20.3">
 </head>
 <body>
 <header class="topbar">
     <div class="header-container">
         <div class="marca-header">
+            <img src="logo-manaira.png" alt="Supermercado Manaíra" class="logo-manaira-header">
             <div>
                 <h1>Mapeamento</h1>
                 <p>Mapa físico das caixas e posições da operação</p>
@@ -39,7 +44,7 @@
                 <p>Layout fiel ao modelo: 20 quadrados na linha 1, 16 nas linhas 2 e 3 e 14 nas linhas 4 e 5. As edições e exclusões do mapa são permitidas somente ao administrador.</p>
             </div>
             <div class="mapa-status">
-                <span id="statusTempoReal" class="status-online">● Atualização local</span>
+                <span id="statusTempoReal" class="status-online">● Atualização em tempo real</span>
                 <span id="usuarioAtualMapa">-</span>
             </div>
         </div>
@@ -95,9 +100,8 @@
 </div>
 
 <div id="toast" class="toast"></div>
-<script src="local-api-216.js?v=21.6.1"></script>
-    <script src="timezone.js?v=21.6"></script>
-    <script src="mapeamento.js?v=21.6"></script>
-    <script src="rodape.js?v=21.6"></script>
+<script src="timezone.js?v=20.3"></script>
+    <script src="mapeamento.js?v=20.3"></script>
+    <script src="rodape.js?v=20.3"></script>
 </body>
 </html>

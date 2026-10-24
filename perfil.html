@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
+    <script src="local-api-standalone.js?v=25.1.21"></script>
+    <script src="bcrypt-browser.js?v=25.1.18"></script>
+    <script src="servidor-rede.js?v=25.1.21"></script>
+    <script src="rede-central.js?v=25.1.21"></script>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Perfil - Controle de Avarias</title>
-    <link rel="stylesheet" href="styleperfil.css?v=21.6">
+    <link rel="stylesheet" href="styleperfil.css?v=20.3">
     <link rel="stylesheet" href="stylenotificacoes.css?v=21.6">
     <link rel="stylesheet" href="rodape.css?v=21.6">
 </head>
@@ -12,6 +16,7 @@
 <header class="topbar">
     <div class="header-container">
         <div class="marca-header">
+            <img src="logo-manaira.png" alt="Supermercado Manaíra" class="logo-manaira-header">
             <div>
                 <div class="eyebrow">CONTROLE DE AVARIAS</div>
                 <h1>Meu Perfil</h1>
@@ -24,7 +29,10 @@
     <div id="painelNotificacoesAdmin" class="painel-notificacoes oculto" role="dialog" aria-label="Notificações de tarefas">
         <div class="notificacoes-cabecalho">
             <div><strong>Notificações</strong><span id="subtituloNotificacoesAdmin">Tarefas do dia</span></div>
-            <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Limpar</button>
+            <div class="acoes-notificacoes">
+                <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Marcar todas como lidas</button>
+                <button id="btnLimparNotificacoesLidas" type="button" class="btn-limpar-notificacoes btn-apagar-lidas">Limpar lidas</button>
+            </div>
         </div>
         <div id="listaNotificacoesAdmin" class="lista-notificacoes"><div class="notificacao-vazia">Carregando notificações...</div></div>
     </div>
@@ -112,9 +120,8 @@
 
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <footer class="rodape-sistema"></footer>
-<script src="local-api-216.js?v=21.6.1"></script>
-    <script src="timezone.js?v=21.6"></script>
-    <script src="perfil.js?v=21.6"></script>
+<script src="timezone.js?v=20.3"></script>
+    <script src="perfil.js?v=25.1.21"></script>
     <script src="notificacoes.js?v=21.6"></script>
     <script src="rodape.js?v=21.6"></script>
 </body>

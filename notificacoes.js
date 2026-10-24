@@ -1,5 +1,5 @@
 /* =========================================================
-   NOTIFICAÇÕES - V16
+   NOTIFICAÇÕES - V21.6
    Persistentes no PostgreSQL e individualizadas por usuário.
    - Usuário: novas tarefas atribuídas.
    - ADM: novas tarefas, conclusões e reaberturas.
@@ -18,16 +18,10 @@
     const lista = document.getElementById("listaNotificacoesAdmin");
     const subtitulo = document.getElementById("subtituloNotificacoesAdmin");
     const btnLidas = document.getElementById("btnMarcarNotificacoesLidas");
-    if (!area || !botao || !badge || !painel || !lista || !subtitulo || !btnLidas) return;
+    const btnLimparLidas = document.getElementById("btnLimparNotificacoesLidas");
+    if (!area || !botao || !badge || !painel || !lista || !subtitulo || !btnLidas || !btnLimparLidas) return;
 
-    const API = (() => {
-        const protocolo = window.location.protocol;
-        const hostname = window.location.hostname;
-        const porta = window.location.port;
-        if ((protocolo === "http:" || protocolo === "https:") && porta === "3000") return window.location.origin;
-        if ((protocolo === "http:" || protocolo === "https:") && hostname) return `${protocolo}//${hostname}:3000`;
-        return "http://localhost:3000";
-    })();
+    const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
     let notificacoes = [];
     let naoLidas = 0;
@@ -54,7 +48,7 @@
         const dias = Math.floor(horas / 24);
         if (dias === 1) return "Ontem";
         if (dias < 7) return `Há ${dias} dias`;
-        return formatarDataSistema(data);
+        return typeof formatarDataManaira === "function" ? formatarDataManaira(data) : new Date(data).toLocaleString("pt-BR");
     }
 
     function atualizarCabecalho() {
@@ -63,6 +57,8 @@
         subtitulo.textContent = naoLidas
             ? `${naoLidas} nova${naoLidas === 1 ? "" : "s"} para você`
             : "Tudo em dia";
+        btnLidas.disabled = naoLidas === 0;
+        btnLimparLidas.disabled = !notificacoes.some(item => item.lida);
     }
 
     function renderizar() {
@@ -80,14 +76,14 @@
         lista.innerHTML = notificacoes.map(item => {
             const visual = tipoVisual(item.tipo);
             return `
-                <button class="notificacao-item ${item.lida ? "" : "nova"}" type="button" data-notificacao-id="${esc(item.id)}">
+                <button class="notificacao-item ${item.lida ? "lida" : "nova"}" type="button" data-notificacao-id="${esc(item.id)}">
                     <span class="notificacao-icone ${visual.classe}">${visual.icone}</span>
                     <span class="notificacao-conteudo">
                         <strong>${esc(item.titulo)}</strong>
                         <span class="notificacao-mensagem">${esc(item.mensagem || "Atualização de tarefa.")}</span>
                         <small>${esc(tempoRelativo(item.criadoEm))}</small>
                     </span>
-                    ${item.lida ? "" : '<span class="notificacao-ponto" aria-label="Nova"></span>'}
+                    ${item.lida ? '<span class="notificacao-lida">Lida</span>' : '<span class="notificacao-ponto" aria-label="Nova"></span>'}
                 </button>`;
         }).join("");
 
@@ -112,6 +108,7 @@
         try {
             const resposta = await fetch(`${API}/api/notificacoes`, {
                 headers: { Authorization: `Bearer ${sessao.token}` },
+                credentials: "include",
                 cache: "no-store"
             });
             if (!resposta.ok) throw new Error("Falha ao carregar notificações.");
@@ -135,13 +132,53 @@
 
     async function marcarUmaComoLida(id) {
         try {
-            await fetch(`${API}/api/notificacoes/${encodeURIComponent(id)}/lida`, {
+            const resposta = await fetch(`${API}/api/notificacoes/${encodeURIComponent(id)}/lida`, {
                 method: "PATCH",
-                headers: { Authorization: `Bearer ${sessao.token}` }
+                headers: { Authorization: `Bearer ${sessao.token}` },
+                credentials: "include"
             });
+            if (!resposta.ok) throw new Error("Falha ao marcar a notificação.");
             await carregar();
         } catch (erro) {
             console.warn("Não foi possível marcar a notificação:", erro);
+        }
+    }
+
+    async function marcarTodasComoLidas() {
+        if (!naoLidas) return;
+        btnLidas.disabled = true;
+        try {
+            const resposta = await fetch(`${API}/api/notificacoes/lidas`, {
+                method: "PATCH",
+                headers: { Authorization: `Bearer ${sessao.token}` },
+                credentials: "include"
+            });
+            if (!resposta.ok) throw new Error("Falha ao marcar notificações.");
+            await carregar();
+        } catch (erro) {
+            console.warn(erro);
+        } finally {
+            atualizarCabecalho();
+        }
+    }
+
+    async function limparLidas() {
+        if (!notificacoes.some(item => item.lida)) return;
+        if (!window.confirm("Limpar as notificações que já estão lidas?")) return;
+        btnLimparLidas.disabled = true;
+        try {
+            const resposta = await fetch(`${API}/api/notificacoes/lidas`, {
+                method: "DELETE",
+                headers: { Authorization: `Bearer ${sessao.token}` },
+                credentials: "include"
+            });
+            const dados = await resposta.json().catch(() => ({}));
+            if (!resposta.ok) throw new Error(dados.erro || "Falha ao limpar notificações.");
+            await carregar();
+        } catch (erro) {
+            console.warn("Não foi possível limpar notificações:", erro);
+        } finally {
+            atualizarCabecalho();
         }
     }
 
@@ -149,6 +186,7 @@
     botao.setAttribute("aria-label", "Abrir notificações");
     botao.title = "Notificações";
     btnLidas.textContent = "Marcar todas como lidas";
+    btnLimparLidas.textContent = "Limpar lidas";
 
     botao.addEventListener("click", event => {
         event.stopPropagation();
@@ -161,20 +199,12 @@
 
     btnLidas.addEventListener("click", async event => {
         event.stopPropagation();
-        if (!naoLidas) return;
-        btnLidas.disabled = true;
-        try {
-            const resposta = await fetch(`${API}/api/notificacoes/lidas`, {
-                method: "PATCH",
-                headers: { Authorization: `Bearer ${sessao.token}` }
-            });
-            if (!resposta.ok) throw new Error("Falha ao marcar notificações.");
-            await carregar();
-        } catch (erro) {
-            console.warn(erro);
-        } finally {
-            btnLidas.disabled = false;
-        }
+        await marcarTodasComoLidas();
+    });
+
+    btnLimparLidas.addEventListener("click", async event => {
+        event.stopPropagation();
+        await limparLidas();
     });
 
     document.addEventListener("click", event => {

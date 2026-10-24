@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraSistema === "function") return window.formatarDataHoraSistema(valor);
+    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -24,14 +24,25 @@ if (!sessao || !sessao.token) {
     throw new Error("Sessão não encontrada.");
 }
 
-const API = (() => {
-    const protocolo = window.location.protocol;
-    const hostname = window.location.hostname;
-    const porta = window.location.port;
-    if ((protocolo === "http:" || protocolo === "https:") && porta === "3000") return window.location.origin;
-    if ((protocolo === "http:" || protocolo === "https:") && hostname) return `${protocolo}//${hostname}:3000`;
-    return "http://localhost:3000";
-})();
+// PERFIL V25.1.21: quando a página é aberta por duplo clique (file://),
+// consulta diretamente o servidor central. Quando é aberta pelo servidor,
+// permanece no mesmo host. Não depende de endereço antigo salvo no navegador.
+function obterApiPerfil() {
+    try {
+        if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+            return window.location.origin.replace(/\/$/, "");
+        }
+    } catch (_) {}
+
+    try {
+        const configurado = String(window.CA_CONFIGURED_SERVER || "").trim();
+        if (configurado) return configurado.replace(/\/$/, "");
+    } catch (_) {}
+
+    return "http://10.10.70.163:3000";
+}
+
+const API = obterApiPerfil();
 
 const $ = id => document.getElementById(id);
 const formPerfil = $("formPerfil");
@@ -49,17 +60,22 @@ function mostrarToast(mensagem, erro = false) {
 function headers() {
     return {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sessao.token}`,
-        "Cache-Control": "no-store"
+        "Authorization": `Bearer ${sessao.token}`
     };
 }
 
 async function api(url, options = {}) {
-    const resposta = await fetch(`${API}${url}`, {
-        cache: "no-store",
-        ...options,
-        headers: { ...headers(), ...(options.headers || {}) }
-    });
+    let resposta;
+    try {
+        resposta = await fetch(`${API}${url}`, {
+            cache: "no-store",
+            credentials: "include",
+            ...options,
+            headers: { ...headers(), ...(options.headers || {}) }
+        });
+    } catch (erro) {
+        throw new Error("Não foi possível conectar ao servidor central. Confirme se o servidor está aberto e se o endereço 10.10.70.163:3000 está acessível.");
+    }
     let dados = {};
     try { dados = await resposta.json(); } catch {}
     if (resposta.status === 401 || resposta.status === 403) {
@@ -162,7 +178,7 @@ formSenha.addEventListener("submit", async event => {
 
 $("btnSair").addEventListener("click", () => {
     if (!confirm("Deseja sair do sistema?")) return;
-    fetch("/api/logout", {
+    fetch(`${API}/api/logout`, {
         method: "POST",
         credentials: "include",
         keepalive: true

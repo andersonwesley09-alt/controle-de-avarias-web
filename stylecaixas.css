@@ -1366,6 +1366,10 @@ tbody tr:hover {
 }
 
 
+/* =========================
+   IDENTIDADE MANAÍRA - V8
+========================= */
+
 .marca-header {
     display: flex;
     align-items: center;
@@ -1373,7 +1377,22 @@ tbody tr:hover {
     min-width: 0;
 }
 
+.logo-manaira-header {
+    display: block;
+    width: 145px;
+    max-width: 28vw;
+    height: 72px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 650px) {
+    .logo-manaira-header {
+        width: 105px;
+        height: 58px;
+    }
+
     .marca-header {
         gap: 10px;
     }
@@ -2052,3 +2071,27 @@ tbody tr:hover {
 .tabela-produtos-caixa .produto-conteudo{min-width:230px;max-width:320px;white-space:normal;line-height:1.35}
 .tabela-produtos-caixa td:nth-child(5),.tabela-produtos-caixa td:nth-child(6){font-size:10px;color:#667080}
 .tabela-produtos-caixa td:nth-child(10){white-space:nowrap}
+
+
+/* =========================================================
+   V21.6 - CAIXAS: ALTURA FIXA + ROLAGEM INTERNA
+========================================================= */
+.listagem-coluna > .painel {
+    height: 620px;
+    min-height: 620px;
+    overflow: hidden;
+}
+
+.listagem-coluna .table-wrap {
+    min-height: 0;
+    height: 100%;
+    overflow-x: auto;
+    overflow-y: auto;
+}
+
+@media (max-width: 900px) {
+    .listagem-coluna > .painel {
+        height: 560px;
+        min-height: 560px;
+    }
+}

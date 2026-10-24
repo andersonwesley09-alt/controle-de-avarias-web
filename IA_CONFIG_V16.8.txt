@@ -1,0 +1,17 @@
+ANALISTA IA - V16.8
+
+O Dashboard agora possui o painel "Analista IA".
+
+FUNCIONAMENTO
+- Sem chave de IA externa: o sistema usa uma análise inteligente local baseada nos dados atuais do Dashboard.
+- Com chave OpenAI configurada: o endpoint /api/dashboard/ia usa a IA externa para responder perguntas e interpretar os dados atuais.
+
+CONFIGURAÇÃO OPCIONAL
+No arquivo .env do servidor, adicione:
+
+OPENAI_API_KEY=sua_chave_aqui
+OPENAI_MODEL=gpt-4.1-mini
+
+NUNCA coloque a chave no HTML ou no JavaScript do navegador.
+
+O painel não possui permissão para alterar produtos, caixas, avarias ou qualquer registro do banco. Ele apenas consulta e interpreta os dados enviados pelo Dashboard.

@@ -16,31 +16,7 @@ if (!sessao || !sessao.token) {
     throw new Error("Sessão não encontrada.");
 }
 
-const API = (() => {
-    const protocolo = window.location.protocol;
-    const hostname = window.location.hostname;
-    const porta = window.location.port;
-
-    // Quando o módulo é aberto pelo próprio servidor Node na porta 3000.
-    if (
-        (protocolo === "http:" || protocolo === "https:") &&
-        porta === "3000"
-    ) {
-        return window.location.origin;
-    }
-
-    // Quando o frontend foi aberto por outro servidor/porta, mantém a API
-    // no servidor do Controle de Avarias.
-    if (
-        (protocolo === "http:" || protocolo === "https:") &&
-        hostname
-    ) {
-        return `${protocolo}//${hostname}:3000`;
-    }
-
-    // Fallback para HTML aberto diretamente no computador.
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 const dataMinha = document.getElementById("dataMinha");
 const dataTarefa = document.getElementById("dataTarefa");
@@ -87,7 +63,7 @@ let filtroMinha = "todas";
 let timerToast;
 
 function hojeLocal() {
-    return hojeSistema();
+    return hojeManaira();
 }
 
 function adicionarDias(data, quantidade) {
@@ -105,7 +81,7 @@ function formatarData(data) {
 }
 
 function formatarHora(dataHora) {
-    return formatarHoraSistema(dataHora);
+    return formatarHoraManaira(dataHora);
 }
 
 function escapar(texto) {
@@ -522,7 +498,7 @@ document.getElementById("btnLimparTarefa").addEventListener("click", () => {
 
 btnSair.addEventListener("click", () => {
     if (!confirm("Deseja sair do sistema?")) return;
-    fetch("/api/logout", {
+    fetch(`${API}/api/logout`, {
         method: "POST",
         credentials: "include",
         keepalive: true

@@ -1,4 +1,6 @@
-/* BUILD V20.1 - base consolidada, sessão centralizada e histórico corrigido */
+/* BUILD V25.1.17 - base consolidada, sessão centralizada e histórico corrigido */
+const API = window.CA_API_BASE || window.location.origin;
+
 /* =========================
    ELEMENTOS
 ========================= */
@@ -48,6 +50,11 @@ const moduloAuditoria =
 const moduloTarefas =
     document.getElementById(
         "moduloTarefas"
+    );
+
+const moduloDocumentos =
+    document.getElementById(
+        "moduloDocumentos"
     );
 
 
@@ -232,7 +239,7 @@ async function abrirDashboardComSessao() {
     }
 
     try {
-        const resposta = await fetch("/api/sessao", {
+        const resposta = await fetch(`${API}/api/sessao`, {
             method: "GET",
             cache: "no-store",
             credentials: "include",
@@ -310,6 +317,26 @@ function abrirModulo(modulo) {
 
 
     /* =========================
+       DOCUMENTOS
+    ========================= */
+
+    if (modulo === "documentos") {
+        window.location.href = "documentos.html";
+        return;
+    }
+
+
+    /* =========================
+       AVISOS GERAIS
+    ========================= */
+
+    if (modulo === "avisos") {
+        window.location.href = "avisos.html";
+        return;
+    }
+
+
+    /* =========================
        TAREFAS DIÁRIAS
     ========================= */
 
@@ -356,6 +383,16 @@ function abrirModulo(modulo) {
 
 
     /* =========================
+       RECUPERAÇÃO DE PRODUTOS
+    ========================= */
+
+    if (modulo === "recuperacao") {
+        window.location.href = "recuperacao.html";
+        return;
+    }
+
+
+    /* =========================
        USUÁRIOS - ADMIN
     ========================= */
 
@@ -396,7 +433,7 @@ async function carregarResumoTarefas() {
     }
 
     try {
-        const hoje = hojeSistema();
+        const hoje = hojeManaira();
         const resposta = await fetch(
             `/api/tarefas/minhas?data=${encodeURIComponent(hoje)}`,
             {
