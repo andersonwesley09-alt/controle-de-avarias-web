@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="bcrypt-browser.js?v=25.1.18"></script>
+    <script src="servidor-rede.js?v=25.1.20"></script>
+    <script src="rede-central.js?v=25.1.20"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - Controle de Avarias</title>
+    <link rel="stylesheet" href="styleperfil.css?v=20.3">
+    <link rel="stylesheet" href="stylenotificacoes.css?v=21.6">
+    <link rel="stylesheet" href="rodape.css?v=21.6">
+</head>
+<body>
+<header class="topbar">
+    <div class="header-container">
+        <div class="marca-header">
+<div>
+                <div class="eyebrow">CONTROLE DE AVARIAS</div>
+                <h1>Meu Perfil</h1>
+                <p>Gerencie seus dados de acesso ao sistema.</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="notificacao-wrap" id="areaNotificacoesAdmin">
+    <button id="btnNotificacoesAdmin" class="btn-notificacao" type="button" aria-label="Notificações de tarefas" aria-expanded="false"><span class="icone-notificacao">🔔</span><span class="texto-notificacao">Avisos</span><span id="badgeNotificacoesAdmin" class="badge-notificacao">0</span></button>
+    <div id="painelNotificacoesAdmin" class="painel-notificacoes oculto" role="dialog" aria-label="Notificações de tarefas">
+        <div class="notificacoes-cabecalho">
+            <div><strong>Notificações</strong><span id="subtituloNotificacoesAdmin">Tarefas do dia</span></div>
+            <div class="acoes-notificacoes">
+                <button id="btnMarcarNotificacoesLidas" type="button" class="btn-limpar-notificacoes">Marcar todas como lidas</button>
+                <button id="btnLimparNotificacoesLidas" type="button" class="btn-limpar-notificacoes btn-apagar-lidas">Limpar lidas</button>
+            </div>
+        </div>
+        <div id="listaNotificacoesAdmin" class="lista-notificacoes"><div class="notificacao-vazia">Carregando notificações...</div></div>
+    </div>
+</div>
+            <a href="sistema.html" class="btn-voltar">← Voltar</a>
+            <button id="btnSair" class="btn-sair" type="button">Sair</button>
+        </div>
+    </div>
+</header>
+
+<main>
+    <section class="perfil-hero">
+        <div class="avatar" id="avatarInicial">U</div>
+        <div>
+            <span class="kicker">PERFIL</span>
+            <h2 id="nomeHero">Carregando...</h2>
+            <p id="usuarioHero">@-</p>
+        </div>
+        <span id="perfilHero" class="badge-perfil">Usuário</span>
+    </section>
+
+    <div class="perfil-grid">
+        <section class="painel">
+            <div class="painel-header">
+                <div>
+                    <span class="kicker">DADOS DA CONTA</span>
+                    <h2>Informações pessoais</h2>
+                    <p>Atualize o nome exibido no sistema. O usuário de acesso não pode ser alterado aqui.</p>
+                </div>
+            </div>
+            <form id="formPerfil" autocomplete="off">
+                <div class="field">
+                    <label for="nome">Nome</label>
+                    <input id="nome" type="text" maxlength="120" required>
+                </div>
+                <div class="field">
+                    <label for="usuario">Usuário</label>
+                    <input id="usuario" type="text" disabled>
+                </div>
+                <div class="field-row">
+                    <div class="field">
+                        <label for="perfil">Perfil</label>
+                        <input id="perfil" type="text" disabled>
+                    </div>
+                    <div class="field">
+                        <label for="criadoEm">Conta criada em</label>
+                        <input id="criadoEm" type="text" disabled>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="btn-principal" type="submit" id="btnSalvarPerfil">Salvar alterações</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="painel senha-panel">
+            <div class="painel-header">
+                <div>
+                    <span class="kicker">SEGURANÇA</span>
+                    <h2>Alterar senha</h2>
+                    <p>Use sua senha atual para definir uma nova senha.</p>
+                </div>
+            </div>
+            <form id="formSenha" autocomplete="off">
+                <div class="field">
+                    <label for="senhaAtual">Senha atual</label>
+                    <input id="senhaAtual" type="password" minlength="1" autocomplete="current-password" placeholder="Digite sua senha atual">
+                </div>
+                <div class="field">
+                    <label for="novaSenha">Nova senha</label>
+                    <input id="novaSenha" type="password" minlength="6" autocomplete="new-password" placeholder="Mínimo de 6 caracteres">
+                </div>
+                <div class="field">
+                    <label for="confirmarSenha">Confirmar nova senha</label>
+                    <input id="confirmarSenha" type="password" minlength="6" autocomplete="new-password" placeholder="Repita a nova senha">
+                </div>
+                <div class="senha-dica">A alteração da senha encerra a sessão atual somente se você sair manualmente; sua nova senha passa a valer no próximo login.</div>
+                <div class="form-actions">
+                    <button class="btn-principal" type="submit" id="btnAlterarSenha">Alterar senha</button>
+                </div>
+            </form>
+        </section>
+    </div>
+</main>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<footer class="rodape-sistema"></footer>
+<script src="timezone.js?v=20.3"></script>
+    <script src="perfil.js?v=25.1.20"></script>
+    <script src="notificacoes.js?v=21.6"></script>
+    <script src="rodape.js?v=21.6"></script>
+</body>
+</html>

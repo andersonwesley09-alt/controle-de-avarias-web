@@ -1,0 +1,13 @@
+CHECKLIST V13.7 – PRODUTOS NAS CAIXAS
+
+1. Iniciar servidor e confirmar criação automática da tabela caixa_produtos.
+2. Cadastrar uma nova caixa sem produtos.
+3. Cadastrar uma nova caixa com 1 ou mais produtos por EAN.
+4. Repetir um EAN e confirmar que a quantidade soma.
+5. Abrir o botão Produtos da caixa e conferir os itens.
+6. Adicionar produto em uma caixa já existente.
+7. Remover produto da caixa e conferir a atualização.
+8. Confirmar que Ver conteúdo continua mostrando as avarias normalmente.
+9. Conferir Auditoria para inclusão/remoção de produtos.
+10. Reiniciar o servidor e confirmar que os produtos permanecem.
+11. Confirmar que o backup inclui a tabela caixa_produtos.

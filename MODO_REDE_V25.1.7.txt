@@ -1,0 +1,28 @@
+CONTROLE DE AVARIAS V25.1.7 - MODO HIBRIDO
+
+1. PC PRINCIPAL (servidor)
+- Execute LIBERAR_ACESSO_REDE.bat como administrador uma vez.
+- Execute INICIAR_SERVIDOR.bat.
+- Mantenha o servidor aberto.
+- O servidor usa PostgreSQL central e publica os eventos de tempo real.
+
+2. OUTROS PCs
+- Copie esta pasta do sistema para o PC cliente (não é necessário Node.js/PostgreSQL).
+- Execute CONFIGURAR_SERVIDOR_REDE.bat uma única vez e informe o IP do PC principal.
+- Depois use ABRIR_SISTEMA_REDE.bat.
+- O navegador será aberto em http://IP_DO_SERVIDOR:3000.
+
+3. TEMPO REAL
+- Quando a página é aberta por http://localhost:3000 ou http://IP:3000,
+  o adaptador Web Local NÃO intercepta mais a API.
+- As telas usam o servidor Node + PostgreSQL central.
+- EventSource/SSE volta a funcionar entre os PCs.
+- Alterações feitas em um PC podem ser refletidas nos demais conforme o módulo.
+
+4. MODO SEM SERVIDOR
+- Se uma página for aberta diretamente por file://, o modo Web Local continua disponível.
+- Esse modo usa armazenamento local do navegador e NÃO compartilha dados entre PCs.
+
+IMPORTANTE
+- Para operação compartilhada entre PCs, sempre use ABRIR_SISTEMA_REDE.bat ou o endereço HTTP do servidor.
+- Não abra os HTMLs diretamente por duplo clique quando a intenção for trabalhar com o banco central.

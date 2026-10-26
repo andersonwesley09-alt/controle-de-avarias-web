@@ -1,0 +1,9 @@
+CONTROLE DE AVARIAS V25 — BANCO LOCAL
+
+Esta versão funciona sem Node.js/PostgreSQL.
+
+- Os registros iniciais são carregados do backup de 22/10/2026.
+- Avarias, histórico, caixas, recuperação e doações ficam no armazenamento local do navegador.
+- A base de produtos (20.627 produtos) é carregada sob demanda pelo adaptador local.
+- O banco não é compartilhado automaticamente entre computadores. Para uso multi-PC, é necessário um backend/banco central.
+- O arquivo backups/controle_avarias_2026-10-22_08-22-17.json é o snapshot de origem.

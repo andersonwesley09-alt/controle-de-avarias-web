@@ -1,0 +1,46 @@
+CONTROLE DE AVARIAS V25.1.11
+RESTAURACAO SEGURA
+
+O problema identificado:
+A partir da V25, houve uma convivência entre o modo Web Local (localStorage)
+e o PostgreSQL central. O modo local tinha um snapshot de dados mais completo,
+enquanto o banco central podia ter outra quantidade de registros. Ao forçar
+todos os PCs para o PostgreSQL, os dados que estavam somente no modo local
+deixaram de aparecer.
+
+Esta versão NÃO apaga nem substitui o banco.
+
+PASSO 1 - NO PC SERVIDOR
+1. Feche o servidor antigo.
+2. Coloque esta versão no lugar da anterior.
+3. Execute INICIAR_SERVIDOR.bat.
+4. Execute RESTAURAR_DADOS_V25.1.11.bat.
+
+O restaurador:
+- cria um snapshot de segurança do banco atual;
+- lê o backup mais recente em /backups;
+- recupera somente IDs que ainda não existem;
+- não sobrescreve registros existentes;
+- recupera o histórico permanente;
+- recupera registros de recuperação e doação do snapshot;
+- recupera usuários que não existam;
+- NÃO restaura a tabela AVARIAS ativa, para não ressuscitar exclusões.
+
+O backup disponível no pacote foi gerado em 22/10/2026 às 08:22:17 e contém:
+- 1.383 avarias;
+- 1.761 registros de histórico;
+- 4 usuários;
+- 2 recuperações;
+- 5 doações.
+
+ATENÇÃO
+O backup acima não contém lançamentos feitos depois de 22/10/2026 08:22:17.
+Os dados posteriores que já estiverem no PostgreSQL atual permanecem intactos.
+
+Depois da restauração:
+- abra o sistema pelo PC servidor;
+- confira a quantidade de registros;
+- abra em outro PC pelo ABRIR_SISTEMA_CLIENTE.bat;
+- os dois PCs devem mostrar a mesma base central.
+
+Se ainda houver diferença, execute DIAGNOSTICO_DADOS_V25.1.11.bat no PC servidor e guarde o resultado.

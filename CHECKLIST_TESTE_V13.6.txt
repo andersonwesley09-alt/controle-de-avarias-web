@@ -1,0 +1,38 @@
+CHECKLIST DE TESTE - V13.6
+==========================
+
+1. LOGIN / API
+[ ] Fazer login como usuário comum.
+[ ] Fazer login como administrador.
+[ ] Confirmar que o token é salvo na sessão.
+
+2. REGISTROS
+[ ] Abrir Registros como usuário comum.
+[ ] Confirmar que o botão Excluir aparece para usuário autenticado.
+[ ] Excluir um registro individual e confirmar preservação no Histórico de Baixas.
+[ ] Excluir registros selecionados.
+[ ] Confirmar na Auditoria que o usuário responsável foi registrado.
+[ ] Abrir Ordenar por e confirmar a opção Sem ordenação.
+[ ] Com Sem ordenação, confirmar que a ordem original não é alterada.
+[ ] Testar Data, Quantidade, Valor e Código.
+
+3. CATEGORIA / ADMIN
+[ ] Usuário comum não altera categoria permanente.
+[ ] Administrador altera categoria e a alteração permanece.
+
+4. BAIXAS / EXPORTAÇÃO
+[ ] Selecionar registros.
+[ ] Exportar Excel.
+[ ] Exportar PDF.
+[ ] Confirmar que os arquivos baixam sem erro 401/Failed to fetch.
+[ ] Confirmar consolidação e soma dos produtos repetidos.
+
+5. AUDITORIA
+[ ] Abrir Histórico de alterações como administrador.
+[ ] Confirmar que a página carrega sem Failed to fetch.
+[ ] Confirmar exclusão registrada com o usuário responsável.
+[ ] Confirmar que usuário comum não acessa a auditoria.
+
+6. VISUAL
+[ ] Confirmar que mensagens/toast não ficam sobre o botão Filtros.
+[ ] Testar tela menor/celular.

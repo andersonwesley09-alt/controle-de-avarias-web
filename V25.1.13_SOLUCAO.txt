@@ -1,0 +1,33 @@
+V25.1.13 - SOLUÇÃO EFICAZ
+
+CAUSA IDENTIFICADA
+Os HTMLs das versões anteriores ainda carregavam local-api-216.js com cache-buster 25.1.9.
+Além disso, o modo híbrido fazia interceptação de fetch/EventSource. Isso permitia que
+um PC aparentasse estar conectado, mas ainda estivesse usando uma fonte local.
+
+CORREÇÃO DE REDE
+- HTTP/HTTPS não usa mais o adaptador local.
+- fetch e EventSource são nativos e vão diretamente para a origem do servidor.
+- O launcher cliente descobre e valida o servidor central antes de abrir.
+- Os scripts principais usam cache-buster 25.1.13.
+- /api/rede-info mostra servidor, banco e contagens.
+
+CORREÇÃO DOS DADOS
+O local-api contém um snapshot CORE_SEED com:
+- 1.383 avarias ativas;
+- 1.761 registros de histórico;
+- avarias até 21/10/2026 21:17:39.
+
+RECONCILIAR_BASE_V25.1.13.bat:
+- cria snapshot de segurança do PostgreSQL;
+- importa histórico ausente;
+- importa avarias ativas ausentes;
+- não sobrescreve IDs existentes;
+- respeita IDs marcados como removidos no snapshot;
+- recupera usuários ausentes.
+
+DEPOIS
+PC servidor: INICIAR_SERVIDOR.bat -> RECONCILIAR_BASE_V25.1.13.bat -> ABRIR_SISTEMA.bat
+PCs clientes: ABRIR_SISTEMA_CLIENTE.bat
+
+O objetivo final é: todos os PCs consultarem uma única base PostgreSQL pelo mesmo servidor.

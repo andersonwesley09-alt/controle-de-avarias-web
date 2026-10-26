@@ -1,0 +1,18 @@
+CHECKLIST V12
+
+[ ] Iniciar servidor normalmente
+[ ] Abrir sistema em outro PC
+[ ] Bipar produto de Frios e conferir categoria
+[ ] Bipar produto de Padaria e conferir categoria
+[ ] Bipar produto de Limpeza e conferir categoria
+[ ] Conferir Mercearia para produto sem palavra-chave
+[ ] Verificar filtro de categoria em Últimos lançamentos
+[ ] Verificar filtro de categoria em Registros
+[ ] Verificar filtro de categoria em Baixas/Histórico
+[ ] Selecionar 2 ou mais registros para exportação
+[ ] Confirmar que somente selecionados entram no XLSX
+[ ] Selecionar registros repetidos do mesmo produto e confirmar soma da quantidade e valor
+[ ] Testar Dashboard com cada filtro
+[ ] Confirmar cards acompanham os filtros
+[ ] Confirmar atualização do Dashboard em outro PC após novo lançamento
+[ ] Confirmar que o Mapeamento continua visualmente igual à V11.8

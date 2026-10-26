@@ -1,0 +1,1298 @@
+
+/* =========================================================
+   RECUPERAÇÃO DE PRODUTOS - V24.5
+   Complementa a estrutura visual de Avarias e Baixas.
+========================================================= */
+.recuperacao-abas { margin-bottom: 18px; }
+.recuperacao-abas .aba-btn { white-space: nowrap; }
+
+.metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+.metric-card-modulo {
+    background: #fff;
+    border: 1px solid #e1e3ea;
+    border-radius: 14px;
+    padding: 18px;
+    min-height: 112px;
+    box-shadow: 0 4px 16px rgba(0,0,0,.04);
+}
+.metric-card-modulo span { display:block; color:#777c89; font-size:12px; font-weight:700; margin-bottom:8px; }
+.metric-card-modulo strong { display:block; font-size:24px; color:#202536; }
+.metric-card-modulo small { display:block; margin-top:7px; color:#777c89; font-size:11px; }
+
+.recuperacao-preview {
+    display:grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap:12px;
+    margin: 14px 0 18px;
+}
+.recuperacao-preview > div {
+    border:1px solid #e1e3ea;
+    border-radius:12px;
+    background:#f8f9fc;
+    padding:13px 15px;
+}
+.recuperacao-preview span { display:block; color:#777c89; font-size:11px; font-weight:700; }
+.recuperacao-preview strong { display:block; margin-top:4px; font-size:18px; }
+
+.periodo-barra,
+.filtros-modulo {
+    display:grid;
+    grid-template-columns: repeat(5, minmax(0,1fr));
+    gap:12px;
+    align-items:end;
+}
+.periodo-barra .btn, .filtros-modulo .btn { min-height:42px; }
+.filtros-modulo { grid-template-columns: 2fr 1.5fr 1fr 1fr 1fr auto auto; margin-bottom:16px; }
+
+.resumo-linha {
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:12px;
+}
+.resumo-chip {
+    border:1px solid #e1e3ea;
+    background:#f8f9fc;
+    border-radius:999px;
+    padding:7px 11px;
+    font-size:12px;
+    color:#555b6a;
+}
+.resumo-chip strong { color:#202536; }
+
+.historico-acoes { display:flex; gap:8px; }
+.tabela-modulo th[data-sort] { cursor:pointer; user-select:none; }
+.tabela-modulo th[data-sort]:hover { background:#f4f5f9; }
+.paginacao-modulo {
+    margin-top:16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    flex-wrap:wrap;
+}
+.paginacao-info { color:#777c89; font-size:12px; }
+.paginacao-controles { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+.paginacao-controles label { color:#777c89; font-size:12px; display:flex; gap:6px; align-items:center; }
+.paginacao-controles select { min-height:34px; }
+.paginacao-botoes { display:flex; gap:5px; flex-wrap:wrap; }
+.pagina-btn {
+    min-width:34px; height:34px; border:1px solid #dfe2ea; background:#fff; border-radius:8px; cursor:pointer; font-weight:700; color:#4d5362;
+}
+.pagina-btn:hover:not(:disabled), .pagina-btn.ativo { background:#0000ff; color:#fff; border-color:#0000ff; }
+.pagina-btn:disabled { opacity:.45; cursor:not-allowed; }
+
+.vazio { text-align:center; color:#777c89; padding:28px !important; }
+.btn-comprovante { white-space:nowrap; }
+
+@media (max-width: 1100px) {
+    .metric-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .periodo-barra { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .filtros-modulo { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (max-width: 700px) {
+    .metric-grid, .recuperacao-preview, .periodo-barra, .filtros-modulo { grid-template-columns:1fr; }
+    .historico-acoes { width:100%; }
+    .historico-acoes .btn { flex:1; }
+    .paginacao-modulo { align-items:flex-start; }
+}
+
+/* =========================================================
+   V21.9 - PADRÃO VISUAL DOS BOTÕES
+========================================================= */
+main .btn,
+main .btn-salvar {
+    min-height: 40px;
+    height: 40px;
+    padding: 0 15px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease, box-shadow .15s ease;
+}
+
+main .btn,
+main .btn-salvar {
+    background: var(--roxo);
+    color: #fff;
+    border-color: var(--roxo);
+}
+
+main .btn:hover:not(:disabled),
+main .btn-salvar:hover:not(:disabled) {
+    background: var(--roxo-claro);
+    border-color: var(--roxo-claro);
+    transform: translateY(-1px);
+}
+
+main .btn.gray {
+    background: #fff;
+    color: var(--texto);
+    border-color: var(--borda);
+}
+
+main .btn.gray:hover:not(:disabled) {
+    background: #f7f8fb;
+    color: var(--roxo);
+    border-color: var(--roxo);
+}
+
+main .btn:disabled,
+main .btn-salvar:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.recuperacao-abas .aba-btn {
+    min-height: 40px;
+    height: 40px;
+    padding: 0 16px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.recuperacao-abas .aba-btn:not(.ativo) {
+    border-color: var(--borda);
+    background: #f0f1f5;
+}
+
+.recuperacao-abas .aba-btn.ativo {
+    border-color: var(--roxo);
+}
+
+.pagina-btn {
+    font-family: inherit;
+}
+
+.btn-comprovante {
+    min-width: 52px;
+}
+
+/* =========================================================
+   V21.10 - DOCUMENTO DIÁRIO DE RECUPERAÇÃO
+========================================================= */
+.btn-documento {
+    min-width: 88px;
+    white-space: nowrap;
+}
+
+/* V22 - cadastro com geração do documento */
+.acoes-recuperacao {
+    display:flex;
+    align-items:center;
+    gap:8px;
+    flex-wrap:wrap;
+}
+.btn-documento-cadastro {
+    white-space:nowrap;
+}
+@media (max-width: 700px) {
+    .acoes-recuperacao { width:100%; }
+    .acoes-recuperacao .btn, .acoes-recuperacao .btn-salvar { flex:1; }
+}
+
+
+/* =========================================================
+   HISTÓRICO DE RECUPERAÇÕES NO PADRÃO DE BAIXAS
+========================================================= */
+.resumo-recuperacoes {
+    margin: 0 0 15px;
+}
+.resumo-recuperacoes .card-resumo strong {
+    color: var(--roxo);
+}
+.export-dropdown {
+    position: relative;
+    display: inline-flex;
+}
+.export-dropdown > .btn-exportar {
+    min-height: 40px;
+    height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--roxo);
+    border-radius: 8px;
+    background: var(--roxo);
+    color: #fff;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.export-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 30;
+    min-width: 150px;
+    padding: 6px;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 10px;
+    box-shadow: 0 12px 30px rgba(0,0,0,.15);
+}
+.export-menu[hidden] { display: none; }
+.export-menu button {
+    width: 100%;
+    min-height: 36px;
+    padding: 0 10px;
+    border: 0;
+    border-radius: 7px;
+    background: #fff;
+    color: var(--texto);
+    text-align: left;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.export-menu button:hover { background: #f4f5fb; color: var(--roxo); }
+.filtros-recuperacao-historico {
+    grid-template-columns: minmax(260px, 1.6fr) minmax(190px, 1fr) minmax(150px, .75fr) minmax(150px, .75fr);
+}
+.acoes-filtros-recuperacao {
+    justify-content: flex-end;
+    align-items: center;
+    gap: 8px;
+}
+.acoes-filtros-recuperacao .btn,
+.acoes-filtros-recuperacao .btn-limpar-filtros {
+    min-height: 40px;
+    height: 40px;
+    margin: 0;
+}
+.tabela-historico-recuperacao {
+    min-width: 560px;
+}
+.tabela-historico-recuperacao th,
+.tabela-historico-recuperacao td {
+    font-size: 11px;
+}
+.tabela-historico-recuperacao th:nth-child(1) { width: 30%; }
+.tabela-historico-recuperacao th:nth-child(2) { width: 40%; }
+.tabela-historico-recuperacao th:nth-child(3) { width: 30%; }
+.btn-excluir-recuperacao {
+    background: #c0392b !important;
+    border-color: #c0392b !important;
+    color: #fff !important;
+    min-width: 72px;
+}
+.btn-excluir-recuperacao:hover:not(:disabled) {
+    background: #a93226 !important;
+    border-color: #a93226 !important;
+}
+.acoes-recuperacao .btn,
+.acoes-recuperacao .btn-salvar {
+    width: 180px;
+    min-width: 180px;
+}
+.recuperacao-preview-unico {
+    grid-template-columns: minmax(0, 1fr);
+}
+@media (max-width: 900px) {
+    .filtros-recuperacao-historico { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    .acoes-filtros-recuperacao { grid-column: 1 / -1; justify-content: flex-start; }
+}
+@media (max-width: 700px) {
+    .filtros-recuperacao-historico { grid-template-columns: 1fr; }
+    .acoes-filtros-recuperacao { grid-column: auto; width: 100%; }
+    .acoes-filtros-recuperacao .btn, .acoes-filtros-recuperacao .btn-limpar-filtros { flex: 1; }
+    .historico-header-acoes { width: 100%; justify-content: space-between; }
+    .export-dropdown { flex: 1; }
+    .export-dropdown > .btn-exportar { width: 100%; }
+    .acoes-recuperacao .btn, .acoes-recuperacao .btn-salvar { width: auto; min-width: 0; flex: 1; }
+}
+
+
+/* =========================================================
+   V23 - CADASTRO DE RECUPERAÇÃO EM JANELA
+========================================================= */
+.painel-cadastro-recuperacao {
+    min-height: 220px;
+}
+.card-acao-recuperacao {
+    min-height: 145px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 22px;
+    border: 1px solid #e1e3ea;
+    border-radius: 14px;
+    background: #fafbfe;
+}
+.card-acao-recuperacao-icone {
+    width: 62px;
+    height: 62px;
+    flex: 0 0 62px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #eef0ff;
+    font-size: 28px;
+}
+.card-acao-recuperacao-texto {
+    min-width: 0;
+    flex: 1;
+}
+.card-acao-recuperacao-texto strong {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--texto);
+    font-size: 16px;
+}
+.card-acao-recuperacao-texto span {
+    display: block;
+    max-width: 520px;
+    color: var(--cinza);
+    font-size: 12px;
+    line-height: 1.55;
+}
+.btn-abrir-cadastro-recuperacao {
+    min-width: 190px;
+    white-space: nowrap;
+}
+
+.modal-recuperacao {
+    position: fixed;
+    inset: 0;
+    z-index: 5000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+.modal-recuperacao.ativo { display: flex; }
+.modal-recuperacao-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 18, 35, .58);
+    backdrop-filter: blur(2px);
+}
+.modal-recuperacao-card {
+    position: relative;
+    z-index: 1;
+    width: min(980px, 100%);
+    max-height: min(900px, calc(100vh - 40px));
+    overflow: auto;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 16px;
+    box-shadow: 0 24px 70px rgba(0,0,0,.24);
+}
+.modal-recuperacao-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px 22px 15px;
+    border-bottom: 1px solid #eceef4;
+}
+.modal-recuperacao-header h2 {
+    margin: 0 0 5px;
+    color: var(--texto);
+    font-size: 21px;
+}
+.modal-recuperacao-header p {
+    margin: 0;
+    color: var(--cinza);
+    font-size: 12px;
+}
+.modal-recuperacao-body {
+    padding: 20px 22px 22px;
+}
+.modal-recuperacao-body .recuperacao-preview {
+    margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+    .card-acao-recuperacao {
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+    .card-acao-recuperacao-texto { flex-basis: calc(100% - 80px); }
+    .btn-abrir-cadastro-recuperacao { width: 100%; }
+}
+@media (max-width: 700px) {
+    .modal-recuperacao { padding: 10px; }
+    .modal-recuperacao-card { max-height: calc(100vh - 20px); border-radius: 12px; }
+    .modal-recuperacao-header { padding: 16px; }
+    .modal-recuperacao-body { padding: 16px; }
+}
+
+/* =========================================================
+   V23 - BOX DE PRODUTOS LANÇADOS
+========================================================= */
+.produtos-lancados-box {
+    margin-top: 18px;
+    border: 1px solid #e1e3ea;
+    border-radius: 12px;
+    background: #fafbfe;
+    overflow: hidden;
+}
+.produtos-lancados-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 13px 15px;
+    border-bottom: 1px solid #e7e9ef;
+    background: #fff;
+}
+.produtos-lancados-header h3 {
+    margin: 0 0 3px;
+    font-size: 14px;
+    color: var(--texto);
+}
+.produtos-lancados-header p {
+    margin: 0;
+    color: var(--cinza);
+    font-size: 11px;
+}
+.produtos-lancados-contador {
+    flex: 0 0 auto;
+    padding: 6px 9px;
+    border-radius: 999px;
+    background: #eef0ff;
+    color: var(--roxo);
+    font-size: 11px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+.lista-produtos-lancados {
+    max-height: 205px;
+    overflow-y: auto;
+    padding: 8px;
+}
+.lista-produtos-vazia {
+    padding: 24px 12px;
+    text-align: center;
+    color: var(--cinza);
+    font-size: 12px;
+}
+.produto-lancado-item {
+    display: grid;
+    grid-template-columns: minmax(220px, 1.4fr) minmax(300px, 1fr);
+    gap: 12px;
+    align-items: center;
+    padding: 10px 11px;
+    background: #fff;
+    border: 1px solid #e6e8ee;
+    border-radius: 9px;
+}
+.produto-lancado-item + .produto-lancado-item { margin-top: 7px; }
+.produto-lancado-principal {
+    min-width: 0;
+}
+.produto-lancado-principal strong {
+    display: block;
+    color: var(--texto);
+    font-size: 12px;
+    line-height: 1.35;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.produto-lancado-principal span {
+    display: block;
+    margin-top: 3px;
+    color: var(--cinza);
+    font-size: 10px;
+}
+.produto-lancado-detalhes {
+    display: grid;
+    grid-template-columns: 90px 100px minmax(120px, 1fr);
+    gap: 10px;
+    min-width: 0;
+}
+.produto-lancado-detalhes span {
+    min-width: 0;
+}
+.produto-lancado-detalhes small {
+    display: block;
+    color: var(--cinza);
+    font-size: 9px;
+    margin-bottom: 2px;
+}
+.produto-lancado-detalhes b {
+    display: block;
+    color: var(--texto);
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.produto-lancado-extra b { font-weight: 600; }
+
+@media (max-width: 800px) {
+    .produto-lancado-item { grid-template-columns: 1fr; }
+    .produto-lancado-detalhes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .produto-lancado-extra { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+    .produtos-lancados-header { align-items: flex-start; }
+    .produto-lancado-detalhes { grid-template-columns: 1fr 1fr; }
+}
+
+/* =========================================================
+   V24 - DOCUMENTOS NUMERADOS / FECHAMENTO / HISTÓRICO
+========================================================= */
+.documento-acoes{display:flex;align-items:center;justify-content:flex-end;gap:8px;flex-wrap:wrap;}
+.status-documento{display:inline-flex;align-items:center;justify-content:center;min-height:32px;padding:0 10px;border-radius:999px;font-size:10px;font-weight:800;white-space:nowrap;}
+.status-aberto{background:#e9f8ef;color:#19733b;}
+.status-finalizado{background:#eceef6;color:#4b5264;}
+.produtos-lancados-acoes{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end;}
+.produto-lancado-acao{display:flex;align-items:center;justify-content:flex-end;}
+.produto-lancado-acao .btn{height:32px;min-height:32px;padding:0 10px;font-size:10px;}
+.btn-reimprimir{margin-left:6px;background:#fff !important;color:var(--texto) !important;border-color:var(--borda) !important;}
+.btn-reimprimir:hover:not(:disabled){background:#f7f8fb !important;color:var(--roxo) !important;border-color:var(--roxo) !important;}
+.tabela-historico-recuperacao th:nth-child(1){width:14%;}
+.tabela-historico-recuperacao th:nth-child(2){width:18%;}
+.tabela-historico-recuperacao th:nth-child(3){width:10%;}
+.tabela-historico-recuperacao th:nth-child(4){width:14%;}
+.tabela-historico-recuperacao th:nth-child(5){width:14%;}
+.tabela-historico-recuperacao th:nth-child(6){width:30%;}
+.tabela-historico-recuperacao td:last-child{white-space:nowrap;}
+.filtros-doacao-historico{grid-template-columns:minmax(300px,1.7fr) minmax(170px,.75fr) minmax(170px,.75fr) auto;}
+@media(max-width:1000px){.documento-acoes{justify-content:flex-start}.filtros-doacao-historico{grid-template-columns:repeat(2,minmax(0,1fr));}.filtros-doacao-historico .acoes-filtros-recuperacao{grid-column:1/-1;}}
+@media(max-width:700px){.documento-acoes{width:100%;}.documento-acoes .btn{flex:1;}.produtos-lancados-acoes{justify-content:flex-start;}.tabela-historico-recuperacao{min-width:760px;}.filtros-doacao-historico{grid-template-columns:1fr;}.filtros-doacao-historico .acoes-filtros-recuperacao{grid-column:auto;}.filtros-doacao-historico .acoes-filtros-recuperacao .btn,.filtros-doacao-historico .acoes-filtros-recuperacao .btn-limpar-filtros{flex:1;}}
+
+/* V24 - Doações espelhadas ao cadastro de Recuperação */
+.card-acao-doacao .card-acao-recuperacao-icone { background: #eef8f1; }
+
+/* =========================================================
+   V24.5 - AJUSTES FINAIS DO FLUXO DE RECUPERAÇÃO/DOAÇÃO
+========================================================= */
+.cadastro-grid-unico {
+    grid-template-columns: 1fr !important;
+}
+
+.modal-documento-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 18px;
+    padding-top: 15px;
+    border-top: 1px solid #eceef4;
+}
+.modal-documento-status {
+    min-width: 0;
+}
+.modal-documento-botoes {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.modal-documento-botoes .btn {
+    min-width: 150px;
+}
+
+/* Os botões do modal seguem o mesmo padrão dos botões principais do projeto. */
+.modal-recuperacao .btn,
+.modal-recuperacao .btn-salvar {
+    min-height: 40px;
+    height: 40px;
+    padding: 0 15px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-sizing: border-box;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    cursor: pointer;
+}
+.modal-recuperacao .btn,
+.modal-recuperacao .btn-salvar {
+    background: var(--roxo);
+    color: #fff;
+    border-color: var(--roxo);
+}
+.modal-recuperacao .btn.gray {
+    background: #fff;
+    color: var(--texto);
+    border-color: var(--borda);
+}
+.modal-recuperacao .btn:hover:not(:disabled),
+.modal-recuperacao .btn-salvar:hover:not(:disabled) {
+    background: var(--roxo-claro);
+    border-color: var(--roxo-claro);
+    transform: translateY(-1px);
+}
+.modal-recuperacao .btn.gray:hover:not(:disabled) {
+    background: #f7f8fb;
+    color: var(--roxo);
+    border-color: var(--roxo);
+}
+.modal-recuperacao .btn:disabled,
+.modal-recuperacao .btn-salvar:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+    transform: none;
+}
+.modal-recuperacao .btn-excluir {
+    min-height: 0;
+    height: auto;
+    padding: 6px 9px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--vermelho);
+    color: #fff;
+    font-size: 11px;
+}
+.modal-recuperacao .btn-excluir:hover:not(:disabled) {
+    opacity: .88;
+    background: var(--vermelho);
+    border-color: transparent;
+}
+
+/* Excluir permanece na mesma linha das informações do produto. */
+.produto-lancado-detalhes {
+    grid-template-columns: 90px 100px minmax(120px, 1fr) auto;
+    align-items: center;
+}
+.produto-lancado-acao {
+    align-self: center;
+    justify-self: end;
+}
+.produto-lancado-acao .btn-excluir {
+    white-space: nowrap;
+}
+
+@media (max-width: 800px) {
+    .produto-lancado-detalhes {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .produto-lancado-extra {
+        grid-column: 1 / -1;
+    }
+    .produto-lancado-acao {
+        justify-self: start;
+    }
+}
+@media (max-width: 700px) {
+    .modal-documento-footer {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+    .modal-documento-botoes {
+        width: 100%;
+    }
+    .modal-documento-botoes .btn {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+/* =========================================================
+   V24.5 - LAYOUT MAIS COMPACTO
+   Reduz somente os espaçamentos verticais da tela de
+   Recuperação/Doações para concentrar mais informações na tela.
+========================================================= */
+body:has(.recuperacao-abas) main {
+    padding-top: 14px;
+    padding-bottom: 14px;
+}
+
+body:has(.recuperacao-abas) main .painel {
+    margin-top: 12px;
+    padding: 14px 16px;
+}
+
+body:has(.recuperacao-abas) main .painel-header {
+    margin-bottom: 11px;
+}
+
+body:has(.recuperacao-abas) main .painel-header h2 {
+    font-size: 18px;
+    margin-bottom: 3px;
+}
+
+body:has(.recuperacao-abas) main .painel-header p {
+    font-size: 11px;
+}
+
+body:has(.recuperacao-abas) main .card-acao-recuperacao {
+    min-height: 108px;
+    padding: 14px 16px;
+    gap: 14px;
+}
+
+body:has(.recuperacao-abas) main .card-acao-recuperacao-icone {
+    width: 52px;
+    height: 52px;
+    flex-basis: 52px;
+    font-size: 24px;
+}
+
+body:has(.recuperacao-abas) main .card-acao-recuperacao-texto strong {
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+body:has(.recuperacao-abas) main .card-acao-recuperacao-texto span {
+    font-size: 11px;
+    line-height: 1.4;
+}
+
+body:has(.recuperacao-abas) main .btn-abrir-cadastro-recuperacao {
+    min-width: 175px;
+}
+
+body:has(.recuperacao-abas) main .resumo-baixas {
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+body:has(.recuperacao-abas) main .card-resumo {
+    padding: 10px 14px;
+}
+
+body:has(.recuperacao-abas) main .card-resumo span {
+    margin-bottom: 5px;
+    font-size: 10px;
+}
+
+body:has(.recuperacao-abas) main .card-resumo strong {
+    font-size: 21px;
+}
+
+body:has(.recuperacao-abas) main .metric-grid {
+    gap: 10px;
+    margin-top: 10px;
+}
+
+body:has(.recuperacao-abas) main .metric-card-modulo {
+    min-height: 82px;
+    padding: 12px 14px;
+}
+
+body:has(.recuperacao-abas) main .metric-card-modulo span {
+    margin-bottom: 5px;
+    font-size: 10px;
+}
+
+body:has(.recuperacao-abas) main .metric-card-modulo strong {
+    font-size: 21px;
+}
+
+body:has(.recuperacao-abas) main .metric-card-modulo small {
+    margin-top: 4px;
+    font-size: 10px;
+}
+
+body:has(.recuperacao-abas) main .historico-filtros {
+    gap: 8px;
+    margin-bottom: 9px;
+}
+
+body:has(.recuperacao-abas) main .historico-filtros input,
+body:has(.recuperacao-abas) main .historico-filtros select {
+    min-height: 38px;
+}
+
+body:has(.recuperacao-abas) main .historico-pesquisa label,
+body:has(.recuperacao-abas) main .filtro-historico-item label {
+    margin-bottom: 4px;
+    font-size: 10px;
+}
+
+body:has(.recuperacao-abas) main .tabela-historico th,
+body:has(.recuperacao-abas) main .tabela-historico td {
+    padding: 8px 9px;
+    font-size: 11px;
+}
+
+body:has(.recuperacao-abas) main .paginacao-tabela,
+body:has(.recuperacao-abas) main .paginacao-modulo {
+    margin-top: 10px;
+}
+
+@media (max-width: 700px) {
+    body:has(.recuperacao-abas) main .card-acao-recuperacao {
+        min-height: 100px;
+    }
+}
+
+/* V24.5 - compactação adicional dos containers principais */
+body:has(.recuperacao-abas) main .painel-cadastro-recuperacao {
+    min-height: 0;
+    margin-bottom: 10px;
+}
+
+body:has(.recuperacao-abas) main .cadastro-grid > .painel {
+    margin-bottom: 10px;
+}
+
+
+/* =========================================================
+   V24.8 - COMPACTAÇÃO REAL DA TELA
+   Somente reduz espaços/alturas para concentrar mais conteúdo
+   na tela. Não altera a estrutura ou funcionalidades.
+========================================================= */
+body:has(.recuperacao-abas) main {
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+body:has(.recuperacao-abas) main .painel {
+    margin-bottom: 9px;
+    padding: 11px 13px;
+}
+body:has(.recuperacao-abas) main .painel-header {
+    margin-bottom: 7px;
+}
+body:has(.recuperacao-abas) main .painel-header h2 {
+    font-size: 17px;
+    margin-bottom: 2px;
+}
+body:has(.recuperacao-abas) main .painel-header p {
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao {
+    min-height: 82px;
+    padding: 10px 12px;
+    gap: 11px;
+    border-radius: 11px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao-icone {
+    width: 44px;
+    height: 44px;
+    flex-basis: 44px;
+    border-radius: 11px;
+    font-size: 21px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao-texto strong {
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao-texto span {
+    font-size: 10px;
+    line-height: 1.3;
+}
+body:has(.recuperacao-abas) main .btn-abrir-cadastro-recuperacao {
+    min-width: 165px;
+    min-height: 36px;
+    height: 36px;
+    font-size: 11px;
+}
+body:has(.recuperacao-abas) main .resumo-baixas {
+    gap: 8px;
+    margin-bottom: 9px;
+}
+body:has(.recuperacao-abas) main .card-resumo {
+    padding: 8px 12px;
+    border-radius: 10px;
+}
+body:has(.recuperacao-abas) main .card-resumo span {
+    margin-bottom: 3px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .card-resumo strong {
+    font-size: 19px;
+}
+body:has(.recuperacao-abas) main .metric-grid {
+    gap: 8px;
+    margin-top: 7px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo {
+    min-height: 66px;
+    padding: 9px 11px;
+    border-radius: 10px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo span {
+    margin-bottom: 3px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo strong {
+    font-size: 19px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo small {
+    margin-top: 2px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .historico-filtros {
+    gap: 6px;
+    margin-bottom: 7px;
+}
+body:has(.recuperacao-abas) main .historico-filtros input,
+body:has(.recuperacao-abas) main .historico-filtros select {
+    min-height: 34px;
+    height: 34px;
+    padding: 7px 9px;
+    font-size: 12px;
+}
+body:has(.recuperacao-abas) main .historico-pesquisa label,
+body:has(.recuperacao-abas) main .filtro-historico-item label {
+    margin-bottom: 3px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .acoes-filtros-recuperacao .btn,
+body:has(.recuperacao-abas) main .acoes-filtros-recuperacao .btn-limpar-filtros {
+    min-height: 34px;
+    height: 34px;
+    padding: 0 11px;
+    font-size: 11px;
+}
+body:has(.recuperacao-abas) main .resumo-linha {
+    gap: 6px;
+    margin-bottom: 7px;
+}
+body:has(.recuperacao-abas) main .resumo-chip {
+    padding: 5px 8px;
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .tabela-historico th,
+body:has(.recuperacao-abas) main .tabela-historico td {
+    padding: 6px 8px;
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .paginacao-tabela,
+body:has(.recuperacao-abas) main .paginacao-modulo {
+    margin-top: 7px;
+    padding-top: 7px;
+}
+body:has(.recuperacao-abas) main .paginacao-info,
+body:has(.recuperacao-abas) main .paginacao-controles label {
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .pagina-btn {
+    min-width: 28px;
+    height: 28px;
+    font-size: 9px;
+}
+
+/* Modal também fica mais compacto para o cadastro caber melhor. */
+.modal-recuperacao {
+    padding: 10px;
+}
+.modal-recuperacao-card {
+    max-height: calc(100vh - 20px);
+}
+.modal-recuperacao-header {
+    padding: 13px 16px 10px;
+    gap: 12px;
+}
+.modal-recuperacao-header h2 {
+    font-size: 19px;
+    margin-bottom: 3px;
+}
+.modal-recuperacao-header p {
+    font-size: 11px;
+}
+.modal-recuperacao-body {
+    padding: 12px 16px 13px;
+}
+.modal-recuperacao-body .field {
+    margin-bottom: 8px;
+}
+.modal-recuperacao-body label {
+    margin-bottom: 4px;
+    font-size: 11px;
+}
+.modal-recuperacao-body input,
+.modal-recuperacao-body select,
+.modal-recuperacao-body textarea {
+    min-height: 38px;
+    padding: 8px 10px;
+    font-size: 13px;
+}
+.modal-recuperacao-body textarea {
+    min-height: 58px;
+}
+.modal-recuperacao-body .grid {
+    gap: 9px;
+}
+.modal-recuperacao-body .produto-info {
+    gap: 7px;
+    margin: 2px 0 9px;
+    padding: 9px;
+}
+.modal-recuperacao-body .produto-dado span {
+    margin-bottom: 3px;
+    font-size: 9px;
+}
+.modal-recuperacao-body .produto-dado strong {
+    font-size: 12px;
+}
+.modal-recuperacao-body .form-actions {
+    gap: 8px;
+}
+.modal-recuperacao-body .produtos-lancados-box {
+    margin-top: 10px;
+}
+.modal-recuperacao-body .produtos-lancados-header {
+    padding: 9px 11px;
+}
+.modal-recuperacao-body .produtos-lancados-header h3 {
+    font-size: 13px;
+}
+.modal-recuperacao-body .produtos-lancados-header p {
+    font-size: 10px;
+}
+.modal-recuperacao-body .lista-produtos-lancados {
+    max-height: 170px;
+    padding: 6px;
+}
+.modal-recuperacao-body .produto-lancado-item {
+    padding: 8px 9px;
+    gap: 8px;
+}
+.modal-recuperacao-body .produto-lancado-item + .produto-lancado-item {
+    margin-top: 5px;
+}
+.modal-recuperacao-body .produto-lancado-principal strong {
+    font-size: 11px;
+}
+.modal-recuperacao-body .produto-lancado-principal span {
+    font-size: 9px;
+}
+.modal-recuperacao-body .produto-lancado-detalhes {
+    grid-template-columns: 75px 85px minmax(90px,1fr) auto;
+    gap: 7px;
+}
+.modal-recuperacao-body .produto-lancado-detalhes small {
+    font-size: 8px;
+}
+.modal-recuperacao-body .produto-lancado-detalhes b {
+    font-size: 10px;
+}
+.modal-recuperacao-body .produto-lancado-acao .btn-excluir {
+    min-height: 30px;
+    height: 30px;
+    padding: 0 9px;
+    font-size: 10px;
+}
+.modal-documento-footer {
+    margin-top: 10px;
+    padding-top: 9px;
+    gap: 8px;
+}
+.modal-documento-botoes {
+    justify-content: flex-end;
+}
+.modal-documento-botoes .btn {
+    min-width: 160px;
+}
+
+
+/* =========================================================
+   V24.11 - COMPACTAÇÃO EFETIVA + DOCUMENTOS
+   As regras usam body:has() porque as abas ficam fora do main.
+========================================================= */
+body:has(.recuperacao-abas) main {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+body:has(.recuperacao-abas) main .painel {
+    margin-bottom: 7px;
+    padding: 9px 12px;
+    border-radius: 11px;
+}
+body:has(.recuperacao-abas) main .painel-header {
+    margin-bottom: 5px;
+}
+body:has(.recuperacao-abas) main .painel-header h2 {
+    font-size: 17px;
+    margin-bottom: 2px;
+}
+body:has(.recuperacao-abas) main .painel-header p {
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao {
+    min-height: 68px;
+    padding: 8px 10px;
+    gap: 10px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao-icone {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+    font-size: 20px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao-texto strong {
+    font-size: 13px;
+    margin-bottom: 1px;
+}
+body:has(.recuperacao-abas) main .card-acao-recuperacao-texto span {
+    font-size: 9px;
+    line-height: 1.25;
+}
+body:has(.recuperacao-abas) main .btn-abrir-cadastro-recuperacao {
+    min-width: 158px;
+    height: 34px;
+    min-height: 34px;
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .resumo-baixas {
+    gap: 7px;
+    margin-bottom: 7px;
+}
+body:has(.recuperacao-abas) main .card-resumo {
+    padding: 7px 10px;
+    border-radius: 9px;
+}
+body:has(.recuperacao-abas) main .card-resumo span {
+    margin-bottom: 2px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .card-resumo strong {
+    font-size: 18px;
+}
+body:has(.recuperacao-abas) main .metric-grid {
+    gap: 7px;
+    margin-top: 5px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo {
+    min-height: 58px;
+    padding: 7px 10px;
+    border-radius: 9px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo span {
+    margin-bottom: 2px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo strong {
+    font-size: 18px;
+}
+body:has(.recuperacao-abas) main .metric-card-modulo small {
+    margin-top: 1px;
+    font-size: 8px;
+}
+body:has(.recuperacao-abas) main .historico-filtros {
+    gap: 5px;
+    margin-bottom: 6px;
+}
+body:has(.recuperacao-abas) main .historico-filtros input,
+body:has(.recuperacao-abas) main .historico-filtros select {
+    min-height: 32px;
+    height: 32px;
+    padding: 5px 8px;
+    font-size: 11px;
+}
+body:has(.recuperacao-abas) main .historico-pesquisa label,
+body:has(.recuperacao-abas) main .filtro-historico-item label {
+    margin-bottom: 2px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .acoes-filtros-recuperacao .btn,
+body:has(.recuperacao-abas) main .acoes-filtros-recuperacao .btn-limpar-filtros {
+    min-height: 32px;
+    height: 32px;
+    padding: 0 10px;
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .resumo-linha {
+    gap: 5px;
+    margin-bottom: 5px;
+}
+body:has(.recuperacao-abas) main .resumo-chip {
+    padding: 4px 7px;
+    font-size: 9px;
+}
+body:has(.recuperacao-abas) main .tabela-historico th,
+body:has(.recuperacao-abas) main .tabela-historico td {
+    padding: 5px 7px;
+    font-size: 10px;
+}
+body:has(.recuperacao-abas) main .paginacao-tabela,
+body:has(.recuperacao-abas) main .paginacao-modulo {
+    margin-top: 5px;
+    padding-top: 5px;
+}
+body:has(.recuperacao-abas) main .pagina-btn {
+    min-width: 27px;
+    height: 27px;
+    font-size: 9px;
+}
+
+/* Descrição do produto em destaque dentro do cadastro. */
+.modal-recuperacao .produto-dado-principal {
+    background: #f3f4ff;
+    border: 1px solid #e1e3ff;
+    border-radius: 8px;
+    padding: 7px 9px;
+}
+.modal-recuperacao .produto-dado-principal strong {
+    font-size: 14px;
+    line-height: 1.25;
+}
+
+/* Resumo rápido do documento dentro da janela. */
+.modal-documento-status {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+.modal-documento-resumo {
+    color: var(--cinza);
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Ação do histórico: Documento + Excluir. */
+.historico-documento-acoes {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 6px;
+    flex-wrap: wrap;
+}
+.btn-excluir-documento {
+    background: var(--vermelho) !important;
+    border-color: var(--vermelho) !important;
+    color: #fff !important;
+    min-height: 34px;
+    height: 34px;
+    padding: 0 11px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.btn-excluir-documento:hover:not(:disabled) {
+    filter: brightness(.94);
+}
+
+@media (max-width: 700px) {
+    .historico-documento-acoes { margin-left: 0; }
+    .modal-documento-resumo { white-space: normal; }
+}
+
+/* V24.11 - histórico de doações com beneficiário visível */
+.tabela-doacoes-beneficiario th:nth-child(1){width:12%;}
+.tabela-doacoes-beneficiario th:nth-child(2){width:15%;}
+.tabela-doacoes-beneficiario th:nth-child(3){width:22%;}
+.tabela-doacoes-beneficiario th:nth-child(4){width:8%;}
+.tabela-doacoes-beneficiario th:nth-child(5){width:12%;}
+.tabela-doacoes-beneficiario th:nth-child(6){width:13%;}
+.tabela-doacoes-beneficiario th:nth-child(7){width:18%;}
+@media (max-width:900px){.tabela-doacoes-beneficiario{min-width:820px;}}

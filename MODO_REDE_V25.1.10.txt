@@ -1,0 +1,26 @@
+V25.1.10 - ACESSO AUTOMATICO DOS PCs CLIENTES
+
+Objetivo:
+Os outros computadores da loja devem apenas abrir o sistema. Eles nao precisam conhecer o IP do servidor, iniciar Node ou possuir banco local.
+
+Funcionamento:
+1. O PC servidor executa INICIAR_SERVIDOR.bat.
+2. O servidor escuta UDP 3001 para descoberta.
+3. O PC cliente executa ABRIR_SISTEMA_CLIENTE.bat.
+4. O cliente envia um broadcast local.
+5. O servidor responde com a URL HTTP correta do servidor.
+6. O cliente abre login.html nessa URL.
+7. API, PostgreSQL e SSE ficam centralizados no PC servidor.
+
+Tempo real:
+- Todos os PCs usam a mesma origem HTTP do servidor.
+- O EventSource /api/eventos usa a sessao central.
+- O cabeçalho so indica tempo real quando a pagina estiver em modo servidor.
+
+Seguranca de dados:
+- O cliente nao cria uma nova base PostgreSQL.
+- O cliente nao usa os registros locais como fonte principal quando abre pelo servidor.
+- Os dados antigos nao sao mesclados automaticamente.
+
+Fallback:
+CONFIGURAR_SERVIDOR_REDE.bat continua disponível para redes em que o broadcast UDP estiver bloqueado.

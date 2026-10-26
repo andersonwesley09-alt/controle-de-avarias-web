@@ -1,0 +1,28 @@
+CONTROLE DE AVARIAS V25.1.8 - REDE CENTRAL
+
+PC PRINCIPAL
+1. Execute LIBERAR_ACESSO_REDE.bat como administrador uma vez.
+2. Execute INICIAR_SERVIDOR.bat.
+3. O servidor usa PostgreSQL central.
+4. No próprio PC, use ABRIR_SISTEMA.bat.
+
+OUTROS PCs
+1. Copie a pasta do sistema para o PC cliente.
+2. Execute CONFIGURAR_SERVIDOR_REDE.bat uma vez.
+3. Informe o IP do PC principal.
+4. Use ABRIR_SISTEMA_REDE.bat.
+
+IMPORTANTE
+- O navegador será aberto no servidor central: http://IP_DO_SERVIDOR:3000.
+- Também é possível abrir os HTMLs diretamente: a configuração servidor-rede.js fará as APIs apontarem para o servidor central.
+- O modo file:// sem servidor configurado continua existindo, mas é isolado e não compartilha dados.
+
+TEMPO REAL
+- O servidor publica /api/eventos por SSE.
+- Os clientes enviam credenciais da sessão e recebem atualizações do mesmo servidor.
+- O cabeçalho só deve mostrar "Tempo real conectado" quando a página estiver realmente usando o servidor.
+
+QUANTIDADE
+- Limite de segurança por lançamento: 100.000 unidades/kg.
+- Isso evita que código de barras ou valores colados acidentalmente no campo de quantidade gerem totais absurdos.
+- Registros antigos não são alterados automaticamente.

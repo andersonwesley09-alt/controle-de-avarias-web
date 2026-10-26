@@ -1,0 +1,351 @@
+*{box-sizing:border-box}:root{--azul:#0000ff;--azul2:#3333ff;--fundo:#f3f4f8;--branco:#fff;--texto:#202536;--cinza:#777c89;--borda:#e1e3ea;--verde:#198754;--sombra:0 5px 18px rgba(0,0,0,.05)}body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;background:var(--fundo);color:var(--texto)}.topbar{background:linear-gradient(135deg,var(--azul),var(--azul2));color:#fff;padding:22px 30px}.header-container{max-width:1250px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:20px}.marca-header{display:flex;align-items:center;gap:14px}.logo-manaira-header{height:44px;width:auto;object-fit:contain}.titulo h1{margin:0 0 5px;font-size:25px}.titulo p{margin:0;opacity:.8;font-size:14px}.btn-login{display:inline-flex;align-items:center;justify-content:center;min-width:90px;padding:10px 20px;background:#fff;color:var(--azul);text-decoration:none;font-weight:bold;border-radius:8px}.dashboard-header{max-width:1250px;margin:26px auto 18px;padding:0 20px;display:flex;justify-content:space-between;align-items:end;gap:15px}.dashboard-header h2{margin:0 0 5px;font-size:25px}.dashboard-header p{margin:0;color:var(--cinza);font-size:14px}.status-tempo-real{font-size:12px;font-weight:bold;color:var(--verde);white-space:nowrap}.filtros-dashboard{max-width:1250px;margin:0 auto 20px;padding:16px 20px;background:#fff;border:1px solid var(--borda);border-radius:14px;box-shadow:var(--sombra);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.filtros-dashboard label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}.filtros-dashboard input,.filtros-dashboard select{width:100%;height:40px;padding:8px 10px;border:1px solid var(--borda);border-radius:8px;background:#fff;font:inherit}.filtro-dashboard-produto{grid-column:span 2}.acoes-dashboard{display:flex;align-items:end}.acoes-dashboard button{height:40px;padding:0 15px;border:0;border-radius:8px;background:#777;color:#fff;font-weight:bold;cursor:pointer}.cards{max-width:1250px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px}.card,.painel{background:#fff;border:1px solid var(--borda);border-radius:14px;box-shadow:var(--sombra)}.card{padding:17px}.card-top{display:flex;align-items:center;gap:9px}.icone{width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#eef0ff}.card-titulo{font-size:12px;font-weight:bold;color:var(--cinza)}.card strong{display:block;margin:12px 0 4px;color:var(--azul);font-size:25px}.card small{color:var(--cinza);font-size:11px}.painel{max-width:1250px;margin:0 auto 20px;padding:18px 20px}.grid-2{max-width:1250px;margin:0 auto 20px;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:20px}.grid-2 .painel{max-width:none;margin:0}.painel-titulo{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:15px}.painel-titulo h3{margin:0 0 4px;font-size:18px}.painel-titulo p{margin:0;color:var(--cinza);font-size:12px}.alternador{display:flex;gap:5px}.alternador button{border:1px solid var(--borda);background:#fff;padding:7px 10px;border-radius:7px;font-size:11px;font-weight:bold;cursor:pointer}.alternador button.ativo{background:var(--azul);color:#fff;border-color:var(--azul)}.grafico-evolucao{height:280px;display:flex;align-items:end;gap:5px;padding:15px 4px 0;border-bottom:1px solid var(--borda);overflow-x:auto}.coluna-grafico{height:100%;min-width:28px;display:flex;flex-direction:column;align-items:center;justify-content:end;gap:5px}.coluna{width:100%;max-width:28px;border-radius:5px 5px 0 0;background:var(--azul);min-height:4px}.coluna-valor{font-size:8px;color:var(--cinza);white-space:nowrap;transform:rotate(-45deg);height:24px}.coluna-grafico small{font-size:8px;color:var(--cinza)}.grafico-barras{min-height:220px}.barra-item{margin:0 0 13px}.barra-label{display:flex;justify-content:space-between;gap:10px;font-size:12px;margin-bottom:5px}.barra-label strong{white-space:nowrap}.barra-track{height:10px;background:#eef0f5;border-radius:20px;overflow:hidden}.barra-track span{display:block;height:100%;background:var(--azul);border-radius:20px}.table-wrap{overflow:auto;border:1px solid var(--borda);border-radius:10px}table{width:100%;border-collapse:collapse}th,td{padding:10px;border-bottom:1px solid #eee;text-align:left;font-size:12px}th{background:var(--azul);color:#fff;white-space:nowrap}tbody tr:hover{background:#fafaff}.codigo-secundario{display:block;color:var(--cinza);font-size:10px;margin-top:3px}.vazio{text-align:center;padding:25px;color:var(--cinza)}@media(max-width:1000px){.cards{grid-template-columns:repeat(3,1fr)}.filtros-dashboard{grid-template-columns:repeat(2,1fr)}.filtro-dashboard-produto{grid-column:span 2}}@media(max-width:700px){.cards{grid-template-columns:1fr 1fr}.grid-2{grid-template-columns:1fr}.filtros-dashboard{grid-template-columns:1fr}.filtro-dashboard-produto{grid-column:auto}.painel-titulo{align-items:flex-start;flex-direction:column}.alternador{flex-wrap:wrap}.topbar{padding:18px}.dashboard-header,.cards,.grid-2,.filtros-dashboard{padding-left:10px;padding-right:10px}.logo-manaira-header{height:38px}.titulo h1{font-size:20px}}.icone-inicial{width:42px;height:42px;display:flex;align-items:center;justify-content:center;border-radius:10px;background:#eef0ff;font-size:22px;flex-shrink:0}
+/* =========================================================
+   V13.6 - DASHBOARD / FILTROS FLUTUANTES
+========================================================= */
+.painel-filtros-dashboard {
+    display: none;
+    position: fixed;
+    right: 24px;
+    bottom: 76px;
+    z-index: 4100;
+    width: min(620px, calc(100vw - 32px));
+    max-height: min(72vh, 650px);
+    overflow: auto;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin: 0;
+    padding: 18px;
+    border-radius: 14px;
+    box-shadow: 0 18px 55px rgba(0,0,0,.20);
+}
+.painel-filtros-dashboard.aberto { display: grid; }
+.btn-filtros-dashboard-flutuante {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: 4200;
+    border: 0;
+    border-radius: 999px;
+    background: var(--azul);
+    color: #fff;
+    padding: 12px 18px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: 0 10px 28px rgba(0,0,0,.18);
+    cursor: pointer;
+}
+.btn-filtros-dashboard-flutuante:hover,
+.btn-filtros-dashboard-flutuante.ativo { background: var(--azul2); }
+.status-tempo-real.conectado { color: var(--verde); }
+.status-tempo-real.reconectando { color: #a87500; }
+.status-tempo-real.offline { color: #c0392b; }
+@media(max-width:700px){
+    .painel-filtros-dashboard { right:12px; bottom:68px; width:calc(100vw - 24px); grid-template-columns:1fr; }
+    .btn-filtros-dashboard-flutuante { right:12px; bottom:12px; }
+}
+
+/* V13.20 - ESTOQUE DAS CAIXAS NO DASHBOARD */
+.resumo-caixas-dashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0 0 16px}
+.resumo-caixa-item{border:1px solid var(--borda);background:#fafaff;border-radius:10px;padding:14px}
+.resumo-caixa-item span{display:block;color:var(--cinza);font-size:11px;font-weight:bold;margin-bottom:7px}
+.resumo-caixa-item strong{display:block;color:var(--azul);font-size:22px}
+.tabela-caixas-dashboard th,.tabela-caixas-dashboard td{font-size:12px}
+@media(max-width:1000px){.resumo-caixas-dashboard{grid-template-columns:1fr 1fr}.card-caixas-dashboard{grid-column:span 1}}
+@media(max-width:700px){.resumo-caixas-dashboard{grid-template-columns:1fr}.tabela-caixas-dashboard{min-width:620px}}
+
+.painel-estoque-caixas-dashboard{margin-bottom:20px}.resumo-estoque-caixas{grid-template-columns:1fr}.resumo-caixa-item.destaque{background:#eef0ff}.resumo-caixa-item.destaque strong{font-size:25px}.estoque-grid-dashboard .painel{min-width:0}.estoque-grid-dashboard table{min-width:0}.estoque-grid-dashboard .table-wrap{max-height:430px;overflow:auto}@media(max-width:700px){.resumo-estoque-caixas{grid-template-columns:1fr}.estoque-grid-dashboard{grid-template-columns:1fr}.estoque-grid-dashboard .table-wrap{overflow-x:auto}.estoque-grid-dashboard table{min-width:620px}}
+
+
+/* ABAS DO DASHBOARD - V13.25 */
+.dashboard-abas{max-width:1250px;margin:0 auto 20px;padding:0 20px;display:flex;gap:8px}
+.dashboard-aba-btn{border:1px solid var(--borda);background:#fff;color:var(--texto);padding:10px 16px;border-radius:9px;font:inherit;font-size:12px;font-weight:bold;cursor:pointer}
+.dashboard-aba-btn:hover{background:#f4f5fb}
+.dashboard-aba-btn.ativo{background:var(--azul);color:#fff;border-color:var(--azul)}
+.dashboard-aba-conteudo{display:none}
+.dashboard-aba-conteudo.ativo{display:block}
+.cards-devolucoes-dashboard{grid-template-columns:repeat(4,minmax(0,1fr))}
+.painel-resumo-devolucoes-dashboard{min-height:130px}
+.devolucao-resumo-info{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;padding:14px;background:#f7f8fc;border:1px solid var(--borda);border-radius:10px;color:var(--cinza);font-size:12px}
+.link-devolucoes-dashboard{color:var(--azul);font-weight:bold;text-decoration:none}
+.link-devolucoes-dashboard:hover{text-decoration:underline}
+@media(max-width:1000px){.cards-devolucoes-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.dashboard-abas{padding-left:10px;padding-right:10px;overflow-x:auto}.dashboard-aba-btn{white-space:nowrap}.cards-devolucoes-dashboard{grid-template-columns:1fr}}
+
+
+/* =========================================================
+   V14 - DASHBOARD GERENCIAL + FOTO DA FACHADA
+========================================================= */
+html,body{min-height:100%;}
+body{
+    background:
+        linear-gradient(135deg,rgba(242,244,249,.94),rgba(238,241,248,.88));
+}
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-1;
+    background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.56));
+    pointer-events:none;
+}
+.topbar{
+    background:linear-gradient(135deg,rgba(0,0,190,.96),rgba(51,51,255,.91));
+    box-shadow:0 8px 28px rgba(0,0,80,.20);
+    backdrop-filter:blur(10px);
+}
+.dashboard-header{background:rgba(255,255,255,.82);border:1px solid rgba(255,255,255,.9);border-radius:18px;padding:18px 20px;box-shadow:0 12px 35px rgba(0,0,0,.08);backdrop-filter:blur(10px)}
+.dashboard-abas{padding:0 20px}
+.dashboard-aba-btn{box-shadow:0 4px 12px rgba(0,0,0,.06)}
+.card,.painel{background:rgba(255,255,255,.93);box-shadow:0 10px 30px rgba(26,39,72,.09);backdrop-filter:blur(9px)}
+.card{transition:transform .18s ease,box-shadow .18s ease;border-top:3px solid rgba(0,0,255,.72)}
+.card:hover{transform:translateY(-2px);box-shadow:0 15px 34px rgba(26,39,72,.13)}
+.card strong{font-size:28px;letter-spacing:-.3px}
+.card small{line-height:1.35}
+.icone{box-shadow:inset 0 0 0 1px rgba(0,0,255,.06)}
+.painel-titulo h3{font-size:19px}
+.painel-titulo p{line-height:1.45}
+.dashboard-subcabecalho{max-width:1250px;margin:0 auto 18px;padding:18px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:rgba(255,255,255,.86);border:1px solid rgba(255,255,255,.95);border-radius:16px;box-shadow:0 10px 28px rgba(26,39,72,.07);backdrop-filter:blur(10px)}
+.dashboard-subcabecalho h3{margin:0 0 4px;font-size:20px}
+.dashboard-subcabecalho p{margin:0;color:var(--cinza);font-size:12px}
+.link-devolucoes-dashboard{display:inline-flex;align-items:center;justify-content:center;padding:9px 13px;border-radius:9px;background:var(--azul);color:#fff;font-weight:700;text-decoration:none;font-size:12px;white-space:nowrap}
+.link-devolucoes-dashboard:hover{background:var(--azul2)}
+.resumo-caixas-dashboard{grid-template-columns:repeat(4,minmax(0,1fr));}
+.resumo-caixa-item{background:rgba(250,250,255,.92);box-shadow:inset 0 0 0 1px rgba(0,0,255,.035)}
+.resumo-caixa-item strong{font-size:24px}
+.resumo-caixa-item small{display:block;color:var(--cinza);font-size:10px;margin-top:5px;line-height:1.35}
+.resumo-caixa-item.destaque{background:linear-gradient(135deg,#eef0ff,#f7f8ff);border-color:#dfe3ff}
+.resumo-caixa-item.destaque strong{font-size:27px}
+.grafico-barras{min-height:200px}
+.barra-track{height:11px}
+th{font-size:11px;letter-spacing:.1px}
+td{font-size:11px}
+.dashboard-aba-conteudo{animation:entradaDashboard .18s ease}
+@keyframes entradaDashboard{from{opacity:.55;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media(max-width:1000px){.resumo-caixas-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:700px){.dashboard-subcabecalho{margin-left:10px;margin-right:10px;align-items:flex-start;flex-direction:column}.dashboard-subcabecalho .link-devolucoes-dashboard{width:100%}.resumo-caixas-dashboard{grid-template-columns:1fr}.dashboard-header{margin-left:10px;margin-right:10px}}
+
+
+/* =========================================================
+   V15 - DASHBOARD MAIS CLARO, GERENCIAL E MODERNO
+========================================================= */
+body{background:
+    linear-gradient(135deg,rgba(243,246,251,.91),rgba(235,239,247,.84));
+}
+body::before{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(242,245,250,.66));}
+.topbar{padding:18px 30px;background:linear-gradient(120deg,rgba(0,0,180,.97),rgba(46,46,255,.93));}
+.header-container{max-width:1320px;}
+.logo-manaira-header{height:48px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.15));}
+.titulo h1{font-size:24px;letter-spacing:-.3px}.titulo p{font-size:13px;opacity:.88}
+.dashboard-header{max-width:1320px;margin:22px auto 14px;padding:18px 22px;background:rgba(255,255,255,.84);border:1px solid rgba(255,255,255,.95);border-radius:18px;box-shadow:0 12px 35px rgba(24,37,70,.10);backdrop-filter:blur(12px);}
+.dashboard-header h2{font-size:27px;letter-spacing:-.5px}.dashboard-header p{font-size:13px}.status-tempo-real{background:#edf9f1;border:1px solid #ccebd6;padding:7px 10px;border-radius:999px;font-size:11px;}
+.dashboard-abas{max-width:1320px;margin:0 auto 18px;padding:0 22px;gap:7px;}
+.dashboard-aba-btn{border:1px solid rgba(0,0,255,.10);background:rgba(255,255,255,.90);padding:10px 18px;border-radius:10px;box-shadow:0 4px 14px rgba(26,39,72,.06);transition:.18s ease;}
+.dashboard-aba-btn:hover{transform:translateY(-1px);background:#fff}.dashboard-aba-btn.ativo{background:linear-gradient(135deg,#0000ee,#3d3dff);box-shadow:0 8px 20px rgba(0,0,255,.20);}
+.dashboard-secao-cabecalho{max-width:1320px;margin:0 auto 12px;padding:0 22px;}.dashboard-secao-cabecalho-principal{margin-top:4px;}
+.dashboard-secao-cabecalho h3{margin:2px 0 3px;font-size:19px;letter-spacing:-.25px}.dashboard-secao-cabecalho p{margin:0;color:var(--cinza);font-size:12px;line-height:1.45}.dashboard-kicker{display:inline-block;font-size:9px;letter-spacing:1.1px;font-weight:800;color:#565fe5;background:#eef0ff;border:1px solid #dfe3ff;padding:4px 7px;border-radius:999px;}
+.cards{max-width:1320px;gap:14px;padding:0 22px;margin-bottom:20px;}.card,.painel{border-color:rgba(218,222,234,.90);background:rgba(255,255,255,.94);box-shadow:0 10px 28px rgba(26,39,72,.075);}
+.card{position:relative;overflow:hidden;padding:18px 18px 16px;border-top:0;transition:transform .18s ease,box-shadow .18s ease;}
+.card::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:#0000ff;opacity:.92;}
+.card:nth-child(2)::after{background:#6a5cff}.card:nth-child(3)::after{background:#d99a00}.card:nth-child(4)::after{background:#159a65}.card:nth-child(5)::after{background:#0b83d5}
+.card:hover{transform:translateY(-3px);box-shadow:0 15px 34px rgba(26,39,72,.12)}.card .icone{width:38px;height:38px;border-radius:11px;font-size:18px;background:#f0f2ff}.card strong{font-size:29px;margin:13px 0 4px;letter-spacing:-.6px}.card-titulo{font-size:11px;letter-spacing:.1px}.card small{font-size:10px;line-height:1.4}
+.painel{max-width:1320px;margin-bottom:18px;padding:20px 22px;border-radius:16px;backdrop-filter:blur(10px)}
+.grid-2{max-width:1320px;padding:0 22px;gap:18px;margin-bottom:18px}.grid-2 .painel{margin-bottom:0}
+.painel-titulo{margin-bottom:14px}.painel-titulo h3{font-size:17px}.painel-titulo p{font-size:11px}.alternador{background:#f5f6fb;padding:3px;border-radius:9px}.alternador button{border:0;background:transparent;padding:7px 10px;border-radius:7px}.alternador button.ativo{box-shadow:0 4px 10px rgba(0,0,255,.16)}
+.grafico-evolucao{height:255px;background:linear-gradient(180deg,#fbfcff,#f7f8fc);border:1px solid #edf0f6;border-radius:12px;padding:16px 10px 8px}.coluna{background:linear-gradient(180deg,#3030ff,#6666ff);box-shadow:0 4px 10px rgba(0,0,255,.14)}
+.grafico-barras{min-height:190px}.barra-item{padding:2px 0;margin-bottom:12px}.barra-track{height:9px;background:#eef0f6}.barra-track span{background:linear-gradient(90deg,#2020ff,#6666ff)}
+.table-wrap{border-color:#e7e9f0;border-radius:11px}.table-wrap table{background:rgba(255,255,255,.7)}th{background:linear-gradient(90deg,#0000ef,#3333ff);font-size:10px;text-transform:uppercase;letter-spacing:.35px;padding:9px 10px}td{padding:9px 10px;font-size:11px}tbody tr:nth-child(even){background:#fafbfe}tbody tr:hover{background:#f2f4ff}
+
+/* Aba Devoluções */
+.cards-devolucoes-dashboard{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:18px;}
+.card-devolucao{min-height:136px}.card-devolucao.card-pendente::after{background:#d99a00}.card-devolucao.card-valor::after{background:#159a65}.card-devolucao .icone{background:#f5f7ff}.card-devolucao strong{font-size:32px}
+.painel-estoque-caixas-dashboard{margin-top:2px}.resumo-estoque-caixas{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:0}.resumo-caixa-item{padding:18px;border-radius:13px;background:linear-gradient(135deg,#fbfbff,#f7f8fd);}.resumo-caixa-item span{font-size:10px;letter-spacing:.15px}.resumo-caixa-item strong{font-size:28px}.resumo-caixa-item.destaque{background:linear-gradient(135deg,#eef0ff,#f8f9ff);border-color:#dfe3ff}.resumo-caixa-item.destaque strong{font-size:31px}
+.estoque-grid-dashboard{margin-top:0}.estoque-grid-dashboard .painel{min-height:330px}.estoque-grid-dashboard .table-wrap{max-height:350px}.estoque-grid-dashboard .grafico-barras{min-height:250px}
+
+@media(max-width:1000px){.cards{grid-template-columns:repeat(3,minmax(0,1fr))}.cards-devolucoes-dashboard{grid-template-columns:repeat(2,minmax(0,1fr))}.resumo-estoque-caixas{grid-template-columns:1fr 1fr}.dashboard-header,.dashboard-secao-cabecalho,.dashboard-abas,.cards,.grid-2,.filtros-dashboard{max-width:100%;}}
+@media(max-width:700px){.topbar{padding:15px 14px}.header-container{align-items:flex-start}.marca-header{gap:10px}.logo-manaira-header{height:40px}.titulo h1{font-size:19px}.titulo p{font-size:11px}.dashboard-header{margin:14px 10px;padding:15px}.dashboard-header h2{font-size:22px}.dashboard-abas{padding:0 10px}.dashboard-secao-cabecalho{padding:0 10px}.cards{grid-template-columns:1fr;padding:0 10px}.cards-devolucoes-dashboard{grid-template-columns:1fr}.grid-2{grid-template-columns:1fr;padding:0 10px}.painel{padding:16px;margin-left:0;margin-right:0}.resumo-estoque-caixas{grid-template-columns:1fr}.estoque-grid-dashboard table{min-width:620px}.estoque-grid-dashboard .table-wrap{overflow-x:auto}.status-tempo-real{display:none}.painel-titulo{align-items:flex-start}.dashboard-secao-cabecalho-principal{margin-top:2px;}}
+
+
+/* =========================================================
+   V16.5 - DASHBOARD DE CAIXAS ROBUSTO
+========================================================= */
+.cards-caixas-dashboard{grid-template-columns:repeat(6,minmax(0,1fr));max-width:1320px;}
+.card-caixa-gerencial{min-height:145px;}
+.card-caixa-gerencial:nth-child(1)::after{background:#0000ff}.card-caixa-gerencial:nth-child(2)::after{background:#5b5cf0}.card-caixa-gerencial:nth-child(3)::after{background:#7b61ff}.card-caixa-gerencial:nth-child(4)::after{background:#0b83d5}.card-caixa-gerencial:nth-child(5)::after{background:#159a65}.card-caixa-gerencial:nth-child(6)::after{background:#d99a00}
+.painel-leitura-caixas{max-width:1320px;margin:0 auto 18px;padding:20px 22px;}
+.insights-caixas-dashboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.insight-caixa{border:1px solid #e4e7f0;background:linear-gradient(135deg,#fafbff,#f4f6fb);border-radius:13px;padding:15px 16px;min-height:95px;display:flex;flex-direction:column;justify-content:center;gap:5px;}
+.insight-caixa span{font-size:10px;color:var(--cinza);font-weight:700;text-transform:uppercase;letter-spacing:.3px}.insight-caixa strong{font-size:17px;color:var(--texto);line-height:1.2}.insight-caixa small{font-size:10px;color:var(--cinza)}
+.participacao-caixas{display:inline-block;background:#eef0ff;color:#3138d9;border-radius:999px;padding:4px 7px;font-size:9px;font-weight:800;white-space:nowrap}
+.categoria-meta-caixas{margin-top:4px;color:var(--cinza);font-size:9px}.grafico-categorias-caixas{min-height:280px}.grafico-categorias-caixas .barra-item{margin-bottom:14px}.grafico-categorias-caixas .barra-label strong{display:flex;align-items:center;gap:7px}.grafico-categorias-caixas .barra-label strong small{font-size:9px;color:var(--cinza);font-weight:700}
+.estoque-grid-dashboard .painel{min-height:360px}.estoque-grid-dashboard .table-wrap{max-height:390px}.cards-caixas-dashboard .card strong{font-size:27px}
+@media(max-width:1200px){.cards-caixas-dashboard{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:900px){.cards-caixas-dashboard{grid-template-columns:repeat(2,minmax(0,1fr));}.insights-caixas-dashboard{grid-template-columns:1fr;}}
+@media(max-width:700px){.cards-caixas-dashboard{grid-template-columns:1fr;padding:0 10px}.painel-leitura-caixas{margin-left:10px;margin-right:10px;padding:16px}.estoque-grid-dashboard table{min-width:760px}.insight-caixa{min-height:88px}}
+
+/* =========================================================
+   V16.8 - ANALISTA IA
+========================================================= */
+.painel-analista-ia{max-width:1320px;margin:0 auto 18px;border:1px solid #dfe3ff;background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(246,247,255,.95));}
+.analista-ia-cabecalho{align-items:center;margin-bottom:12px}
+.btn-ia-gerar{border:0;border-radius:10px;background:linear-gradient(135deg,#0000ee,#5555ff);color:#fff;font-weight:800;padding:10px 15px;cursor:pointer;box-shadow:0 7px 18px rgba(0,0,255,.18);white-space:nowrap}
+.btn-ia-gerar:hover{transform:translateY(-1px)}
+.btn-ia-gerar:disabled{opacity:.65;cursor:wait;transform:none}
+.analista-ia-controles{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:end}
+.analista-ia-pergunta{display:flex;flex-direction:column;gap:6px}
+.analista-ia-pergunta label{font-size:10px;font-weight:800;color:#596174;text-transform:uppercase;letter-spacing:.3px}
+.analista-ia-pergunta input{width:100%;height:40px;border:1px solid #dfe3ee;border-radius:10px;padding:0 12px;font-size:12px;background:#fff;outline:none}
+.analista-ia-pergunta input:focus{border-color:#5656ff;box-shadow:0 0 0 3px rgba(0,0,255,.08)}
+.analista-ia-atalhos{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.atalho-ia{border:1px solid #dfe3ff;background:#f4f5ff;color:#3038c9;border-radius:999px;padding:8px 10px;font-size:10px;font-weight:800;cursor:pointer}
+.atalho-ia:hover{background:#eceeff}
+.resultado-analise-ia{margin-top:12px;min-height:76px}
+.ia-vazio,.ia-carregando,.ia-erro,.ia-resposta{border:1px solid #e5e8f2;border-radius:12px;background:#fff;padding:14px 16px}
+.ia-vazio,.ia-carregando,.ia-erro{display:flex;align-items:center;gap:12px}
+.ia-vazio>span,.ia-carregando>span{font-size:24px}.ia-vazio strong,.ia-carregando strong,.ia-erro strong{display:block;font-size:12px;color:#263044}.ia-vazio small,.ia-carregando small,.ia-erro small{display:block;margin-top:3px;font-size:10px;color:#7a8292}
+.ia-resposta-topo{display:flex;align-items:center;gap:10px;padding-bottom:10px;border-bottom:1px solid #edf0f5}.ia-resposta-topo>span{font-size:21px}.ia-resposta-topo strong{display:block;font-size:12px;color:#222b3d}.ia-resposta-topo small{display:block;margin-top:2px;font-size:9px;color:#7a8292}.ia-resposta-texto{padding-top:12px;font-size:11px;line-height:1.65;color:#424b5d}.ia-resposta-texto h4{margin:0 0 8px;font-size:14px;color:#172033}.ia-resposta-texto li{margin:4px 0}.ia-espaco{height:5px}.ia-erro{border-color:#f0caca;background:#fff8f8}
+@media(max-width:800px){.analista-ia-cabecalho{align-items:flex-start}.analista-ia-cabecalho .btn-ia-gerar{width:100%}.analista-ia-controles{grid-template-columns:1fr}.analista-ia-atalhos{justify-content:flex-start}.painel-analista-ia{margin-left:10px;margin-right:10px;padding:16px}}
+
+/* V17 - Analista IA em botão flutuante + balão */
+.ia-flutuante{position:fixed;right:24px;bottom:80px;z-index:4300}
+.btn-ia-flutuante{width:58px;height:58px;border:0;border-radius:50%;background:linear-gradient(135deg,#0000ee,#4d4dff);color:#fff;font-size:22px;font-weight:900;cursor:pointer;box-shadow:0 12px 28px rgba(0,0,238,.28);display:flex;align-items:center;justify-content:center;gap:3px;transition:.2s}
+.btn-ia-flutuante span{font-size:11px;letter-spacing:.2px}
+.btn-ia-flutuante:hover,.btn-ia-flutuante.ativo{transform:translateY(-2px) scale(1.03);box-shadow:0 15px 32px rgba(0,0,238,.34)}
+.painel-analista-ia{position:absolute;right:0;bottom:72px;width:min(430px,calc(100vw - 28px));padding:16px!important;margin:0!important;border:1px solid #dce1ff!important;border-radius:16px!important;background:rgba(255,255,255,.98)!important;box-shadow:0 18px 45px rgba(25,31,65,.22)!important;opacity:0;visibility:hidden;transform:translateY(12px) scale(.98);transform-origin:bottom right;transition:.18s ease;pointer-events:none}
+.painel-analista-ia::after{content:"";position:absolute;right:19px;bottom:-9px;width:17px;height:17px;background:#fff;border-right:1px solid #dce1ff;border-bottom:1px solid #dce1ff;transform:rotate(45deg)}
+.painel-analista-ia.aberto{opacity:1;visibility:visible;transform:none;pointer-events:auto}
+.painel-analista-ia .analista-ia-cabecalho{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+.painel-analista-ia .analista-ia-cabecalho h3{margin:2px 0 3px;font-size:17px}
+.painel-analista-ia .analista-ia-cabecalho p{margin:0;color:#777c89;font-size:10px;line-height:1.4}
+.btn-ia-fechar{width:30px;height:30px;border:1px solid #e0e3eb;border-radius:8px;background:#f7f8fb;color:#4d5567;font-size:20px;line-height:1;cursor:pointer}
+.painel-analista-ia .analista-ia-controles{display:flex;flex-direction:column;gap:9px;align-items:stretch}
+.painel-analista-ia .analista-ia-pergunta input{height:38px}
+.painel-analista-ia .analista-ia-acoes{display:flex;gap:8px;align-items:center}
+.painel-analista-ia .btn-ia-gerar{height:36px;padding:0 12px}
+.painel-analista-ia .analista-ia-atalhos{justify-content:flex-start;flex:1}
+.painel-analista-ia .atalho-ia{padding:7px 9px;border:1px solid #dfe3ee;border-radius:8px;background:#f8f9fc;color:#3f4758;font-size:10px;font-weight:700;cursor:pointer}
+.painel-analista-ia .atalho-ia:hover{border-color:#bfc5ff;color:#0000ee;background:#f3f4ff}
+.painel-analista-ia .resultado-analise-ia{max-height:330px;overflow:auto;margin-top:10px}
+@media(max-width:600px){.ia-flutuante{right:14px;bottom:68px}.btn-ia-flutuante{width:54px;height:54px}.painel-analista-ia{bottom:66px}.painel-analista-ia .analista-ia-acoes{flex-direction:column;align-items:stretch}.painel-analista-ia .btn-ia-gerar{width:100%}.painel-analista-ia .analista-ia-atalhos{justify-content:flex-start}}
+
+
+/* V17.1 - Filtros do Dashboard de Caixas */
+.painel-filtros-caixas-dashboard{
+    display:none;
+    position:fixed;
+    right:24px;
+    bottom:76px;
+    z-index:4100;
+    width:min(620px,calc(100vw - 32px));
+    max-height:min(72vh,650px);
+    overflow:auto;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    margin:0;
+    padding:18px;
+    border-radius:16px;
+    box-shadow:0 18px 55px rgba(0,0,0,.20);
+}
+.painel-filtros-caixas-dashboard.aberto{display:grid;}
+.painel-filtros-caixas-dashboard .filtros-caixas-cabecalho{grid-column:1/-1;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:4px}
+.filtros-caixas-cabecalho h3{margin:3px 0 3px;font-size:17px}
+.filtros-caixas-cabecalho p{margin:0;color:var(--cinza);font-size:11px}
+.btn-fechar-filtros-caixas{width:30px;height:30px;border:1px solid var(--borda);border-radius:8px;background:#f7f8fb;color:#4d5567;font-size:19px;cursor:pointer}
+.painel-filtros-caixas-dashboard label{display:block;font-size:12px;font-weight:bold;margin-bottom:5px}
+.painel-filtros-caixas-dashboard input,.painel-filtros-caixas-dashboard select{width:100%;height:40px;padding:8px 10px;border:1px solid var(--borda);border-radius:8px;background:#fff;font:inherit}
+.painel-filtros-caixas-dashboard .filtro-caixa-produto{grid-column:1/-1}
+.acoes-filtros-caixas{display:flex;align-items:end;justify-content:flex-end;grid-column:1/-1}
+.acoes-filtros-caixas button{height:40px;padding:0 15px;border:0;border-radius:8px;background:#777;color:#fff;font-weight:bold;cursor:pointer}
+@media(max-width:700px){
+    .painel-filtros-caixas-dashboard{right:12px;bottom:68px;width:calc(100vw - 24px);grid-template-columns:1fr}
+    .painel-filtros-caixas-dashboard .filtro-caixa-produto,.painel-filtros-caixas-dashboard .acoes-filtros-caixas{grid-column:auto}
+}
+
+/* =========================================================
+   V20.6 - ASSISTENTE IA / VISUAL E ANALÍTICO
+   Alteração exclusivamente visual; IDs e lógica do Analista IA permanecem iguais.
+========================================================= */
+.btn-ia-flutuante{
+    position:relative;
+    width:74px;
+    height:74px;
+    border:1px solid rgba(129,112,255,.75);
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 35% 30%,#7f8cff 0 8%,transparent 9%),
+        linear-gradient(145deg,#1018d9 0%,#4530d9 48%,#7c3aed 100%);
+    color:#fff;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    box-shadow:0 0 0 1px rgba(255,255,255,.18) inset,0 12px 30px rgba(43,36,190,.35),0 0 28px rgba(99,82,255,.22);
+    transition:transform .2s ease,box-shadow .2s ease,filter .2s ease;
+    overflow:visible;
+}
+.btn-ia-flutuante::before,
+.btn-ia-flutuante::after{
+    content:"";
+    position:absolute;
+    inset:-7px;
+    border:1px solid rgba(122,106,255,.26);
+    border-radius:50%;
+    animation:iaPulso 2.6s ease-out infinite;
+    pointer-events:none;
+}
+.btn-ia-flutuante::after{inset:-13px;animation-delay:1.3s;opacity:.55}
+.btn-ia-flutuante:hover,.btn-ia-flutuante.ativo{
+    transform:translateY(-3px) scale(1.04);
+    filter:saturate(1.12);
+    box-shadow:0 0 0 1px rgba(255,255,255,.24) inset,0 16px 36px rgba(43,36,190,.42),0 0 34px rgba(99,82,255,.34);
+}
+.ia-orbita{
+    position:relative;
+    width:42px;
+    height:42px;
+    border:1px solid rgba(255,255,255,.55);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:0 0 18px rgba(255,255,255,.12) inset;
+}
+.ia-orbita::before{
+    content:"";
+    position:absolute;
+    width:25px;
+    height:25px;
+    border:1px dashed rgba(255,255,255,.48);
+    border-radius:50%;
+    animation:iaGiro 5s linear infinite;
+}
+.ia-nucleo{
+    position:relative;
+    z-index:2;
+    font-size:24px;
+    line-height:1;
+    text-shadow:0 0 12px rgba(255,255,255,.9);
+    animation:iaBrilho 1.8s ease-in-out infinite;
+}
+.ia-orbita i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 7px #fff}
+.ia-orbita i:nth-child(2){top:2px;left:50%;margin-left:-2px}
+.ia-orbita i:nth-child(3){right:3px;bottom:8px}
+.ia-orbita i:nth-child(4){left:4px;bottom:8px}
+.ia-label{position:absolute;right:-5px;bottom:7px;min-width:24px;height:18px;padding:0 5px;border-radius:999px;background:#fff;color:#3730a3;font-size:9px;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 10px rgba(0,0,0,.18)}
+.ia-online{position:absolute;right:-8px;top:-5px;padding:3px 6px;border-radius:999px;background:#0bb56b;color:#fff;font-size:7px;font-weight:900;letter-spacing:.2px;box-shadow:0 3px 9px rgba(0,0,0,.18)}
+.ia-online::before{content:"";display:inline-block;width:4px;height:4px;margin-right:3px;border-radius:50%;background:#fff;vertical-align:1px}
+.ia-kicker{display:inline-flex;align-items:center;gap:5px}
+.ia-kicker-dot{display:inline-flex;width:17px;height:17px;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#3730a3,#7c3aed);color:#fff;font-size:10px;box-shadow:0 0 12px rgba(99,82,255,.3)}
+.ia-avatar-mini{width:36px!important;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#2028e8,#7c3aed);color:#fff!important;font-size:20px!important;box-shadow:0 7px 16px rgba(43,36,190,.22);flex-shrink:0}
+.painel-analista-ia .resultado-analise-ia{scrollbar-width:thin}
+@keyframes iaPulso{0%{transform:scale(.92);opacity:.7}70%,100%{transform:scale(1.18);opacity:0}}
+@keyframes iaGiro{to{transform:rotate(360deg)}}
+@keyframes iaBrilho{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.12);opacity:1}}
+@media(max-width:600px){.btn-ia-flutuante{width:62px;height:62px}.ia-orbita{width:36px;height:36px}.ia-nucleo{font-size:20px}}
+
+/* V20.6 - IA analítica */
+.analista-ia-atalhos{align-items:center}
+.atalho-ia{transition:transform .15s ease,box-shadow .15s ease,background .15s ease}
+.atalho-ia:hover{transform:translateY(-1px);box-shadow:0 5px 12px rgba(25,35,160,.08)}
+.atalho-ia-completo{background:linear-gradient(135deg,#eef0ff,#f7f8ff);border-color:#cfd5ff;color:#1c27c7}
+.ia-resposta-topo>span{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#1717ff,#6b6bff);color:#fff;box-shadow:0 6px 15px rgba(24,36,230,.2)}
+.ia-resposta-texto h4{letter-spacing:-.1px}
+@media(max-width:800px){.atalho-ia{padding:8px 9px}}

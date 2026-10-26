@@ -1,0 +1,9 @@
+CONTROLE DE AVARIAS - V20.1
+
+1. No computador servidor, execute REINICIAR_SERVIDOR.bat.
+2. Abra http://localhost:3000/api/versao e confirme V20.1.
+3. Abra http://localhost:3000 e faça login.
+4. O histórico usa /api/historico-avarias e possui fallback para /api/avarias.
+5. O Dashboard usa a mesma fonte e também possui fallback.
+
+Não abra HTMLs diretamente por duplo clique no computador cliente; use o endereço HTTP do servidor.

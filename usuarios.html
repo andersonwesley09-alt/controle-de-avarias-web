@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bcrypt-browser.js?v=25.1.16"></script>
+    <script src="servidor-rede.js?v=25.1.16"></script>
+    <script src="rede-central.js?v=25.1.16"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuários - Controle de Avarias</title>
+    <link rel="stylesheet" href="styleusuarios.css?v=20.3">
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+
+<body>
+
+    <header class="topbar">
+        <div class="header-container">
+            <div class="marca-header">
+<div>
+                    <h1>Controle de Usuários</h1>
+                    <p>Acesso administrativo ao sistema</p>
+                </div>
+            </div>
+
+            <div class="header-actions">
+                <a href="sistema.html" class="btn-voltar">← Voltar</a>
+                <button id="btnSair" class="btn-sair" type="button">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="painel">
+            <div class="painel-header">
+                <div>
+                    <h2>Criar usuário</h2>
+                    <p>Os usuários criados aqui poderão entrar no sistema em qualquer computador autorizado na rede.</p>
+                </div>
+            </div>
+
+            <form id="formUsuario">
+                <div class="grid-form">
+                    <div class="field">
+                        <label for="nome">Nome *</label>
+                        <input id="nome" type="text" maxlength="120" placeholder="Ex: João da Silva" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="usuario">Usuário *</label>
+                        <input id="usuario" type="text" maxlength="40" autocomplete="off" placeholder="Ex: joao.silva" required>
+                    </div>
+
+                    <div class="field">
+                        <label for="senha">Senha *</label>
+                        <div class="campo-senha">
+                            <input id="senha" type="password" minlength="6" maxlength="100" autocomplete="new-password" placeholder="Mínimo 6 caracteres" required>
+                            <button type="button" class="btn-mostrar-senha" data-target="senha" aria-label="Mostrar senha">👁</button>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="confirmarSenha">Confirmar senha *</label>
+                        <div class="campo-senha">
+                            <input id="confirmarSenha" type="password" minlength="6" maxlength="100" autocomplete="new-password" placeholder="Repita a senha" required>
+                            <button type="button" class="btn-mostrar-senha" data-target="confirmarSenha" aria-label="Mostrar confirmação da senha">👁</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button id="btnCriar" class="btn-principal" type="submit">Criar usuário</button>
+                    <button class="btn-secundario" type="reset">Limpar</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="cards">
+            <article class="card">
+                <span>Usuários cadastrados</span>
+                <strong id="totalUsuarios">0</strong>
+            </article>
+
+            <article class="card">
+                <span>Usuários ativos</span>
+                <strong id="usuariosAtivos">0</strong>
+            </article>
+
+            <article class="card">
+                <span>Usuários inativos</span>
+                <strong id="usuariosInativos">0</strong>
+            </article>
+        </section>
+
+        <section class="painel">
+            <div class="painel-header painel-header-flex">
+                <div>
+                    <h2>Usuários do sistema</h2>
+                    <p>Ative, desative, redefina a senha ou exclua usuários.</p>
+                </div>
+            </div>
+
+            <div class="filtros">
+                <input id="busca" type="search" placeholder="Pesquisar por nome ou usuário...">
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Usuário</th>
+                            <th>Perfil</th>
+                            <th>Situação</th>
+                            <th>Criado em</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelaUsuarios">
+                        <tr>
+                            <td colspan="6" class="vazio">Carregando usuários...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="painel rede-info">
+            <h2>Uso em outros computadores</h2>
+            <p>
+                No computador principal mantenha o servidor aberto. Nos outros PCs, abra no navegador o endereço
+                de rede mostrado na janela do servidor, por exemplo <strong>http://192.168.1.20:3000</strong>.
+            </p>
+            <p class="nota">
+                Execute uma vez o arquivo <strong>LIBERAR_ACESSO_REDE.bat</strong> como administrador no PC principal para liberar a porta 3000 no Firewall do Windows.
+            </p>
+        </section>
+
+    </main>
+
+    <div id="modalEditarUsuario" class="modal-editar-usuario" aria-hidden="true">
+        <div class="modal-editar-conteudo" role="dialog" aria-modal="true" aria-labelledby="modalEditarTitulo">
+            <button type="button" class="modal-fechar" id="btnFecharModalEditar" aria-label="Fechar">×</button>
+            <div class="modal-icone">✏️</div>
+            <h2 id="modalEditarTitulo">Editar usuário</h2>
+            <p class="modal-editar-aviso">Altere o nome ou o usuário de acesso. A senha continua sendo alterada pelo botão <b>Redefinir senha</b>.</p>
+
+            <div class="modal-editar-form">
+                <div class="field">
+                    <label for="editarNome">Nome *</label>
+                    <input id="editarNome" type="text" maxlength="120" autocomplete="off" required>
+                </div>
+
+                <div class="field">
+                    <label for="editarUsuario">Usuário *</label>
+                    <input id="editarUsuario" type="text" maxlength="40" autocomplete="off" required>
+                </div>
+            </div>
+
+            <div class="modal-acoes">
+                <button type="button" class="btn-secundario" id="btnCancelarModalEditar">Cancelar</button>
+                <button type="button" class="btn-principal" id="btnSalvarModalEditar">Salvar alterações</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalSenha" class="modal-senha" aria-hidden="true">
+        <div class="modal-senha-conteudo" role="dialog" aria-modal="true" aria-labelledby="modalSenhaTitulo">
+            <button type="button" class="modal-fechar" id="btnFecharModalSenha" aria-label="Fechar">×</button>
+            <div class="modal-icone">🔐</div>
+            <h2 id="modalSenhaTitulo">Senha de <span id="modalSenhaNome">usuário</span></h2>
+            <p class="modal-senha-aviso">
+                A senha atual não pode ser exibida porque o sistema armazena somente uma versão protegida (hash).
+            </p>
+            <div class="modal-senha-info">
+                <strong>Como acessar?</strong>
+                <span>Se precisar fornecer uma senha ao usuário, use <b>Redefinir senha</b> para criar uma nova.</span>
+            </div>
+            <div class="modal-acoes">
+                <button type="button" class="btn-secundario" id="btnCancelarModalSenha">Fechar</button>
+                <button type="button" class="btn-principal" id="btnRedefinirModalSenha">Redefinir senha</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="timezone.js?v=20.3"></script>
+    <script src="usuarios.js?v=25.1.16"></script>
+
+    <script src="rodape.js?v=20.3"></script>
+</body>
+</html>

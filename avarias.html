@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Avarias e Baixas
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="styleavarias.css?v=25.1.5"
+    >
+
+    <link rel="stylesheet" href="rodape.css?v=25.1">
+</head>
+
+
+<body>
+
+
+    <!-- =========================
+         CABEÇALHO
+    ========================== -->
+
+    <header class="topbar">
+
+        <div class="header-container">
+
+            <div class="marca-header">
+<div>
+
+                    <h1>
+                        Avarias e Baixas
+                    </h1>
+
+                    <p>
+                        Cadastro de avarias e acompanhamento das perdas
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="header-actions">
+
+                <span id="statusConexao" class="status-conexao status-online">● Tempo real</span>
+
+                <a
+                    href="sistema.html"
+                    class="btn-voltar"
+                >
+                    ← Voltar
+                </a>
+
+
+                <button
+                    id="btnSair"
+                    class="btn-sair"
+                    type="button"
+                >
+                    Sair
+                </button>
+
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =========================
+         ABAS
+    ========================== -->
+
+    <nav class="abas">
+
+        <div class="abas-container">
+
+            <button
+                class="aba-btn ativo"
+                type="button"
+                data-aba="cadastro"
+            >
+                ➕ Cadastrar avaria
+            </button>
+
+
+            <button
+                class="aba-btn"
+                type="button"
+                data-aba="registros"
+            >
+                📋 Registros
+            </button>
+
+
+            <button
+                class="aba-btn"
+                type="button"
+                data-aba="baixas"
+            >
+                🧾 Baixas
+            </button>
+
+        </div>
+
+    </nav>
+
+
+
+    <main>
+
+
+        <!-- =====================================================
+             CADASTRAR AVARIA
+        ====================================================== -->
+
+        <section
+            id="abaCadastro"
+            class="aba-conteudo ativo"
+        >
+
+            <div class="cadastro-grid">
+
+                <section class="painel cadastro-lancamento">
+
+
+
+                <div class="painel-header">
+
+                    <h2>
+                        Cadastrar avaria
+                    </h2>
+
+                    <p>
+                        Bipe ou digite o código do produto.
+                    </p>
+
+                </div>
+
+
+                <form
+                    id="formAvaria"
+                    autocomplete="off"
+                >
+
+
+                    <!-- CÓDIGO E QUANTIDADE -->
+
+                    <div class="grid grid-2">
+
+                        <div class="field">
+
+                            <label for="codigoProduto">
+                                Código de barras / balança
+                            </label>
+
+                            <input
+                                id="codigoProduto"
+                                type="text"
+                                placeholder="Bipe ou digite o código"
+                                autocomplete="off"
+                                autofocus
+                            >
+
+                        </div>
+
+
+                        <div class="field">
+
+                            <label for="quantidade">
+                                Quantidade / peso
+                            </label>
+
+                            <input
+                                id="quantidade"
+                                type="number"
+                                min="0.001"
+                                step="0.001"
+                                placeholder="Quantidade ou kg"
+                                disabled
+                             max="100000">
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- =========================
+                         PRODUTO ENCONTRADO
+                    ========================== -->
+
+                    <div
+                        id="produtoInfo"
+                        class="produto-info oculto"
+                    >
+
+                        <div class="produto-dado">
+
+                            <span>
+                                Código do produto
+                            </span>
+
+                            <strong id="codigoProdutoInfo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="produto-dado produto-dado-principal">
+
+                            <span>
+                                Produto
+                            </span>
+
+                            <strong id="nomeProduto">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="produto-dado">
+
+                            <span>
+                                Empresa / Fornecedor
+                            </span>
+
+                            <strong id="nomeFornecedor">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="produto-dado">
+
+                            <span>
+                                Cód. fornecedor
+                            </span>
+
+                            <strong id="codigoFornecedorInfo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="produto-dado">
+
+                            <span>
+                                Categoria
+                            </span>
+
+                            <strong id="categoriaProdutoInfo">
+                                -
+                            </strong>
+
+                        </div>
+
+
+                        <div class="produto-dado">
+
+                            <span>
+                                Valor de custo
+                            </span>
+
+                            <strong id="valorProduto">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+
+                        <div class="produto-dado destaque-total">
+
+                            <span>
+                                Valor da avaria
+                            </span>
+
+                            <strong id="valorTotal">
+                                R$ 0,00
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        id="produtoNaoEncontrado"
+                        class="produto-alerta produto-alerta-erro oculto"
+                    >
+                        <strong>⚠ Produto não encontrado</strong>
+                        <span id="mensagemProdutoNaoEncontrado">Confira o código informado e a base de produtos.</span>
+                    </div>
+
+
+                    <div
+                        id="produtoSemCusto"
+                        class="produto-alerta produto-alerta-aviso oculto"
+                    >
+                        <strong>⚠ Produto sem custo válido</strong>
+                        <span>O produto foi encontrado, mas não possui um valor de custo válido. O lançamento está bloqueado.</span>
+                    </div>
+
+
+
+                    <!-- =========================
+                         DADOS DA AVARIA
+                    ========================== -->
+
+                    <div class="grid grid-3">
+
+                        <div class="field">
+
+                            <label for="setor">
+                                Setor de origem da avaria (opcional)
+                            </label>
+
+                            <select id="setor">
+
+                                <option value="Loja" selected>
+                                    Loja
+                                </option>
+
+                                <option value="CD">CD</option>
+                                <option value="Online">Online</option>
+                                <option value="Estoque">Estoque</option>
+                                <option value="Câmara">Câmara</option>
+                                <option value="Refeito">Refeito</option>
+                                <option value="Recepção">Recepção</option>
+                                <option value="Pitstop">Pitstop</option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="field">
+                            <label for="categoriaAvaria">Categoria</label>
+                            <select id="categoriaAvaria">
+                                <option value="Frios">Frios</option>
+                                <option value="Mercearia" selected>Mercearia</option>
+                                <option value="Padaria">Padaria</option>
+                                <option value="Limpeza">Limpeza</option>
+                                <option value="Bebidas">Bebidas</option>
+                            </select>
+                        </div>
+
+                        <div class="field">
+
+                            <label for="tipo">
+                                Motivo da avaria
+                            </label>
+
+                            <select id="tipo">
+
+                                <option value="Produto avariado">
+                                    Produto avariado
+                                </option>
+
+                                <option value="Degustação de cliente">
+                                    Degustação de cliente
+                                </option>
+
+                                <option value="Fermentado">
+                                    Fermentado
+                                </option>
+
+                                <option value="Vencido">
+                                    Vencido
+                                </option>
+
+                                <option value="Próximo do vencimento">
+                                    Próximo do vencimento
+                                </option>
+
+                                <option value="Furado">
+                                    Furado
+                                </option>
+
+                                <option value="Bixado">
+                                    Bixado
+                                </option>
+
+                                <option value="Microfuro">
+                                    Microfuro
+                                </option>
+
+                                <option value="Outro">
+                                    Outro
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- OBSERVAÇÃO -->
+
+                    <div class="field">
+
+                        <label for="obs">
+                            Observação
+                        </label>
+
+                        <textarea
+                            id="obs"
+                            rows="3"
+                            placeholder="Observações sobre a avaria"
+                        ></textarea>
+
+                    </div>
+
+
+
+                    <div class="form-actions">
+
+                        <button
+                            class="btn-salvar"
+                            type="submit"
+                            id="btnSalvar"
+                            disabled
+                        >
+                            Salvar avaria
+                        </button>
+
+
+                        <div class="atalhos-cadastro">
+
+                            <span>
+                                <kbd>F2</kbd>
+                                ir para código
+                            </span>
+
+                            <span>
+                                <kbd>Esc</kbd>
+                                limpar lançamento
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                </form>
+
+
+
+                </section>
+
+                <section class="painel painel-ultimos">
+
+                <!-- =========================
+                     ÚLTIMOS LANÇAMENTOS
+                ========================== -->
+
+                <div class="ultimos-lancamentos">
+
+                    <div class="ultimos-lancamentos-header">
+
+                        <div>
+
+                            <h3>
+                                Últimos lançamentos
+                            </h3>
+
+                            <p>
+                                Confira os 5 registros mais recentes.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="filtro-categoria-lancamentos">
+                        <label for="filtroCategoriaCadastro">Categoria</label>
+                        <select id="filtroCategoriaCadastro">
+                            <option value="Todos">Todos</option>
+                            <option value="Frios">Frios</option>
+                            <option value="Mercearia">Mercearia</option>
+                            <option value="Padaria">Padaria</option>
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Bebidas">Bebidas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="table-wrap ultimos-table-wrap">
+
+                        <table class="tabela-ultimos">
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>
+                                        Data
+                                    </th>
+
+                                    <th>
+                                        Código
+                                    </th>
+
+                                    <th>
+                                        Produto
+                                    </th>
+
+                                    <th>
+                                        Qtd.
+                                    </th>
+
+                                    <th>
+                                        Valor
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody id="ultimosLancamentos">
+
+                                <tr>
+
+                                    <td
+                                        colspan="5"
+                                        class="vazio"
+                                    >
+                                        Nenhum lançamento realizado.
+                                    </td>
+
+                                </tr>
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+
+                </section>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             REGISTROS
+        ====================================================== -->
+
+        <section
+            id="abaRegistros"
+            class="aba-conteudo"
+        >
+
+            <section class="painel">
+
+                <div class="painel-header painel-header-flex">
+
+                    <div>
+
+                        <h2>
+                            Registros de avarias
+                        </h2>
+
+                        <p>
+                            Consulte, pesquise, filtre e exporte
+                            os registros cadastrados.
+                        </p>
+
+                    </div>
+
+
+                    <div class="contador">
+
+                        <span>
+                            Registros
+                        </span>
+
+                        <strong id="contadorRegistros">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================
+                     FILTROS
+                ========================== -->
+
+                <div class="resumo-registros">
+
+                    <article class="card-resumo">
+                        <span>Registros filtrados</span>
+                        <strong id="resumoRegistrosFiltrados">0</strong>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Quantidade filtrada</span>
+                        <strong id="resumoQuantidadeRegistros">0</strong>
+                    </article>
+
+                    <article class="card-resumo">
+                        <span>Valor filtrado</span>
+                        <strong id="resumoValorRegistros" class="valor-perdido">R$ 0,00</strong>
+                    </article>
+
+                </div>
+
+
+                <div id="painelFiltrosRegistros" class="barra-filtros painel-filtros-flutuante">
+
+
+                    <!-- PESQUISA -->
+
+                    <div class="filtro-pesquisa">
+
+                        <label for="buscaRegistros">
+                            Pesquisa
+                        </label>
+
+                        <input
+                            id="buscaRegistros"
+                            type="search"
+                            placeholder="Digite para pesquisar..."
+                        >
+
+                    </div>
+
+
+
+                    <!-- PESQUISAR EM -->
+
+                    <div class="filtro-campo">
+
+                        <label for="campoPesquisa">
+                            Pesquisar em
+                        </label>
+
+                        <select id="campoPesquisa">
+
+                            <option value="todos">
+                                Todos os campos
+                            </option>
+
+                            <option value="codigo">
+                                Código do produto
+                            </option>
+
+                            <option value="produto">
+                                Produto
+                            </option>
+
+                            <option value="fornecedor">
+                                Empresa / Fornecedor
+                            </option>
+
+                            <option value="codigoFornecedor">
+                                Código do fornecedor
+                            </option>
+
+                            <option value="tipo">
+                                Motivo da avaria
+                            </option>
+
+                            <option value="setor">
+                                Setor
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+
+                    <!-- TIPO -->
+
+                    <div class="filtro-campo">
+                        <label for="filtroFornecedorRegistros">Fornecedor</label>
+                        <select id="filtroFornecedorRegistros">
+                            <option value="Todos">Todos os fornecedores</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroStatusRegistros">Status</label>
+                        <select id="filtroStatusRegistros">
+                            <option value="Todos">Todos os status</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Baixa">Baixas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroCaixaRegistros">Caixa</label>
+                        <select id="filtroCaixaRegistros">
+                            <option value="Todos">Todas</option>
+                            <option value="com-caixa">Com caixa</option>
+                            <option value="sem-caixa">Sem caixa</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-campo">
+                        <label for="filtroSetorRegistros">Setor</label>
+                        <select id="filtroSetorRegistros">
+                            <option value="Todos">Todos os setores</option>
+                            <option value="Loja">Loja</option>
+                            <option value="CD">CD</option>
+                            <option value="Online">Online</option>
+                            <option value="Estoque">Estoque</option>
+                            <option value="Câmara">Câmara</option>
+                            <option value="Refeito">Refeito</option>
+                            <option value="Recepção">Recepção</option>
+                            <option value="Pitstop">Pitstop</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-categoria">
+                        <label for="filtroCategoriaRegistros">Categoria</label>
+                        <select id="filtroCategoriaRegistros">
+                            <option value="Todos">Todas</option>
+                            <option value="Frios">Frios</option>
+                            <option value="Mercearia">Mercearia</option>
+                            <option value="Padaria">Padaria</option>
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Bebidas">Bebidas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-tipo">
+
+                        <label for="filtroTipo">
+                            Motivo
+                        </label>
+
+                        <select id="filtroTipo">
+
+                            <option value="Todos">
+                                Todos
+                            </option>
+
+                            <option value="Produto avariado">
+                                Produto avariado
+                            </option>
+
+                            <option value="Degustação de cliente">
+                                Degustação de cliente
+                            </option>
+
+                            <option value="Fermentado">
+                                Fermentado
+                            </option>
+
+                            <option value="Vencido">
+                                Vencido
+                            </option>
+
+                            <option value="Próximo do vencimento">
+                                Próximo do vencimento
+                            </option>
+
+                            <option value="Furado">
+                                Furado
+                            </option>
+
+                            <option value="Bixado">
+                                Bixado
+                            </option>
+
+                            <option value="Microfuro">
+                                Microfuro
+                            </option>
+
+                            <option value="Outro">
+                                Outro
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- DATA INICIAL -->
+
+                    <div class="filtro-data">
+
+                        <label for="dataInicial">
+                            Data inicial
+                        </label>
+
+                        <input
+                            id="dataInicial"
+                            type="date"
+                        >
+
+                    </div>
+
+
+
+                    <!-- DATA FINAL -->
+
+                    <div class="filtro-data">
+
+                        <label for="dataFinal">
+                            Data final
+                        </label>
+
+                        <input
+                            id="dataFinal"
+                            type="date"
+                        >
+
+                    </div>
+
+                    <div class="filtro-campo">
+                        <label for="ordemRegistros">Ordenar por</label>
+                        <select id="ordemRegistros">
+                            <option value="" selected>Sem ordenação</option>
+                            <option value="data">Data</option>
+                            <option value="quantidade">Quantidade</option>
+                            <option value="valor">Valor</option>
+                            <option value="codigo">Código</option>
+                        </select>
+                    </div>
+
+                    <div class="filtro-campo">
+                        <label for="direcaoRegistros">Ordem</label>
+                        <select id="direcaoRegistros">
+                            <option value="desc">Maior → Menor</option>
+                            <option value="asc">Menor → Maior</option>
+                        </select>
+                    </div>
+
+                </div>
+
+
+
+                <!-- =========================
+                     BOTÕES
+                ========================== -->
+
+                <div class="acoes-registros">
+
+
+                    <button
+                        id="btnLimparFiltros"
+                        class="btn-limpar-filtros"
+                        type="button"
+                    >
+                        Limpar filtros
+                    </button>
+
+
+                    <button
+                        id="btnExcluirSelecionados"
+                        class="btn-excluir-selecionados"
+                        type="button"
+                        disabled
+                    >
+                        🗑 Excluir selecionados
+                        <span id="qtdSelecionados">
+                            (0)
+                        </span>
+                    </button>
+
+
+                    <button
+                        id="btnEnviarDoacaoSelecionados"
+                        class="btn-enviar-doacao-selecionados"
+                        type="button"
+                        disabled
+                        title="Enviar os registros selecionados para uma doação"
+                    >
+                        → Enviar para doação
+                        <span id="qtdDoacaoSelecionados">(0)</span>
+                    </button>
+
+
+                    <div class="compartilhar-registros">
+
+                        <button
+                            id="btnCompartilhar"
+                            class="btn-exportar btn-compartilhar"
+                            type="button"
+                            aria-haspopup="true"
+                            aria-expanded="false"
+                        >
+                            ↗ Compartilhar
+                        </button>
+
+                        <div
+                            id="menuCompartilhar"
+                            class="menu-compartilhar"
+                            hidden
+                        >
+                            <button
+                                id="btnCompartilharXlsx"
+                                type="button"
+                            >
+                                📊 Excel (XLSX)
+                            </button>
+                            <button
+                                id="btnCompartilharPdf"
+                                type="button"
+                            >
+                                📄 PDF
+                            </button>
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+
+                <!-- =========================
+                     TABELA
+                ========================== -->
+
+                <div class="table-wrap">
+
+                    <table class="tabela-registros">
+
+                        <thead>
+
+                            <tr>
+
+
+                                <!-- SELECIONAR -->
+
+                                <th class="col-selecao">
+
+                                    <input
+                                        id="selecionarTodos"
+                                        type="checkbox"
+                                        title="Selecionar todos os registros visíveis"
+                                    >
+
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="data">
+                                    Data
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="codigo">
+                                    Código
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="produto">
+                                    Produto
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="fornecedor">
+                                    Empresa
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="categoria">
+                                    Categoria
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="codigoFornecedor">
+                                    Cód. fornecedor
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="quantidade">
+                                    Qtd.
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="valor">
+                                    Valor total
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="setor">
+                                    Setor
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="tipo">
+                                    Motivo
+                                </th>
+
+
+                                <th class="th-ordenavel" data-sort-key="usuario">
+                                    Usuário
+                                </th>
+
+
+                                <th>
+                                    Ação
+                                </th>
+
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tabelaRegistros">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div id="paginacaoRegistros" class="paginacao-tabela" aria-label="Paginação dos registros"></div>
+
+
+            </section>
+
+        </section>
+
+
+
+        <!-- =====================================================
+             BAIXAS
+        ====================================================== -->
+
+        <section
+            id="abaBaixas"
+            class="aba-conteudo"
+        >
+
+
+            <!-- RESUMO -->
+
+            <div class="resumo-baixas">
+
+
+                <article class="card-resumo">
+
+                    <span>
+                        Registros exibidos
+                    </span>
+
+                    <strong id="totalBaixas">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="card-resumo">
+
+                    <span>
+                        Quantidade exibida
+                    </span>
+
+                    <strong id="quantidadeBaixada">
+                        0
+                    </strong>
+
+                </article>
+
+
+                <article class="card-resumo">
+
+                    <span>
+                        Valor total exibido
+                    </span>
+
+                    <strong
+                        id="valorPerdido"
+                        class="valor-perdido"
+                    >
+                        R$ 0,00
+                    </strong>
+
+                </article>
+
+
+            </div>
+
+
+
+            <section class="painel painel-historico">
+
+                <div class="painel-header painel-header-flex">
+
+                    <div>
+
+                        <h2>
+                            Histórico de registros
+                        </h2>
+
+                        <p>
+                            Os registros permanecem aqui mesmo quando forem excluídos da aba Registros.
+                        </p>
+
+                    </div>
+
+                    <div class="historico-header-acoes">
+
+                        <button
+                            id="btnExcluirHistoricoSelecionados"
+                            class="btn-excluir-selecionados somente-admin-historico"
+                            type="button"
+                            disabled
+                            title="Exclui do histórico os registros selecionados"
+                        >
+                            🗑 Excluir selecionados
+                            <span id="qtdHistoricoSelecionados">
+                                (0)
+                            </span>
+                        </button>
+
+                        <div class="contador">
+
+                            <span>
+                                Histórico
+                            </span>
+
+                            <strong id="contadorHistorico">
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div id="painelFiltrosBaixas" class="historico-filtros painel-filtros-flutuante">
+
+                    <div class="historico-pesquisa filtro-historico-pesquisa">
+
+                        <label for="buscaHistorico">
+                            Pesquisa geral
+                        </label>
+
+                        <input
+                            id="buscaHistorico"
+                            type="search"
+                            placeholder="Pesquisar produto, motivo ou caixa..."
+                        >
+
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+
+                        <label for="filtroHistoricoFornecedor">
+                            Fornecedor
+                        </label>
+
+                        <select id="filtroHistoricoFornecedor">
+                            <option value="">
+                                Todos os fornecedores
+                            </option>
+                        </select>
+
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+
+                        <label for="filtroHistoricoCodigoFornecedor">
+                            Cód. fornecedor
+                        </label>
+
+                        <input
+                            id="filtroHistoricoCodigoFornecedor"
+                            type="search"
+                            placeholder="Ex: 919"
+                        >
+
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+
+                        <label for="filtroHistoricoCodigoProduto">
+                            Código do produto
+                        </label>
+
+                        <input
+                            id="filtroHistoricoCodigoProduto"
+                            type="search"
+                            placeholder="EAN ou código"
+                        >
+
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoStatus">Status</label>
+                        <select id="filtroHistoricoStatus">
+                            <option value="">Todos</option>
+                            <option value="Pendente">Pendentes</option>
+                            <option value="Baixa">Baixas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoTipo">Motivo</label>
+                        <select id="filtroHistoricoTipo">
+                            <option value="">Todos os motivos</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoCaixa">Caixa</label>
+                        <select id="filtroHistoricoCaixa">
+                            <option value="">Todas</option>
+                            <option value="com-caixa">Com caixa</option>
+                            <option value="sem-caixa">Sem caixa</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoCategoria">Categoria</label>
+                        <select id="filtroHistoricoCategoria">
+                            <option value="">Todas</option>
+                            <option value="Frios">Frios</option>
+                            <option value="Mercearia">Mercearia</option>
+                            <option value="Padaria">Padaria</option>
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Bebidas">Bebidas</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="filtroHistoricoSetor">Setor</label>
+                        <select id="filtroHistoricoSetor">
+                            <option value="">Todos os setores</option>
+                            <option value="Loja">Loja</option>
+                            <option value="CD">CD</option>
+                            <option value="Online">Online</option>
+                            <option value="Estoque">Estoque</option>
+                            <option value="Câmara">Câmara</option>
+                            <option value="Refeito">Refeito</option>
+                            <option value="Recepção">Recepção</option>
+                            <option value="Pitstop">Pitstop</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+
+                        <label for="filtroHistoricoDataInicial">
+                            Data inicial
+                        </label>
+
+                        <input
+                            id="filtroHistoricoDataInicial"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+
+                        <label for="filtroHistoricoDataFinal">
+                            Data final
+                        </label>
+
+                        <input
+                            id="filtroHistoricoDataFinal"
+                            type="date"
+                        >
+
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="ordemHistorico">Ordenar por</label>
+                        <select id="ordemHistorico">
+                            <option value="data" selected>Data</option>
+                            <option value="codigo">Código</option>
+                            <option value="produto">Produto</option>
+                            <option value="fornecedor">Fornecedor</option>
+                            <option value="quantidade">Quantidade</option>
+                            <option value="valor">Valor</option>
+                            <option value="setor">Setor</option>
+                            <option value="tipo">Motivo</option>
+                            <option value="usuario">Usuário</option>
+                        </select>
+                    </div>
+
+
+                    <div class="filtro-historico-item">
+                        <label for="direcaoHistorico">Ordem</label>
+                        <select id="direcaoHistorico">
+                            <option value="desc" selected>Maior → Menor</option>
+                            <option value="asc">Menor → Maior</option>
+                        </select>
+                    </div>
+
+
+                    <div class="historico-acoes-filtros">
+
+                        <span class="exportacao-aviso">Sem seleção, exporta todos os filtrados.</span>
+
+                        <button
+                            id="btnExportarBaixasXlsx"
+                            class="btn-exportar"
+                            type="button"
+                        >
+                            📊 Exportar Excel
+                        </button>
+
+                        <button
+                            id="btnExportarBaixasPdf"
+                            class="btn-exportar btn-exportar-pdf"
+                            type="button"
+                        >
+                            📄 Exportar PDF
+                        </button>
+
+                        <button
+                            id="btnLimparFiltrosHistorico"
+                            class="btn-limpar-filtros"
+                            type="button"
+                        >
+                            Limpar filtros
+                        </button>
+
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="avisoHistoricoSomenteAdmin"
+                    class="aviso-admin-historico"
+                >
+                    🔒 Somente o administrador pode excluir registros do histórico.
+                </div>
+
+
+                <div class="table-wrap historico-table-wrap">
+
+                    <table class="tabela-historico">
+
+                        <thead>
+
+                            <tr>
+
+                                <th class="col-selecao">
+                                    <input
+                                        id="selecionarTodosHistorico"
+                                        type="checkbox"
+                                        title="Selecionar todos os registros visíveis"
+                                    >
+                                </th>
+
+                                <th class="th-ordenavel" data-sort-key="data">Data</th>
+                                <th class="th-ordenavel" data-sort-key="codigo">Código</th>
+                                <th class="th-ordenavel" data-sort-key="produto">Produto</th>
+                                <th class="th-ordenavel" data-sort-key="fornecedor">Empresa</th>
+                                <th class="th-ordenavel" data-sort-key="categoria">Categoria</th>
+                                <th class="th-ordenavel" data-sort-key="codigoFornecedor">Cód. fornecedor</th>
+                                <th class="th-ordenavel" data-sort-key="quantidade">Qtd.</th>
+                                <th class="th-ordenavel" data-sort-key="valor">Valor</th>
+                                <th class="th-ordenavel" data-sort-key="setor">Setor</th>
+                                <th class="th-ordenavel" data-sort-key="tipo">Motivo</th>
+                                <th class="th-ordenavel" data-sort-key="usuario">Usuário</th>
+                                <th class="somente-admin-historico">Editar</th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody id="tabelaHistorico">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <div id="paginacaoHistorico" class="paginacao-tabela" aria-label="Paginação do histórico de baixas"></div>
+
+            </section>
+        </section>
+
+
+    </main>
+
+    <button id="btnFiltrosRegistros" class="btn-filtros-flutuante" type="button" aria-expanded="false">🔎 Filtros</button>
+    <button id="btnFiltrosBaixas" class="btn-filtros-flutuante" type="button" aria-expanded="false">🔎 Filtros</button>
+
+    <!-- =========================
+         MODAL - EDITAR BAIXA (ADMIN)
+    ========================== -->
+
+    <div
+        id="modalEditarBaixa"
+        class="modal-editar-baixa"
+        aria-hidden="true"
+    >
+
+        <div
+            class="modal-editar-baixa-overlay"
+            data-fechar-modal-editar="true"
+        ></div>
+
+        <section
+            class="modal-editar-baixa-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloEditarBaixa"
+        >
+
+            <div class="modal-editar-baixa-header">
+
+                <div>
+                    <h2 id="tituloEditarBaixa">Editar baixa</h2>
+                    <p>Altere os dados deste lançamento. A exclusão também está disponível aqui.</p>
+                </div>
+
+                <button
+                    id="btnFecharEditarBaixa"
+                    class="modal-fechar"
+                    type="button"
+                    aria-label="Fechar"
+                >
+                    ×
+                </button>
+
+            </div>
+
+            <form id="formEditarBaixa">
+
+                <input
+                    id="editarBaixaId"
+                    type="hidden"
+                >
+
+                <div class="modal-editar-grid">
+
+                    <div class="modal-field">
+                        <label for="editarBaixaCodigo">Código do produto</label>
+                        <input id="editarBaixaCodigo" type="text" required>
+                    </div>
+
+                    <div class="modal-field modal-field-span-2">
+                        <label for="editarBaixaProduto">Produto</label>
+                        <input id="editarBaixaProduto" type="text" required maxlength="255">
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaFornecedor">Empresa / fornecedor</label>
+                        <input id="editarBaixaFornecedor" type="text" maxlength="255">
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaCodigoFornecedor">Cód. fornecedor</label>
+                        <input id="editarBaixaCodigoFornecedor" type="text" maxlength="50">
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaCategoria">Categoria</label>
+                        <select id="editarBaixaCategoria" required>
+                            <option value="Frios">Frios</option>
+                            <option value="Mercearia">Mercearia</option>
+                            <option value="Padaria">Padaria</option>
+                            <option value="Limpeza">Limpeza</option>
+                            <option value="Bebidas">Bebidas</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaQuantidade">Quantidade / peso</label>
+                        <input id="editarBaixaQuantidade" type="number" min="0.001" step="0.001" required>
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaValorUnitario">Valor de custo unitário</label>
+                        <input id="editarBaixaValorUnitario" type="number" min="0" step="0.0001" required>
+                    </div>
+
+                    <div class="modal-field modal-valor-total">
+                        <label>Valor total da baixa</label>
+                        <strong id="editarBaixaValorTotal">R$ 0,00</strong>
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaSetor">Setor</label>
+                        <input id="editarBaixaSetor" type="text" maxlength="100">
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaMotivo">Motivo</label>
+                        <select id="editarBaixaMotivo">
+                            <option value="Produto avariado">Produto avariado</option>
+                            <option value="Degustação de cliente">Degustação de cliente</option>
+                            <option value="Fermentado">Fermentado</option>
+                            <option value="Vencido">Vencido</option>
+                            <option value="Outro">Outro</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaCaixa">Caixa</label>
+                        <input id="editarBaixaCaixa" type="text" maxlength="255">
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaData">Data da baixa</label>
+                        <input id="editarBaixaData" type="datetime-local">
+                    </div>
+
+                    <div class="modal-field">
+                        <label for="editarBaixaUsuario">Usuário do lançamento</label>
+                        <input id="editarBaixaUsuario" type="text" readonly>
+                    </div>
+
+                    <div class="modal-field modal-field-span-2">
+                        <label for="editarBaixaObservacao">Observação</label>
+                        <textarea id="editarBaixaObservacao" rows="3" maxlength="2000"></textarea>
+                    </div>
+
+                </div>
+
+                <div class="modal-editar-acoes">
+
+                    <button
+                        id="btnExcluirBaixaModal"
+                        class="btn-modal-excluir"
+                        type="button"
+                    >
+                        🗑 Excluir registro
+                    </button>
+
+                    <div class="modal-editar-acoes-direita">
+
+                        <button
+                            id="btnCancelarEditarBaixa"
+                            class="btn-modal-cancelar"
+                            type="button"
+                        >
+                            Cancelar
+                        </button>
+
+                        <button
+                            id="btnSalvarEditarBaixa"
+                            class="btn-modal-salvar"
+                            type="submit"
+                        >
+                            💾 Salvar alterações
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </section>
+
+    </div>
+
+
+    <!-- =========================
+         MODAL - ENCAMINHAR PARA DOAÇÃO
+    ========================== -->
+
+    <div
+        id="modalEncaminharDoacao"
+        class="modal-editar-baixa"
+        aria-hidden="true"
+    >
+        <div class="modal-editar-baixa-overlay" data-fechar-modal-doacao="true"></div>
+        <section
+            class="modal-editar-baixa-card modal-doacao-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="tituloEncaminharDoacao"
+        >
+            <div class="modal-editar-baixa-header">
+                <div>
+                    <h2 id="tituloEncaminharDoacao">Enviar para doação</h2>
+                    <p>Os registros originais permanecem em Avarias e Baixas. Aqui você define apenas a quantidade destinada à doação.</p>
+                </div>
+                <button id="btnFecharEncaminharDoacao" class="modal-fechar" type="button" aria-label="Fechar">×</button>
+            </div>
+
+            <div class="modal-doacao-conteudo">
+                <div class="modal-doacao-info">
+                    <div>Itens selecionados <strong id="resumoItensDoacao">0</strong></div>
+                    <div>Quantidade para doação <strong id="resumoQuantidadeDoacao">0</strong></div>
+                </div>
+
+                <div class="campo-doacao-beneficiario">
+                    <label for="beneficiarioEncaminharDoacao">Beneficiário / instituição</label>
+                    <input id="beneficiarioEncaminharDoacao" type="text" maxlength="180" placeholder="Informe para quem será destinada a doação">
+                </div>
+
+                <div class="tabela-doacao-wrap">
+                    <table class="tabela-doacao-selecao">
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Disponível</th>
+                                <th>Para doação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaItensEncaminharDoacao"></tbody>
+                    </table>
+                </div>
+
+                <div class="modal-doacao-observacao">
+                    <label for="observacaoEncaminharDoacao">Observação</label>
+                    <textarea id="observacaoEncaminharDoacao" rows="2" maxlength="500" placeholder="Opcional"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-editar-acoes">
+                <div></div>
+                <div class="modal-editar-acoes-direita">
+                    <button id="btnCancelarEncaminharDoacao" class="btn-modal-cancelar" type="button">Cancelar</button>
+                    <button id="btnConfirmarEncaminharDoacao" class="btn-modal-salvar" type="button">→ Criar doação</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+
+    <!-- =========================
+         TOAST
+    ========================== -->
+
+    <div
+        id="toast"
+        class="toast"
+    ></div>
+
+
+
+    <script src="timezone.js?v=25.1"></script>
+    <script src="avarias.js?v=25.1"></script>
+
+
+    <script src="rodape.js?v=25.1"></script>
+</body>
+
+</html>

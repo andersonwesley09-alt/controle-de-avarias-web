@@ -1,0 +1,23 @@
+V25.1.9 - COMO OPERAR A REDE
+
+PC SERVIDOR
+1. Execute LIBERAR_ACESSO_REDE.bat como administrador.
+2. Execute INICIAR_SERVIDOR.bat.
+3. Anote o IPv4 mostrado em "Outros PCs".
+
+PC CLIENTE
+1. Copie a pasta.
+2. Execute CONFIGURAR_SERVIDOR_REDE.bat.
+3. Digite o IPv4 real do PC servidor.
+4. O script testa /api/versao e só salva se o servidor for realmente o Controle de Avarias V25.
+5. Depois use ABRIR_SISTEMA_REDE.bat.
+
+NÃO ABRIR POR DUPLO CLIQUE
+- Abrir um HTML diretamente por file:// sem servidor configurado mantém o modo local isolado.
+- Isso é proposital: um navegador não consegue adivinhar qual computador da rede é o servidor central.
+- Para operação compartilhada, use ABRIR_SISTEMA_REDE.bat ou o endereço http://IP_DO_SERVIDOR:3000.
+
+TEMPO REAL
+- O servidor central usa PostgreSQL.
+- Os clientes HTTP usam a mesma API e o mesmo canal SSE.
+- A correção V25.1.9 elimina a captura tardia de fetch/EventSource que podia quebrar a comunicação.

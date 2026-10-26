@@ -1,0 +1,31 @@
+CONTROLE DE AVARIAS - V25.1.14
+==============================
+
+PC SERVIDOR
+1. Execute LIBERAR_ACESSO_REDE.bat como administrador uma vez.
+2. Execute INICIAR_SERVIDOR.bat.
+3. Mantenha o servidor aberto.
+
+OUTROS PCs
+1. NÃO execute INICIAR_SERVIDOR.bat.
+2. NÃO instale PostgreSQL no PC cliente.
+3. Execute ABRIR_SISTEMA_CLIENTE.bat.
+4. Ele procura o servidor central automaticamente.
+5. Se a descoberta não funcionar, usa o servidor padrão http://10.10.70.163:3000.
+
+ACESSO MANUAL
+http://10.10.70.163:3000
+
+Se o IP do PC servidor mudar:
+- execute CONFIGURAR_SERVIDOR_REDE.bat no cliente; ou
+- atualize o endereço padrão em servidor-rede.js.
+
+VALIDAÇÃO
+O endpoint /api/rede-info mostra a versão e as contagens da base central.
+A V25.1.14 deve mostrar a mesma base em todos os PCs.
+
+DADOS
+Todos os módulos usam PostgreSQL central.
+Documentos gerais usam a tabela documentos_arquivos no PostgreSQL.
+Devoluções usam a tabela avarias e o status Devolução.
+Tempo real usa o SSE /api/eventos central.

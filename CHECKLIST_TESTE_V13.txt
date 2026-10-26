@@ -1,0 +1,57 @@
+CHECKLIST DE TESTE - V13.1
+========================
+
+1. SERVIDOR / REDE
+[ ] Iniciar o servidor no PC principal.
+[ ] Abrir http://IP_DO_PC_PRINCIPAL:3000 em outro PC.
+[ ] Fazer Ctrl+Shift+R uma vez no outro PC após instalar a V13.1.
+[ ] Fazer login no outro PC.
+[ ] Confirmar que não aparece Failed to fetch.
+
+2. TEMPO REAL
+[ ] Abrir o sistema em dois PCs.
+[ ] Lançar uma avaria no PC 1.
+[ ] Confirmar que o PC 2 atualiza.
+[ ] Alterar uma categoria como administrador.
+[ ] Confirmar a mudança no PC 2.
+
+3. REGISTROS
+[ ] Confirmar que o filtro Status não existe.
+[ ] Testar pesquisa.
+[ ] Testar fornecedor.
+[ ] Testar código fornecedor.
+[ ] Testar código produto.
+[ ] Testar categoria.
+[ ] Testar motivo.
+[ ] Testar data inicial/final.
+[ ] Como administrador, alterar a categoria de um produto.
+[ ] Reabrir/atualizar o sistema e confirmar que a categoria permanece.
+[ ] Importar novamente o Excel e confirmar que a categoria manual não foi perdida.
+
+4. CADASTRO
+[ ] Confirmar cadastro à esquerda.
+[ ] Confirmar últimos lançamentos à direita.
+[ ] Testar filtro de categoria dos últimos lançamentos.
+[ ] Testar lançamento normal.
+
+5. BAIXAS / EXPORTAÇÃO
+[ ] Aplicar filtros na aba Baixas.
+[ ] Confirmar que a tabela mostra os registros filtrados.
+[ ] Exportar Excel.
+[ ] Exportar PDF.
+[ ] Conferir itens repetidos consolidados.
+[ ] Conferir soma das quantidades.
+[ ] Conferir soma dos valores.
+[ ] Conferir linha TOTAL.
+[ ] Selecionar alguns registros e confirmar que a exportação usa os selecionados.
+
+6. DASHBOARD
+[ ] Confirmar que abre mostrando os dados existentes.
+[ ] Testar filtro de período.
+[ ] Testar categoria.
+[ ] Testar setor.
+[ ] Testar motivo.
+[ ] Testar fornecedor.
+[ ] Testar produto/código.
+[ ] Confirmar gráficos e tabelas.
+[ ] Confirmar atualização em tempo real.

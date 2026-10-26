@@ -1,0 +1,68 @@
+CHECKLIST DE TESTE - V13.5
+==========================
+
+1. SERVIDOR / REDE
+[ ] Iniciar INICIAR_SERVIDOR.bat.
+[ ] Confirmar PostgreSQL conectado.
+[ ] Confirmar URL de outros PCs.
+[ ] Abrir em outro PC e fazer login.
+[ ] Confirmar indicador de tempo real.
+[ ] Desconectar/reconectar rede e verificar reconexão do SSE.
+
+2. PERMISSÕES
+[ ] Usuário comum não vê Atualização dos Produtos.
+[ ] Usuário comum não acessa produtos.html diretamente.
+[ ] Usuário comum não vê Histórico de alterações.
+[ ] Usuário comum não consegue excluir registros.
+[ ] Admin consegue acessar todas as funções administrativas.
+
+3. CADASTRO
+[ ] Lançamento fica à esquerda e últimos lançamentos à direita.
+[ ] Categoria aparece no cadastro.
+[ ] Categoria é preenchida com a categoria atual do produto.
+[ ] Usuário pode escolher a categoria do lançamento.
+[ ] Salvar avaria grava a categoria escolhida.
+[ ] Fluxo com leitor: código -> quantidade -> salvar -> volta ao código.
+
+4. REGISTROS
+[ ] Status não aparece nos filtros.
+[ ] Filtros ficam dentro do botão flutuante.
+[ ] Testar pesquisa, fornecedor, código fornecedor, código produto, categoria, motivo e datas.
+[ ] Testar ordenação maior/menor por data, quantidade, valor e código.
+[ ] Cód. fornecedor e Qtd. não se sobrepõem.
+[ ] Botão de exclusão só aparece para admin.
+[ ] Admin altera categoria e ela permanece no produto.
+[ ] Confirmar alteração nos outros PCs.
+
+5. BAIXAS / EXPORTAÇÃO
+[ ] Filtros ficam no botão flutuante.
+[ ] Selecionar registros.
+[ ] Exportar Excel somente dos selecionados.
+[ ] Exportar PDF somente dos selecionados.
+[ ] Produtos repetidos são consolidados.
+[ ] Quantidades são somadas.
+[ ] Valores são somados.
+[ ] Totais conferem com a tela.
+[ ] Botão Editar fica totalmente visível.
+[ ] Admin edita todos os campos.
+[ ] Confirmar exclusão dentro da edição.
+
+6. DASHBOARD
+[ ] Abrir mostrando dados do mês atual.
+[ ] Filtros ficam no botão inferior direito.
+[ ] Testar período, categoria, setor, motivo, fornecedor, produto/código e status.
+[ ] Conferir cards, evolução, categorias, setores, motivos, fornecedores, produtos e últimas movimentações.
+[ ] Alteração feita em outro PC aparece em tempo real.
+
+7. AUDITORIA
+[ ] Admin acessa Histórico de alterações.
+[ ] Conferir alteração de categoria.
+[ ] Conferir edição de baixa.
+[ ] Conferir exclusão de registro.
+[ ] Conferir importação de produtos.
+[ ] Usuário comum não consegue abrir a API/página de auditoria.
+
+8. BACKUP
+[ ] Conferir pasta backups após iniciar o servidor.
+[ ] Se pg_dump estiver disponível, verificar arquivo .dump.
+[ ] Se pg_dump não estiver disponível, verificar snapshot .json.

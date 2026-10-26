@@ -1,0 +1,21 @@
+CHECKLIST DE TESTE - V5 INTEGRADO
+
+[ ] 1. node server.js inicia sem erro de sintaxe
+[ ] 2. PostgreSQL aparece como conectado no terminal
+[ ] 3. Login entra e abre sistema.html
+[ ] 4. Avarias: código localiza produto
+[ ] 5. Avarias: quantidade calcula valor total
+[ ] 6. Avarias: salvar cria registro Pendente
+[ ] 7. Registros: pesquisa e filtros funcionam
+[ ] 8. Registros: exportação XLSX funciona
+[ ] 9. Registros: exclusão remove da lista
+[ ] 10. Histórico: registro excluído em Registros continua visível
+[ ] 11. Histórico: checkbox e exclusão selecionada funcionam
+[ ] 12. Caixas: totais aparecem automaticamente
+[ ] 13. Caixas: Ver conteúdo mostra os itens vinculados
+[ ] 14. Caixas: caixa com pendência não pode ser excluída
+[ ] 15. Produtos: resumo da base carrega
+[ ] 16. Produtos: importação de Excel funciona
+[ ] 17. Dashboard: carrega as baixas do histórico permanente
+
+Se todos os itens acima passarem, a versão está pronta para uso operacional local.

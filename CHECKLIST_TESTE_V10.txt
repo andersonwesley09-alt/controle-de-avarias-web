@@ -1,0 +1,19 @@
+# Checklist V10
+
+- [ ] Login
+- [ ] Criar usuário como admin
+- [ ] Cadastrar avaria com setor
+- [ ] Cadastrar avaria com motivo Degustação de cliente
+- [ ] Cadastrar avaria com motivo Fermentado
+- [ ] Produto inexistente bloqueado
+- [ ] Produto sem custo bloqueado
+- [ ] Usuário aparece em Registros
+- [ ] Usuário aparece no Histórico
+- [ ] Caixa não aparece no cadastro
+- [ ] Cards da aba Baixas acompanham os filtros
+- [ ] Exclusão do Histórico continua exclusiva do admin
+- [ ] Alteração aparece nos outros PCs sem F5
+- [ ] Exportação XLSX inclui setor e usuário
+
+
+V10.2: correção do preenchimento de fornecedor/código de fornecedor na importação, com fallback por posição da planilha e preservação de dados existentes quando a importação vier vazia.

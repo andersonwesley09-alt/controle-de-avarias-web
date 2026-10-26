@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login - Controle de Avarias</title>
+
+    <link rel="stylesheet" href="stylelogin.css?v=20.5">
+    <link rel="stylesheet" href="rodape.css?v=20.5">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <section class="sistema-resumo-card" aria-label="Resumo do sistema">
+            <div class="resumo-kicker"><span>✦</span> CONTROLE DE AVARIAS</div>
+            <h2>Gestão mais simples das perdas da loja.</h2>
+            <p class="resumo-intro">Um sistema integrado para registrar avarias, acompanhar baixas, controlar caixas e transformar os dados em informação para a gestão.</p>
+
+            <div class="resumo-itens">
+                <article class="resumo-item">
+                    <div class="resumo-icone">🧾</div>
+                    <div><strong>Avarias e baixas</strong><span>Registre produtos, quantidades, motivos e acompanhe o histórico.</span></div>
+                </article>
+                <article class="resumo-item">
+                    <div class="resumo-icone">📦</div>
+                    <div><strong>Controle de caixas</strong><span>Organize produtos armazenados e acompanhe o estoque por fornecedor.</span></div>
+                </article>
+                <article class="resumo-item">
+                    <div class="resumo-icone">📊</div>
+                    <div><strong>Dashboard gerencial</strong><span>Visualize perdas, valores, fornecedores, produtos e tendências.</span></div>
+                </article>
+                <article class="resumo-item">
+                    <div class="resumo-icone ia-icone">✦</div>
+                    <div><strong>Assistente inteligente</strong><span>Use a IA para encontrar padrões e pontos que merecem atenção.</span></div>
+                </article>
+            </div>
+
+            <div class="resumo-rodape">
+                <span class="status-ponto"></span> Sistema integrado ao banco de dados
+            </div>
+        </section>
+
+        <section class="login-card">
+
+            <div class="login-header">
+<h1>Controle de Avarias</h1>
+
+                <p>Acesse o sistema para gerenciar avarias, baixas e devoluções.</p>
+
+            </div>
+
+            <form id="formLogin">
+
+                <div class="field">
+                    <label for="usuario">Usuário</label>
+                    <input id="usuario" type="text" placeholder="Digite seu usuário" required>
+                </div>
+
+                <div class="field">
+                    <label for="senha">Senha</label>
+                    <div class="senha-box">
+                        <input id="senha" type="password" placeholder="Digite sua senha" required>
+                        <button id="mostrarSenha" class="btn-senha" type="button">👁</button>
+                    </div>
+                </div>
+
+                <div id="mensagemErro" class="mensagem-erro"></div>
+
+                <button class="btn-entrar" type="submit">Entrar</button>
+            </form>
+
+        </section>
+
+    </main>
+
+    <script src="timezone.js?v=20.5"></script>
+    <script src="login.js?v=20.5"></script>
+    <script src="rodape.js?v=20.5"></script>
+</body>
+
+</html>

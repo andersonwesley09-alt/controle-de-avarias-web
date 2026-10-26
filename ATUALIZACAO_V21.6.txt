@@ -1,0 +1,27 @@
+CONTROLE DE AVARIAS - V21.6
+
+Atualização aplicada sobre a base V21.5 recebida em 19/10/2026.
+
+IMPLEMENTADO
+- Paginação em Registros.
+- Paginação em Baixas/Histórico de registros.
+- Paginação no Histórico de Alterações (Auditoria).
+- Seletor de 10, 25, 50 ou 100 registros por página.
+- Ordenação pelas colunas nas tabelas de Registros, Baixas e Auditoria.
+- Filtros adicionais de status e caixa em Registros.
+- Filtros adicionais de status, motivo e caixa em Baixas/Histórico.
+- Filtros de pesquisa, ação, entidade e usuário na Auditoria.
+- Resumo de registros, quantidade e valor nos Registros.
+- Exportação de Registros/Baixas respeitando os filtros; sem seleção, exporta os filtrados.
+- Caixa cadastrada com altura fixa e rolagem interna.
+- Notificações com marcar todas como lidas e limpar somente as lidas.
+- Identificação visual de notificações lidas/não lidas e contador de não lidas.
+- Card visual de Recuperação de Produtos na tela inicial, marcado como Em breve.
+
+NÃO IMPLEMENTADO
+- Ações em lote como novo módulo (item 9).
+- Módulo completo de Recuperação de Produtos (item 13).
+
+VALIDAÇÃO
+- JavaScript verificado com node --check.
+- Verificação estrutural do projeto executada com scripts/verificarProjeto.js.

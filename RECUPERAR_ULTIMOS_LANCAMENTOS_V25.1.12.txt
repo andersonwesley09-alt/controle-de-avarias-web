@@ -1,0 +1,28 @@
+CONTROLE DE AVARIAS V25.1.12
+RECUPERAR OS LANÇAMENTOS QUE SUMIRAM APÓS A MIGRAÇÃO PARA O POSTGRESQL
+
+O que aconteceu:
+- Durante as versões Web Local, os lançamentos recentes foram armazenados no localStorage do navegador.
+- A restauração do PostgreSQL recuperou o snapshot disponível, mas ele era anterior aos lançamentos mais recentes.
+- Por isso os usuários aparecem no banco central, mas os lançamentos feitos depois do snapshot podem não aparecer.
+
+COMO RECUPERAR
+1. No PC/navegador que ainda possui os lançamentos recentes, NÃO limpe cache/dados do navegador.
+2. Execute MIGRAR_LANCAMENTOS_LOCAIS.bat.
+3. A tela deve mostrar a quantidade de Registros locais e Histórico local.
+4. Se estiver no PC servidor, deixe http://localhost:3000.
+5. Informe um usuário ADMINISTRADOR do sistema.
+6. Clique em Testar servidor.
+7. Clique em RECUPERAR LANÇAMENTOS.
+8. A ferramenta envia somente os IDs que não existem no PostgreSQL.
+9. Registros existentes não são sobrescritos.
+10. Se um ID já existia no histórico central, ele não volta para a aba Registros.
+
+IMPORTANTE
+- Faça isso no mesmo PC e navegador onde os lançamentos sumidos ainda existiam.
+- Se a tela mostrar 0 lançamentos locais, NÃO prossiga: esse navegador não é o que contém os dados.
+- O botão "Baixar backup dos dados locais" permite guardar uma cópia JSON antes da migração.
+- Depois de concluir, recarregue o sistema nos outros PCs.
+- Não execute o restaurador antigo novamente.
+
+A migração é idempotente: executar novamente não cria duplicados porque o servidor trabalha por ID.

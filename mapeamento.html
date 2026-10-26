@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapeamento - Controle de Avarias</title>
+    <link rel="stylesheet" href="stylecaixas.css?v=13.25">
+    <link rel="stylesheet" href="styleMapeamento.css?v=13.25">
+    <link rel="stylesheet" href="rodape.css?v=20.3">
+</head>
+<body>
+<header class="topbar">
+    <div class="header-container">
+        <div class="marca-header">
+<div>
+                <h1>Mapeamento</h1>
+                <p>Mapa físico das caixas e posições da operação</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="caixas.html" class="btn-voltar">← Voltar</a>
+            <button id="btnSair" class="btn-sair" type="button">Sair</button>
+        </div>
+    </div>
+</header>
+
+<nav class="subnav">
+    <div class="subnav-inner">
+        <a href="caixas.html" class="subnav-btn">📦 Caixas</a>
+        <a href="mapeamento.html" class="subnav-btn ativo">🗺️ Mapeamento</a>
+    </div>
+</nav>
+
+<main>
+    <section class="painel mapa-painel">
+        <div class="mapa-cabecalho">
+            <div>
+                <h2>Mapeamento das caixas</h2>
+                <p>Layout fiel ao modelo: 20 quadrados na linha 1, 16 nas linhas 2 e 3 e 14 nas linhas 4 e 5. As edições e exclusões do mapa são permitidas somente ao administrador.</p>
+            </div>
+            <div class="mapa-status">
+                <span id="statusTempoReal" class="status-online">● Atualização em tempo real</span>
+                <span id="usuarioAtualMapa">-</span>
+            </div>
+        </div>
+
+        <div class="legenda">
+            <span><i class="legenda-cor"></i> Posição cadastrada</span>
+            <span>🔒 Edição somente para administrador</span>
+        </div>
+
+        <div class="mapa-pesquisa">
+            <div class="mapa-pesquisa-topo">
+                <label for="pesquisaMapa">Pesquisar nome</label>
+                <span id="resultadoPesquisa" class="resultado-pesquisa"></span>
+            </div>
+            <div class="mapa-pesquisa-linha">
+                <input
+                    id="pesquisaMapa"
+                    type="search"
+                    autocomplete="off"
+                    placeholder="Digite o nome da posição..."
+                    aria-label="Pesquisar nome no mapeamento"
+                >
+                <button id="btnLimparPesquisa" class="btn-limpar-pesquisa" type="button">Limpar</button>
+            </div>
+        </div>
+
+        <div class="mapa-scroll">
+            <div id="mapa" class="mapa-grade" aria-label="Mapa de posições"></div>
+        </div>
+    </section>
+</main>
+
+<div id="modalEditar" class="modal-backdrop oculto" aria-hidden="true">
+    <section class="modal-editar" role="dialog" aria-modal="true" aria-labelledby="tituloEditar">
+        <div class="modal-editar-header">
+            <div>
+                <h2 id="tituloEditar">Editar posição</h2>
+                <p id="posicaoEditar">Posição</p>
+            </div>
+            <button id="btnFecharModal" class="btn-fechar-modal" type="button">×</button>
+        </div>
+        <div class="campo-edicao">
+            <label for="nomePosicao">Nome</label>
+            <input id="nomePosicao" type="text" maxlength="80" autocomplete="off" placeholder="Digite o nome da posição">
+        </div>
+        <div class="modal-acoes">
+            <button id="btnCancelar" class="btn-cancelar" type="button">Cancelar</button>
+            <button id="btnLimparNome" class="btn-limpar-nome" type="button">Limpar nome</button>
+            <button id="btnExcluirNome" class="btn-excluir-mapeamento" type="button">Excluir quadrado</button>
+            <button id="btnSalvarNome" class="btn-salvar" type="button">Salvar</button>
+        </div>
+    </section>
+</div>
+
+<div id="toast" class="toast"></div>
+<script src="timezone.js?v=20.3"></script>
+    <script src="mapeamento.js?v=20.3"></script>
+    <script src="rodape.js?v=20.3"></script>
+</body>
+</html>

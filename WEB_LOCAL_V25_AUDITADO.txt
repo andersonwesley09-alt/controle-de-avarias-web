@@ -1,0 +1,1 @@
+V25 Web Local auditada: cobertura de rotas do server.js, PDFs REC/DOA, XLSX REC/DOA, auditoria, notificações e compatibilidade de caixas. Sem servidor.

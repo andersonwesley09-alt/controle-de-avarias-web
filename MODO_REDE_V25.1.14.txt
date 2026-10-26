@@ -1,0 +1,39 @@
+V25.1.14 - REDE CENTRAL DEFINITIVA
+==================================
+
+ARQUITETURA
+- Existe uma única fonte de dados: PostgreSQL no PC servidor.
+- Os outros PCs não usam banco local, localStorage ou IndexedDB para os dados do sistema.
+- O cliente apenas abre as páginas e consulta a API do servidor central.
+- Tempo real usa o SSE /api/eventos do mesmo servidor.
+
+PC SERVIDOR
+1. Execute LIBERAR_ACESSO_REDE.bat como administrador uma vez.
+2. Execute INICIAR_SERVIDOR.bat.
+3. Confirme no console o endereço "Outros PCs".
+
+PC CLIENTE
+1. Execute ABRIR_SISTEMA_CLIENTE.bat.
+2. O programa tenta descobrir o servidor automaticamente.
+3. Se a descoberta UDP falhar, tenta o servidor padrão configurado em 10.10.70.163:3000.
+4. Não instale PostgreSQL e não execute INICIAR_SERVIDOR.bat no PC cliente.
+
+IMPORTANTE
+- Não abra versões antigas do sistema que ainda carreguem local-api-216.js.
+- A V25.1.14 usa rede-central.js e força CA_LOCAL_MODE=false.
+- Abrir HTML antigo por duplo clique pode mostrar dados antigos do navegador. Isso não é mais uma fonte válida do sistema.
+
+DOCUMENTOS
+- PDFs e Excel da aba Documentos agora são gravados no PostgreSQL central.
+- Abrir, editar, excluir e favoritos são compartilhados entre os PCs.
+- Se existirem documentos antigos apenas no navegador, use MIGRAR_DOCUMENTOS_LOCAIS.html no mesmo navegador antigo para enviá-los ao servidor.
+
+DEVOLUÇÕES
+- A aba Devoluções não usa mais localStorage.
+- Pendentes e devoluções são consultados diretamente da tabela central de avarias.
+- Registrar devolução altera o status no PostgreSQL e atualiza os outros PCs pelo tempo real.
+
+DADOS
+- A V25.1.14 não faz reconciliação automática e não apaga nem sobrescreve a base existente.
+- RECONCILIAR_BASE_V25.1.13.bat continua disponível apenas para recuperação controlada do snapshot legado.
+- O backup automático do servidor continua ativo.

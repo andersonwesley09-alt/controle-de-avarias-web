@@ -1,0 +1,11 @@
+CHECKLIST V13.10
+
+[ ] Abrir uma caixa cadastrada.
+[ ] Bipe/digite um EAN válido e confirme que a descrição aparece antes de adicionar.
+[ ] Confirmar que o botão Adicionar item fica disponível somente após encontrar o produto.
+[ ] Digitar um EAN inexistente e confirmar mensagem de produto não encontrado.
+[ ] Confirmar que EAN inexistente não gera lançamento na caixa.
+[ ] Informar quantidade e adicionar o produto.
+[ ] Confirmar que o item aparece na tabela da caixa.
+[ ] Pressionar Enter após bipar EAN e confirmar que o fluxo funciona.
+[ ] Repetir o mesmo EAN e confirmar soma da quantidade.

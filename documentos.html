@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <script src="bcrypt-browser.js?v=25.1"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentos - Controle de Avarias</title>
+    <link rel="stylesheet" href="documentos.css?v=25.1">
+    <link rel="stylesheet" href="rodape.css?v=25.1">
+</head>
+<body>
+<header class="topbar">
+    <div class="header-container">
+        <div class="marca-header">
+<div class="titulo">
+                <h1>Documentos</h1>
+                <p>Arquivo rápido de documentos importantes</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="sistema.html" class="btn-voltar">← Voltar</a>
+            <button id="btnSair" class="btn-sair" type="button">Sair</button>
+        </div>
+    </div>
+</header>
+
+<main class="documentos-main">
+    <section class="hero-documentos">
+        <div>
+            <h2>Meus documentos</h2>
+            <p>Guarde PDFs e planilhas para encontrá-los rapidamente quando precisar.</p>
+        </div>
+        <button id="btnAdicionarDocumento" class="btn-primary" type="button">＋ Adicionar documento</button>
+    </section>
+
+    <section class="painel-documentos">
+        <div class="filtros-documentos">
+            <div class="campo-pesquisa">
+                <label for="buscaDocumentos">Pesquisar</label>
+                <input id="buscaDocumentos" type="search" placeholder="Nome, descrição ou arquivo..." autocomplete="off">
+            </div>
+            <div>
+                <label for="filtroCategoriaDocumentos">Categoria</label>
+                <select id="filtroCategoriaDocumentos">
+                    <option value="Todos">Todas</option>
+                    <option value="RH">RH</option>
+                    <option value="Fiscal">Fiscal</option>
+                    <option value="Compras">Compras</option>
+                    <option value="Comercial">Comercial</option>
+                    <option value="Financeiro">Financeiro</option>
+                    <option value="Operacional">Operacional</option>
+                    <option value="TI">TI</option>
+                    <option value="Outros">Outros</option>
+                </select>
+            </div>
+            <div>
+                <label for="filtroTipoDocumentos">Tipo</label>
+                <select id="filtroTipoDocumentos">
+                    <option value="Todos">Todos</option>
+                    <option value="pdf">PDF</option>
+                    <option value="excel">Excel</option>
+                </select>
+            </div>
+            <label class="check-favoritos">
+                <input id="filtroFavoritosDocumentos" type="checkbox">
+                <span>⭐ Somente favoritos</span>
+            </label>
+        </div>
+
+        <div class="resumo-documentos">
+            <span><strong id="contadorDocumentos">0</strong> documentos</span>
+            <span id="contadorFavoritos">0 favoritos</span>
+        </div>
+
+        <div id="listaDocumentos" class="lista-documentos"></div>
+        <div id="estadoVazioDocumentos" class="estado-vazio oculto">
+            <div class="estado-icone">📁</div>
+            <strong>Nenhum documento encontrado</strong>
+            <p>Adicione um PDF ou Excel para começar seu arquivo rápido.</p>
+        </div>
+    </section>
+</main>
+
+<div id="modalDocumento" class="modal-documento" aria-hidden="true">
+    <div class="modal-overlay" data-fechar-documento="true"></div>
+    <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="tituloModalDocumento">
+        <div class="modal-header">
+            <div>
+                <h2 id="tituloModalDocumento">Adicionar documento</h2>
+                <p>Cadastre o arquivo e algumas informações para facilitar a busca.</p>
+            </div>
+            <button id="btnFecharModalDocumento" class="modal-fechar" type="button" aria-label="Fechar">×</button>
+        </div>
+        <form id="formDocumento">
+            <input id="documentoId" type="hidden">
+            <div class="form-grid-documento">
+                <div class="campo campo-span-2">
+                    <label for="documentoNome">Nome do documento *</label>
+                    <input id="documentoNome" type="text" maxlength="180" required placeholder="Ex.: Convenção Coletiva 2026">
+                </div>
+                <div class="campo">
+                    <label for="documentoCategoria">Categoria *</label>
+                    <select id="documentoCategoria" required>
+                        <option value="RH">RH</option>
+                        <option value="Fiscal">Fiscal</option>
+                        <option value="Compras">Compras</option>
+                        <option value="Comercial">Comercial</option>
+                        <option value="Financeiro">Financeiro</option>
+                        <option value="Operacional">Operacional</option>
+                        <option value="TI">TI</option>
+                        <option value="Outros">Outros</option>
+                    </select>
+                </div>
+                <div class="campo campo-span-2">
+                    <label for="documentoDescricao">Descrição</label>
+                    <textarea id="documentoDescricao" rows="3" maxlength="500" placeholder="Opcional"></textarea>
+                </div>
+                <div class="campo campo-span-2">
+                    <label for="documentoArquivo">Arquivo *</label>
+                    <div id="dropDocumento" class="drop-documento">
+                        <input id="documentoArquivo" type="file" accept=".pdf,.xlsx,.xls,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel">
+                        <div class="drop-conteudo">
+                            <span class="drop-icone">📄</span>
+                            <strong id="nomeArquivoDocumento">Escolha um PDF ou Excel</strong>
+                            <small>Você também pode arrastar o arquivo para esta área.</small>
+                        </div>
+                    </div>
+                    <small id="arquivoAtualDocumento" class="arquivo-atual"></small>
+                </div>
+            </div>
+            <div class="modal-acoes-documento">
+                <button id="btnCancelarDocumento" class="btn-secondary" type="button">Cancelar</button>
+                <button id="btnSalvarDocumento" class="btn-primary" type="submit">💾 Salvar documento</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+<div id="toastDocumentos" class="toast-documentos"></div>
+<footer class="rodape-sistema"></footer>
+<script src="timezone.js?v=25.1"></script>
+<script src="documentos.js?v=25.1"></script>
+<script src="rodape.js?v=25.1"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+CHECKLIST V13.8 - FLUXO DE PRODUTOS DENTRO DA CAIXA
+
+[ ] Criar uma caixa sem adicionar produto no cadastro.
+[ ] Confirmar que a caixa aparece na listagem.
+[ ] Clicar em "Abrir caixa".
+[ ] Confirmar que a janela mostra o nome da caixa.
+[ ] Bipar/digitar um EAN.
+[ ] Informar quantidade e adicionar.
+[ ] Confirmar que o produto aparece na lista da caixa.
+[ ] Adicionar o mesmo produto novamente e confirmar soma da quantidade.
+[ ] Fechar e abrir a caixa novamente.
+[ ] Confirmar que os produtos continuam salvos.
+[ ] Remover um produto e confirmar atualização.
+[ ] Confirmar que a coluna "Itens" da listagem é atualizada.
+[ ] Testar no celular/responsivo.
+
+
+V13.10 - TESTE DE INICIALIZAÇÃO
+- Extrair o projeto em uma pasta nova.
+- Executar INICIAR_SERVIDOR.bat sem node_modules.
+- Confirmar que npm install seja executado automaticamente.
+- Confirmar que o servidor inicie após a instalação.

@@ -1,0 +1,11 @@
+CHECKLIST DE TESTE - V13.11
+
+1. Abrir uma caixa.
+2. Bipar um EAN.
+3. Confirmar que a descrição aparece sem adicionar o produto.
+4. Confirmar que o foco vai para Quantidade.
+5. Informar quantidade (ex.: 5).
+6. Pressionar Enter no campo Quantidade ou clicar em + Adicionar item.
+7. Confirmar que o produto foi salvo com a quantidade informada.
+8. Bipar novamente o mesmo EAN e informar outra quantidade; confirmar a soma.
+9. Testar EAN inexistente e confirmar que não permite lançamento.
