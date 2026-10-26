@@ -1,4 +1,4 @@
-﻿/* CONTROLE DE AVARIAS V25.1 — MODO DEMO / VITRINE */
+﻿/* CONTROLE DE AVARIAS V25.1 — MODO VITRINE */
 
 (() => {
     const hostname = String(window.location.hostname || "");
@@ -7,22 +7,15 @@
         /\.github\.io$/i.test(hostname) ||
         /\.pages\.dev$/i.test(hostname);
 
-    // GitHub Pages: usar somente a API local do navegador.
-    if (githubPages) {
-        const script = document.createElement("script");
-        script.src = "demo-api-v25.js?v=25.1-demo";
-        script.async = false;
-
-        const atual = document.currentScript;
-
-        if (atual?.parentNode) {
-            atual.parentNode.insertBefore(script, atual.nextSibling);
-        } else {
-            document.head.appendChild(script);
-        }
-
+    if (!githubPages) {
         return;
     }
 
-    // Ambiente local: não interfere no funcionamento do servidor.
+    /*
+     * Carregamento síncrono.
+     * O mock precisa existir ANTES de login.js e dos demais módulos.
+     */
+    document.write(
+        '<script src="demo-api-v25.js?v=25.1-demo-2"><\/script>'
+    );
 })();
