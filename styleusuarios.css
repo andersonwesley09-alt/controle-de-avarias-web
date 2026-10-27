@@ -269,6 +269,7 @@ tbody tr:hover {
     white-space: nowrap;
 }
 
+.btn-editar-usuario,
 .btn-status,
 .btn-senha,
 .btn-ver-senha,
@@ -280,6 +281,14 @@ tbody tr:hover {
     font-size: 10px;
     font-weight: bold;
     cursor: pointer;
+}
+
+.btn-editar-usuario {
+    background: var(--roxo);
+}
+
+.btn-editar-usuario:hover {
+    filter: brightness(.94);
 }
 
 .btn-status.desativar {
@@ -337,6 +346,7 @@ tbody tr:hover {
     background: #e4e7ef;
 }
 
+.modal-editar-usuario,
 .modal-senha {
     position: fixed;
     inset: 0;
@@ -348,8 +358,40 @@ tbody tr:hover {
     z-index: 2000;
 }
 
+.modal-editar-usuario.ativo,
 .modal-senha.ativo {
     display: flex;
+}
+
+
+.modal-editar-conteudo {
+    position: relative;
+    width: min(520px, 100%);
+    padding: 26px;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
+}
+
+.modal-editar-conteudo h2 {
+    margin: 0 40px 8px 0;
+    font-size: 20px;
+}
+
+.modal-editar-aviso {
+    margin: 0 0 18px;
+    color: #606978;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.modal-editar-form {
+    display: grid;
+    gap: 13px;
+}
+
+.modal-editar-form input {
+    height: 42px;
 }
 
 .modal-senha-conteudo {
@@ -469,6 +511,10 @@ tbody tr:hover {
 }
 
 
+/* =========================
+   IDENTIDADE MANAÍRA - V8
+========================= */
+
 .marca-header {
     display: flex;
     align-items: center;
@@ -476,7 +522,22 @@ tbody tr:hover {
     min-width: 0;
 }
 
+.logo-manaira-header {
+    display: block;
+    width: 145px;
+    max-width: 28vw;
+    height: 72px;
+    object-fit: contain;
+    object-position: left center;
+    flex: 0 0 auto;
+}
+
 @media (max-width: 650px) {
+    .logo-manaira-header {
+        width: 105px;
+        height: 58px;
+    }
+
     .marca-header {
         gap: 10px;
     }

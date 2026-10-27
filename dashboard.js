@@ -1,26 +1,12 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraSistema === "function") return window.formatarDataHoraSistema(valor);
+    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
 };
 
 /* BUILD V20.6 - IA analítica isolada sobre a base V20.5 */
-const API = (() => {
-    const origin = window.location.origin;
-
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
-    }
-
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 let avarias=[];let estoqueCaixas={total:{},fornecedores:[],produtos:[],categorias:[],caixas:[]};let modoGrafico="valor";let modoProdutos="valor";let modoCaixaProdutos="valor";
 const $=id=>document.getElementById(id);
 
@@ -87,12 +73,12 @@ const filtroCaixaProduto = $('filtroCaixaProduto');
 const btnLimparFiltrosCaixas = $('btnLimparFiltrosCaixas');
 
 const n=v=>Number.isFinite(Number(v))?Number(v):0;const moeda=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(n(v));const qtd=v=>n(v).toLocaleString('pt-BR',{maximumFractionDigits:3});const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const norm=v=>String(v??'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();const val=a=>n(a.quantidade)*n(a.valorUnitario);const cat=a=>a.categoria||'Mercearia';
-function dentroData(a){const d=new Date(a.movimentadoEm||a.criadoEm||0);if(Number.isNaN(d.getTime()))return false;if(els.di.value&&d<inicioDiaSistema(els.di.value))return false;if(els.df.value&&d>fimDiaSistema(els.df.value))return false;return true;}
+function dentroData(a){const d=new Date(a.movimentadoEm||a.criadoEm||0);if(Number.isNaN(d.getTime()))return false;if(els.di.value&&d<inicioDiaManaira(els.di.value))return false;if(els.df.value&&d>fimDiaManaira(els.df.value))return false;return true;}
 function filtrados(){const p=norm(els.produto.value);return avarias.filter(a=>{if(els.status.value!=='Todos'&&String(a.status||'')!==els.status.value)return false;if(!dentroData(a))return false;if(els.cat.value!=='Todos'&&cat(a)!==els.cat.value)return false;if(els.setor.value!=='Todos'&&String(a.setor||'')!==els.setor.value)return false;if(els.motivo.value!=='Todos'&&String(a.tipo||'')!==els.motivo.value)return false;if(els.fornecedor.value!=='Todos'&&String(a.fornecedor||'')!==els.fornecedor.value)return false;if(p&&!norm(`${a.codigo||''} ${a.produto||''}`).includes(p))return false;return true;});}
 function opcoes(){const fs=[...new Set(avarias.map(a=>String(a.fornecedor||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));const ms=[...new Set(avarias.map(a=>String(a.tipo||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'pt-BR'));const f=els.fornecedor.value,m=els.motivo.value;els.fornecedor.innerHTML='<option>Todos</option>'+fs.map(x=>`<option>${esc(x)}</option>`).join('');els.motivo.innerHTML='<option>Todos</option>'+ms.map(x=>`<option>${esc(x)}</option>`).join('');if(fs.includes(f))els.fornecedor.value=f;if(ms.includes(m))els.motivo.value=m;}
 function agr(lista,key){const m=new Map();for(const a of lista){const k=key(a)||'Não informado';if(!m.has(k))m.set(k,{chave:k,registros:0,quantidade:0,valor:0});const x=m.get(k);x.registros++;x.quantidade+=n(a.quantidade);x.valor+=val(a);}return[...m.values()];}
 function barras(el,dados){if(!dados.length){el.innerHTML='<div class="vazio">Nenhum dado para os filtros selecionados.</div>';return;}const arr=dados.slice(0,8),max=Math.max(...arr.map(x=>x.valor),1);el.innerHTML=arr.map(x=>`<div class="barra-item"><div class="barra-label"><span>${esc(x.chave)}</span><strong>${moeda(x.valor)}</strong></div><div class="barra-track"><span style="width:${Math.max(3,x.valor/max*100)}%"></span></div></div>`).join('');}
-function evolucao(lista){const m=new Map();for(const a of lista){const d=new Date(a.movimentadoEm||a.criadoEm||0);if(Number.isNaN(d.getTime()))continue;const k=formatarDataSistema(d);if(!m.has(k))m.set(k,{data:d,valor:0,quantidade:0,registros:0});const x=m.get(k);x.valor+=val(a);x.quantidade+=n(a.quantidade);x.registros++;}const arr=[...m.values()].sort((a,b)=>a.data-b.data).slice(-31);if(!arr.length){els.evolucao.innerHTML='<div class="vazio">Nenhuma movimentação para os filtros selecionados.</div>';return;}const max=Math.max(...arr.map(x=>n(x[modoGrafico])),1);els.evolucao.innerHTML=arr.map(x=>{const v=n(x[modoGrafico]);const label=modoGrafico==='valor'?moeda(v):modoGrafico==='quantidade'?qtd(v):v;return `<div class="coluna-grafico"><div class="coluna-valor">${label}</div><div class="coluna" style="height:${Math.max(5,v/max*100)}%"></div><small>${formatarDataCurtaSistema(x.data)}</small></div>`;}).join('');}
+function evolucao(lista){const m=new Map();for(const a of lista){const d=new Date(a.movimentadoEm||a.criadoEm||0);if(Number.isNaN(d.getTime()))continue;const k=formatarDataManaira(d);if(!m.has(k))m.set(k,{data:d,valor:0,quantidade:0,registros:0});const x=m.get(k);x.valor+=val(a);x.quantidade+=n(a.quantidade);x.registros++;}const arr=[...m.values()].sort((a,b)=>a.data-b.data).slice(-31);if(!arr.length){els.evolucao.innerHTML='<div class="vazio">Nenhuma movimentação para os filtros selecionados.</div>';return;}const max=Math.max(...arr.map(x=>n(x[modoGrafico])),1);els.evolucao.innerHTML=arr.map(x=>{const v=n(x[modoGrafico]);const label=modoGrafico==='valor'?moeda(v):modoGrafico==='quantidade'?qtd(v):v;return `<div class="coluna-grafico"><div class="coluna-valor">${label}</div><div class="coluna" style="height:${Math.max(5,v/max*100)}%"></div><small>${formatarDataCurtaManaira(x.data)}</small></div>`;}).join('');}
 function fornecedores(lista){const arr=agr(lista,a=>a.fornecedor||'Não informado').sort((a,b)=>b.valor-a.valor).slice(0,12);els.fornTabela.innerHTML=arr.length?arr.map(x=>`<tr><td>${esc(x.chave)}</td><td>${x.registros}</td><td>${qtd(x.quantidade)}</td><td><strong>${moeda(x.valor)}</strong></td></tr>`).join(''):'<tr><td colspan="4" class="vazio">Nenhum fornecedor encontrado.</td></tr>';}
 function produtos(lista){const m=new Map();for(const a of lista){const k=String(a.codigo||a.produto||'').trim().toLowerCase();if(!k)continue;if(!m.has(k))m.set(k,{produto:a.produto||'-',codigo:a.codigo||'',categoria:cat(a),quantidade:0,valor:0});const x=m.get(k);x.quantidade+=n(a.quantidade);x.valor+=val(a);}const arr=[...m.values()].sort((a,b)=>modoProdutos==='valor'?b.valor-a.valor:b.quantidade-a.quantidade).slice(0,15);els.prodTabela.innerHTML=arr.length?arr.map((x,i)=>`<tr><td>${i+1}</td><td><strong>${esc(x.produto)}</strong><small class="codigo-secundario">${esc(x.codigo)}</small></td><td>${esc(x.categoria)}</td><td>${qtd(x.quantidade)}</td><td><strong>${moeda(x.valor)}</strong></td></tr>`).join(''):'<tr><td colspan="5" class="vazio">Nenhum produto encontrado.</td></tr>';}
 function ultimas(lista){const arr=[...lista].sort((a,b)=>new Date(b.movimentadoEm||b.criadoEm||0)-new Date(a.movimentadoEm||a.criadoEm||0)).slice(0,12);els.ultimas.innerHTML=arr.length?arr.map(a=>`<tr><td>${formatarDataHoraSistema(a.movimentadoEm||a.criadoEm)}</td><td>${esc(a.produto||'-')}</td><td>${esc(cat(a))}</td><td>${esc(a.fornecedor||'-')}</td><td>${esc(a.setor||'-')}</td><td>${esc(a.tipo||'-')}</td><td>${qtd(a.quantidade)}</td><td><strong>${moeda(val(a))}</strong></td></tr>`).join(''):'<tr><td colspan="8" class="vazio">Nenhuma movimentação encontrada.</td></tr>';}
@@ -480,7 +466,7 @@ function configurarAbasDashboard(){
 }
 
 function definirPeriodoPadrao(){
-    const hoje = hojeSistema();
+    const hoje = hojeManaira();
     const [ano, mes] = hoje.split('-').map(Number);
     const primeiroDia = `${ano}-${String(mes).padStart(2,'0')}-01`;
     if (!els.di.value) els.di.value = primeiroDia;

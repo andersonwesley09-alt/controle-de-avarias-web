@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraSistema === "function") return window.formatarDataHoraSistema(valor);
+    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -24,14 +24,7 @@ if (!sessao || !sessao.token) {
     throw new Error("Sessão não encontrada.");
 }
 
-const API = (() => {
-    const protocolo = window.location.protocol;
-    const hostname = window.location.hostname;
-    const porta = window.location.port;
-    if ((protocolo === "http:" || protocolo === "https:") && porta === "3000") return window.location.origin;
-    if ((protocolo === "http:" || protocolo === "https:") && hostname) return `${protocolo}//${hostname}:3000`;
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || "";
 
 const $ = id => document.getElementById(id);
 const formPerfil = $("formPerfil");
@@ -49,17 +42,22 @@ function mostrarToast(mensagem, erro = false) {
 function headers() {
     return {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sessao.token}`,
-        "Cache-Control": "no-store"
+        "Authorization": `Bearer ${sessao.token}`
     };
 }
 
 async function api(url, options = {}) {
-    const resposta = await fetch(`${API}${url}`, {
-        cache: "no-store",
-        ...options,
-        headers: { ...headers(), ...(options.headers || {}) }
-    });
+    let resposta;
+    try {
+        resposta = await fetch(`${API}${url}`, {
+            cache: "no-store",
+            credentials: "include",
+            ...options,
+            headers: { ...headers(), ...(options.headers || {}) }
+        });
+    } catch (erro) {
+        throw new Error("Não foi possível concluir a operação no modo vitrine.");
+    }
     let dados = {};
     try { dados = await resposta.json(); } catch {}
     if (resposta.status === 401 || resposta.status === 403) {
@@ -162,7 +160,7 @@ formSenha.addEventListener("submit", async event => {
 
 $("btnSair").addEventListener("click", () => {
     if (!confirm("Deseja sair do sistema?")) return;
-    fetch("/api/logout", {
+    fetch(`${API}/api/logout`, {
         method: "POST",
         credentials: "include",
         keepalive: true

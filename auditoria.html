@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Histórico de alterações - Controle de Avarias</title>
-<link rel="stylesheet" href="auditoria.css?v=21.6">
-    <link rel="stylesheet" href="rodape.css?v=21.6">
+<link rel="stylesheet" href="auditoria.css?v=24.6">
+    <link rel="stylesheet" href="rodape.css?v=24.6">
 </head>
 <body>
 <header class="topbar">
@@ -20,21 +23,34 @@
   <section class="painel">
     <div class="cabecalho-painel">
       <div><h2>Alterações realizadas</h2><p>Somente administradores podem consultar este histórico.</p></div>
-      <button id="btnAtualizar" type="button">↻ Atualizar</button>
+      <div class="acoes-auditoria">
+        <button id="btnSelecionarTodosAuditoria" type="button" class="btn-selecao-auditoria">☑ Selecionar todos</button>
+        <button id="btnExcluirSelecionadosAuditoria" type="button" class="btn-excluir-auditoria" disabled>🗑 Excluir selecionados</button>
+        <button id="btnAtualizar" type="button">↻ Atualizar</button>
+      </div>
     </div>
-    <div class="resumo"><strong id="totalAuditoria">0</strong><span>registros de auditoria carregados</span></div>
+    <div class="resumo"><strong id="totalAuditoria">0</strong><span>registros de auditoria encontrados</span></div>
+
+    <div class="filtros-auditoria">
+      <div><label for="buscaAuditoria">Pesquisa</label><input id="buscaAuditoria" type="search" placeholder="Pesquisar usuário, entidade, ação ou detalhe..."></div>
+      <div><label for="filtroAcaoAuditoria">Ação</label><select id="filtroAcaoAuditoria"><option value="">Todas</option></select></div>
+      <div><label for="filtroEntidadeAuditoria">Entidade</label><select id="filtroEntidadeAuditoria"><option value="">Todas</option></select></div>
+      <div><label for="filtroUsuarioAuditoria">Usuário</label><select id="filtroUsuarioAuditoria"><option value="">Todos</option></select></div>
+      <div class="filtro-auditoria-acoes"><button id="btnLimparFiltrosAuditoria" type="button">Limpar filtros</button></div>
+    </div>
+
     <div class="tabela-wrap">
       <table>
-        <thead><tr><th>Data</th><th>Usuário</th><th>Ação</th><th>Entidade</th><th>Registro</th><th>Detalhes</th><th>Resultado</th></tr></thead>
-        <tbody id="tabelaAuditoria"><tr><td colspan="7" class="vazio">Carregando...</td></tr></tbody>
+        <thead><tr><th class="th-selecao"><input id="checkTodosAuditoria" class="checkbox-auditoria" type="checkbox" aria-label="Selecionar todos os registros desta página"></th><th>Data</th><th>Usuário</th><th>Ação</th><th>Entidade</th><th>Registro</th><th>Detalhes</th><th>Resultado</th></tr></thead>
+        <tbody id="tabelaAuditoria"><tr><td colspan="8" class="vazio">Carregando...</td></tr></tbody>
       </table>
     </div>
+    <div id="paginacaoAuditoria" class="paginacao-tabela" aria-label="Paginação do histórico de alterações"></div>
   </section>
 </main>
 <div id="toast" class="toast"></div>
-<script src="local-api-216.js?v=21.6.1"></script>
-    <script src="timezone.js?v=21.6"></script>
-    <script src="auditoria.js?v=21.6"></script>
+<script src="timezone.js?v=24.6"></script>
+    <script src="auditoria.js?v=24.6"></script>
     <script src="rodape.js?v=21.6"></script>
 </body>
 </html>

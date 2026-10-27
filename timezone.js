@@ -1,6 +1,6 @@
 /* =========================================================
-   HORÁRIO OFICIAL DO SISTEMA
-   Os horários exibidos ao usuário usam America/Sao_Paulo.
+   HORÁRIO OFICIAL DO SISTEMA - MANAÍRA
+   Todos os horários exibidos ao usuário usam America/Sao_Paulo.
 ========================================================= */
 (function (global) {
     const TIME_ZONE = "America/Sao_Paulo";
@@ -10,7 +10,7 @@
         return !Number.isNaN(d.getTime()) ? d : null;
     }
 
-    function formatarDataHoraSistema(valor) {
+    function formatarDataHoraManaira(valor) {
         const d = dataValida(valor);
         if (!d) return "-";
         return new Intl.DateTimeFormat("pt-BR", {
@@ -20,7 +20,7 @@
         }).format(d);
     }
 
-    function formatarHoraSistema(valor) {
+    function formatarHoraManaira(valor) {
         const d = dataValida(valor);
         if (!d) return "-";
         return new Intl.DateTimeFormat("pt-BR", {
@@ -31,7 +31,7 @@
         }).format(d);
     }
 
-    function formatarDataSistema(valor) {
+    function formatarDataManaira(valor) {
         const d = dataValida(valor);
         if (!d) return "-";
         return new Intl.DateTimeFormat("pt-BR", {
@@ -40,7 +40,7 @@
         }).format(d);
     }
 
-    function formatarDataCurtaSistema(valor) {
+    function formatarDataCurtaManaira(valor) {
         const d = dataValida(valor);
         if (!d) return "-";
         return new Intl.DateTimeFormat("pt-BR", {
@@ -50,7 +50,7 @@
         }).format(d);
     }
 
-    function hojeSistema() {
+    function hojeManaira() {
         const partes = new Intl.DateTimeFormat("en-CA", {
             timeZone: TIME_ZONE,
             year: "numeric",
@@ -62,22 +62,22 @@
         return `${get("year")}-${get("month")}-${get("day")}`;
     }
 
-    function inicioDiaSistema(dataISO) {
-        const data = String(dataISO || hojeSistema()).slice(0, 10);
+    function inicioDiaManaira(dataISO) {
+        const data = String(dataISO || hojeManaira()).slice(0, 10);
         return new Date(`${data}T00:00:00-03:00`);
     }
 
-    function fimDiaSistema(dataISO) {
-        const data = String(dataISO || hojeSistema()).slice(0, 10);
+    function fimDiaManaira(dataISO) {
+        const data = String(dataISO || hojeManaira()).slice(0, 10);
         return new Date(`${data}T23:59:59.999-03:00`);
     }
 
-    global.SISTEMA_TIME_ZONE = TIME_ZONE;
-    global.formatarDataHoraSistema = formatarDataHoraSistema;
-    global.formatarHoraSistema = formatarHoraSistema;
-    global.formatarDataSistema = formatarDataSistema;
-    global.formatarDataCurtaSistema = formatarDataCurtaSistema;
-    global.hojeSistema = hojeSistema;
-    global.inicioDiaSistema = inicioDiaSistema;
-    global.fimDiaSistema = fimDiaSistema;
+    global.MANAIRA_TIME_ZONE = TIME_ZONE;
+    global.formatarDataHoraManaira = formatarDataHoraManaira;
+    global.formatarHoraManaira = formatarHoraManaira;
+    global.formatarDataManaira = formatarDataManaira;
+    global.formatarDataCurtaManaira = formatarDataCurtaManaira;
+    global.hojeManaira = hojeManaira;
+    global.inicioDiaManaira = inicioDiaManaira;
+    global.fimDiaManaira = fimDiaManaira;
 })(window);

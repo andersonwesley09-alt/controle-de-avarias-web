@@ -23,21 +23,7 @@ if (dadosSessao.perfil !== "admin" || !dadosSessao.token) {
 }
 
 
-const API = (() => {
-    const origin = window.location.origin;
-
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
-    }
-
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 
 const arquivoProdutos =
@@ -139,6 +125,36 @@ arquivoProdutos.addEventListener(
 
 
 /* =========================
+   LEITOR EXCEL (SheetJS)
+========================= */
+
+function carregarLeitorExcel() {
+
+    if (window.XLSX && typeof window.XLSX.read === "function") {
+        return Promise.resolve();
+    }
+
+    if (window.__carregandoXLSX) {
+        return window.__carregandoXLSX;
+    }
+
+    window.__carregandoXLSX = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js";
+        script.async = true;
+        script.onload = () => {
+            if (window.XLSX) resolve();
+            else reject(new Error("Não foi possível carregar o leitor de Excel."));
+        };
+        script.onerror = () => reject(new Error("Não foi possível carregar o leitor de Excel. Verifique sua conexão com a internet."));
+        document.head.appendChild(script);
+    });
+
+    return window.__carregandoXLSX;
+}
+
+
+/* =========================
    IMPORTAR
 ========================= */
 
@@ -186,6 +202,12 @@ btnImportar.addEventListener(
 
 
         try {
+
+            const nomeArquivo = String(arquivo.name || "").toLowerCase();
+
+            if (nomeArquivo.endsWith(".xlsx") || nomeArquivo.endsWith(".xls")) {
+                await carregarLeitorExcel();
+            }
 
             const dados =
                 new FormData();

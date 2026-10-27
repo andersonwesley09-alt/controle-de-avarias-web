@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraSistema === "function") return window.formatarDataHoraSistema(valor);
+    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -36,21 +36,7 @@ function headersAutorizacao() {
    API
 ========================================================= */
 
-const API = (() => {
-    const origin = window.location.origin;
-
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
-    }
-
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 
 /* =========================================================

@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraSistema === "function") return window.formatarDataHoraSistema(valor);
+    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -10,21 +10,7 @@ const formatarDataHoraSistema = (valor) => {
    USUÁRIOS - ADMIN
 ========================================================= */
 
-const API = (() => {
-    const origin = window.location.origin;
-
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
-    }
-
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
-})();
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 
 let usuarios = [];
@@ -147,7 +133,26 @@ const btnCancelarModalSenha =
 const btnRedefinirModalSenha =
     document.getElementById("btnRedefinirModalSenha");
 
+const modalEditarUsuario =
+    document.getElementById("modalEditarUsuario");
+
+const editarNome =
+    document.getElementById("editarNome");
+
+const editarUsuario =
+    document.getElementById("editarUsuario");
+
+const btnFecharModalEditar =
+    document.getElementById("btnFecharModalEditar");
+
+const btnCancelarModalEditar =
+    document.getElementById("btnCancelarModalEditar");
+
+const btnSalvarModalEditar =
+    document.getElementById("btnSalvarModalEditar");
+
 let usuarioSenhaModal = null;
+let usuarioEdicaoModal = null;
 
 
 function esc(valor) {
@@ -419,6 +424,16 @@ function renderizarUsuarios() {
                         <td>${dataHora(item.criadoEm)}</td>
                         <td>
                             <div class="acoes">
+                                <button
+                                    type="button"
+                                    class="btn-editar-usuario"
+                                    data-id="${item.id}"
+                                    data-nome="${esc(item.nome)}"
+                                    data-usuario="${esc(item.usuario)}"
+                                >
+                                    Editar
+                                </button>
+
                                 ${admin && item.usuario === sessao.usuario ? "" : `
                                     <button
                                         type="button"
@@ -457,6 +472,24 @@ function renderizarUsuarios() {
 
             }
         ).join("");
+
+
+    tabelaUsuarios
+        .querySelectorAll(
+            ".btn-editar-usuario"
+        )
+        .forEach(
+            botao => {
+                botao.addEventListener(
+                    "click",
+                    () => abrirModalEditarUsuario(
+                        botao.dataset.id,
+                        botao.dataset.nome,
+                        botao.dataset.usuario
+                    )
+                );
+            }
+        );
 
 
     tabelaUsuarios
@@ -705,6 +738,100 @@ async function alterarStatus(
 }
 
 
+function abrirModalEditarUsuario(id, nomeUsuario, loginUsuario) {
+    const item = usuarios.find(
+        usuarioItem => String(usuarioItem.id) === String(id)
+    );
+
+    if (!item) {
+        mostrarToast("Usuário não encontrado.");
+        return;
+    }
+
+    usuarioEdicaoModal = {
+        id: String(item.id),
+        usuarioOriginal: String(item.usuario || "")
+    };
+
+    editarNome.value = String(nomeUsuario || item.nome || "");
+    editarUsuario.value = String(loginUsuario || item.usuario || "");
+
+    modalEditarUsuario.classList.add("ativo");
+    modalEditarUsuario.setAttribute("aria-hidden", "false");
+
+    setTimeout(() => editarNome.focus(), 0);
+}
+
+
+function fecharModalEditarUsuario() {
+    modalEditarUsuario.classList.remove("ativo");
+    modalEditarUsuario.setAttribute("aria-hidden", "true");
+    usuarioEdicaoModal = null;
+}
+
+
+async function salvarEdicaoUsuario() {
+    if (!usuarioEdicaoModal) return;
+
+    const alvo = usuarioEdicaoModal;
+    const novoNome = editarNome.value.trim();
+    const novoUsuario = editarUsuario.value.trim().toLowerCase();
+
+    if (!novoNome) {
+        mostrarToast("Informe o nome do usuário.");
+        editarNome.focus();
+        return;
+    }
+
+    if (!/^[a-z0-9._-]{3,40}$/.test(novoUsuario)) {
+        mostrarToast("O usuário deve ter de 3 a 40 caracteres e usar apenas letras, números, ponto, hífen ou underline.");
+        editarUsuario.focus();
+        return;
+    }
+
+    const textoOriginal = btnSalvarModalEditar.textContent;
+    btnSalvarModalEditar.disabled = true;
+    btnSalvarModalEditar.textContent = "Salvando...";
+
+    try {
+        const resposta = await fetch(
+            `${API}/api/usuarios/${encodeURIComponent(alvo.id)}`,
+            {
+                method: "PATCH",
+                headers: headersAdmin(),
+                body: JSON.stringify({
+                    nome: novoNome,
+                    usuario: novoUsuario
+                })
+            }
+        );
+
+        const dados = await tratarResposta(resposta);
+
+        if (String(alvo.id) === String(sessao.id || "") || alvo.usuarioOriginal === sessao.usuario) {
+            const sessaoAtualizada = {
+                ...sessao,
+                nome: dados.nome || novoNome,
+                usuario: dados.usuario || novoUsuario
+            };
+            sessionStorage.setItem("usuarioLogado", JSON.stringify(sessaoAtualizada));
+            sessao.nome = sessaoAtualizada.nome;
+            sessao.usuario = sessaoAtualizada.usuario;
+        }
+
+        fecharModalEditarUsuario();
+        mostrarToast("Usuário atualizado com sucesso.");
+        await carregarUsuarios();
+    } catch (erro) {
+        console.error(erro);
+        mostrarToast(erro.message);
+    } finally {
+        btnSalvarModalEditar.disabled = false;
+        btnSalvarModalEditar.textContent = textoOriginal;
+    }
+}
+
+
 function abrirModalSenha(id, nomeUsuario) {
 
     usuarioSenhaModal = {
@@ -921,6 +1048,13 @@ document
         });
     });
 
+btnFecharModalEditar?.addEventListener("click", fecharModalEditarUsuario);
+btnCancelarModalEditar?.addEventListener("click", fecharModalEditarUsuario);
+btnSalvarModalEditar?.addEventListener("click", salvarEdicaoUsuario);
+modalEditarUsuario?.addEventListener("click", event => {
+    if (event.target === modalEditarUsuario) fecharModalEditarUsuario();
+});
+
 btnFecharModalSenha?.addEventListener("click", fecharModalSenha);
 btnCancelarModalSenha?.addEventListener("click", fecharModalSenha);
 btnRedefinirModalSenha?.addEventListener("click", redefinirSenhaDoModal);
@@ -929,7 +1063,14 @@ modalSenha?.addEventListener("click", event => {
 });
 
 document.addEventListener("keydown", event => {
-    if (event.key === "Escape" && modalSenha?.classList.contains("ativo")) {
+    if (event.key !== "Escape") return;
+
+    if (modalEditarUsuario?.classList.contains("ativo")) {
+        fecharModalEditarUsuario();
+        return;
+    }
+
+    if (modalSenha?.classList.contains("ativo")) {
         fecharModalSenha();
     }
 });

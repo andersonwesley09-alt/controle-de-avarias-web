@@ -61,8 +61,8 @@ if (usuarioEhAdmin) {
 ========================= */
 
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraSistema === "function") {
-        return window.formatarDataHoraSistema(valor);
+    if (typeof window.formatarDataHoraManaira === "function") {
+        return window.formatarDataHoraManaira(valor);
     }
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
@@ -74,21 +74,8 @@ const formatarDataHoraSistema = (valor) => {
 };
 
 
-const API = (() => {
-    const origin = window.location.origin;
-
-    // Quando o sistema é aberto pelo servidor Node, usa o próprio endereço.
-    if (
-        origin &&
-        origin !== "null" &&
-        (window.location.protocol === "http:" || window.location.protocol === "https:")
-    ) {
-        return origin;
-    }
-
-    // Fallback para computadores que abriram um HTML localmente.
-    return "http://localhost:3000";
-})();
+const LIMITE_QUANTIDADE = 100000;
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
 
 
 async function sincronizarPermissaoAdminHistorico() {
@@ -322,6 +309,18 @@ const filtroSetorRegistros =
     );
 
 
+const filtroStatusRegistros =
+    document.getElementById(
+        "filtroStatusRegistros"
+    );
+
+
+const filtroCaixaRegistros =
+    document.getElementById(
+        "filtroCaixaRegistros"
+    );
+
+
 const dataInicial =
     document.getElementById(
         "dataInicial"
@@ -379,6 +378,54 @@ const qtdSelecionados =
     document.getElementById(
         "qtdSelecionados"
     );
+
+
+const btnEnviarDoacaoSelecionados =
+document.getElementById(
+        "btnEnviarDoacaoSelecionados"
+    );
+
+const qtdDoacaoSelecionados =
+document.getElementById(
+        "qtdDoacaoSelecionados"
+    );
+
+const modalEncaminharDoacao =
+document.getElementById(
+        "modalEncaminharDoacao"
+    );
+
+const tabelaItensEncaminharDoacao =
+document.getElementById(
+        "tabelaItensEncaminharDoacao"
+    );
+
+const beneficiarioEncaminharDoacao =
+document.getElementById(
+        "beneficiarioEncaminharDoacao"
+    );
+
+const observacaoEncaminharDoacao =
+document.getElementById(
+        "observacaoEncaminharDoacao"
+    );
+
+const resumoItensDoacao =
+document.getElementById(
+        "resumoItensDoacao"
+    );
+
+const resumoQuantidadeDoacao =
+document.getElementById(
+        "resumoQuantidadeDoacao"
+    );
+
+const btnConfirmarEncaminharDoacao =
+document.getElementById(
+        "btnConfirmarEncaminharDoacao"
+    );
+
+let itensPendentesParaDoacao = [];
 
 
 const selecionarTodos =
@@ -486,6 +533,36 @@ const btnLimparFiltrosHistorico =
     );
 
 
+const filtroHistoricoStatus =
+    document.getElementById(
+        "filtroHistoricoStatus"
+    );
+
+
+const filtroHistoricoTipo =
+    document.getElementById(
+        "filtroHistoricoTipo"
+    );
+
+
+const filtroHistoricoCaixa =
+    document.getElementById(
+        "filtroHistoricoCaixa"
+    );
+
+
+const ordemHistorico =
+    document.getElementById(
+        "ordemHistorico"
+    );
+
+
+const direcaoHistorico =
+    document.getElementById(
+        "direcaoHistorico"
+    );
+
+
 const avisoHistoricoSomenteAdmin =
     document.getElementById(
         "avisoHistoricoSomenteAdmin"
@@ -540,6 +617,36 @@ const valorPerdido =
     );
 
 
+const resumoRegistrosFiltrados =
+    document.getElementById(
+        "resumoRegistrosFiltrados"
+    );
+
+
+const resumoQuantidadeRegistros =
+    document.getElementById(
+        "resumoQuantidadeRegistros"
+    );
+
+
+const resumoValorRegistros =
+    document.getElementById(
+        "resumoValorRegistros"
+    );
+
+
+const paginacaoRegistros =
+    document.getElementById(
+        "paginacaoRegistros"
+    );
+
+
+const paginacaoHistorico =
+    document.getElementById(
+        "paginacaoHistorico"
+    );
+
+
 let historicoAvarias =
     [];
 
@@ -550,6 +657,23 @@ let historicoFiltrado =
 
 let historicoSelecionados =
     new Set();
+
+
+/* =========================
+   PAGINAÇÃO / ORDENAÇÃO
+========================= */
+
+const PAGINACAO_TAMANHOS = [10, 25, 50, 100];
+
+let paginaRegistros = 1;
+let tamanhoPaginaRegistros = 25;
+let registrosPaginaAtual = [];
+let ordenacaoCabecalhoRegistros = { campo: "", direcao: "desc" };
+
+let paginaHistorico = 1;
+let tamanhoPaginaHistorico = 25;
+let historicoPaginaAtual = [];
+let ordenacaoCabecalhoHistorico = { campo: "data", direcao: "desc" };
 
 
 /* =========================
@@ -1614,10 +1738,10 @@ formAvaria.addEventListener(
             );
 
 
-        if (qtd <= 0) {
+        if (!Number.isFinite(qtd) || qtd <= 0 || qtd > LIMITE_QUANTIDADE) {
 
             mostrarToast(
-                "Informe a quantidade ou peso."
+                `Informe uma quantidade válida. O limite por lançamento é ${LIMITE_QUANTIDADE.toLocaleString("pt-BR")}.`
             );
 
 
@@ -1966,7 +2090,7 @@ function correspondeData(
     if (dataInicial.value) {
 
         const inicio =
-            inicioDiaSistema(dataInicial.value);
+            inicioDiaManaira(dataInicial.value);
 
 
         if (
@@ -1984,7 +2108,7 @@ function correspondeData(
     if (dataFinal.value) {
 
         const fim =
-            fimDiaSistema(dataFinal.value);
+            fimDiaManaira(dataFinal.value);
 
 
         if (
@@ -2017,6 +2141,14 @@ function atualizarResumoSelecao() {
     btnExcluirSelecionados.disabled =
         selecionados.size === 0;
 
+    if (btnEnviarDoacaoSelecionados) {
+        btnEnviarDoacaoSelecionados.disabled = selecionados.size === 0;
+    }
+
+    if (qtdDoacaoSelecionados) {
+        qtdDoacaoSelecionados.textContent = `(${selecionados.size})`;
+    }
+
 }
 
 
@@ -2038,7 +2170,7 @@ function atualizarCheckboxMestre() {
 
 
     const idsVisiveis =
-        registrosFiltrados.map(
+        registrosPaginaAtual.map(
             item =>
                 String(
                     item.id
@@ -2072,6 +2204,163 @@ function atualizarCheckboxMestre() {
    REGISTROS
 ========================================================= */
 
+function compararListas(a, b, campo, direcao = "asc") {
+    let va;
+    let vb;
+
+    if (campo === "data") {
+        va = new Date(a.movimentadoEm || a.criadoEm || 0).getTime();
+        vb = new Date(b.movimentadoEm || b.criadoEm || 0).getTime();
+        va = Number.isFinite(va) ? va : 0;
+        vb = Number.isFinite(vb) ? vb : 0;
+    } else if (campo === "quantidade") {
+        va = numero(a.quantidade);
+        vb = numero(b.quantidade);
+    } else if (campo === "valor") {
+        va = valorDaAvaria(a);
+        vb = valorDaAvaria(b);
+    } else {
+        const campos = {
+            codigo: "codigo",
+            produto: "produto",
+            fornecedor: "fornecedor",
+            categoria: "categoria",
+            codigoFornecedor: "codigoFornecedor",
+            setor: "setor",
+            tipo: "tipo",
+            usuario: "usuarioLancamento"
+        };
+        va = String(a[campos[campo] || campo] || "");
+        vb = String(b[campos[campo] || campo] || "");
+        const comparacao = va.localeCompare(vb, "pt-BR", { numeric: true, sensitivity: "base" });
+        return direcao === "asc" ? comparacao : -comparacao;
+    }
+
+    if (va === vb) return 0;
+    const resultado = va < vb ? -1 : 1;
+    return direcao === "asc" ? resultado : -resultado;
+}
+
+
+function ordenarLista(lista, campo, direcao = "desc") {
+    if (!campo) return lista;
+    return lista.sort((a, b) => compararListas(a, b, campo, direcao));
+}
+
+
+function renderizarPaginacao(container, total, pagina, tamanho, onChange) {
+    if (!container) return;
+
+    const totalPaginas = Math.max(1, Math.ceil(total / tamanho));
+    const paginaAtual = Math.min(Math.max(1, pagina), totalPaginas);
+    const inicio = total ? ((paginaAtual - 1) * tamanho) + 1 : 0;
+    const fim = total ? Math.min(paginaAtual * tamanho, total) : 0;
+
+    if (!total) {
+        container.innerHTML = "";
+        return;
+    }
+
+    const botoes = [];
+    const adicionar = (numeroPagina, texto, classe = "") => {
+        botoes.push(`<button type="button" class="pagina-btn ${classe}" data-pagina="${numeroPagina}" ${numeroPagina === paginaAtual ? 'aria-current="page"' : ''}>${texto}</button>`);
+    };
+
+    adicionar(1, "«", paginaAtual === 1 ? "desabilitado" : "",);
+    adicionar(Math.max(1, paginaAtual - 1), "‹", paginaAtual === 1 ? "desabilitado" : "");
+
+    let paginas = [];
+    if (totalPaginas <= 7) {
+        paginas = Array.from({ length: totalPaginas }, (_, i) => i + 1);
+    } else if (paginaAtual <= 4) {
+        paginas = [1, 2, 3, 4, 5, "…", totalPaginas];
+    } else if (paginaAtual >= totalPaginas - 3) {
+        paginas = [1, "…", totalPaginas - 4, totalPaginas - 3, totalPaginas - 2, totalPaginas - 1, totalPaginas];
+    } else {
+        paginas = [1, "…", paginaAtual - 1, paginaAtual, paginaAtual + 1, "…", totalPaginas];
+    }
+
+    paginas.forEach(item => {
+        if (item === "…") {
+            botoes.push('<span class="pagina-reticencias">…</span>');
+        } else {
+            adicionar(item, String(item), item === paginaAtual ? "ativo" : "");
+        }
+    });
+
+    adicionar(Math.min(totalPaginas, paginaAtual + 1), "›", paginaAtual === totalPaginas ? "desabilitado" : "");
+    adicionar(totalPaginas, "»", paginaAtual === totalPaginas ? "desabilitado" : "");
+
+    container.innerHTML = `
+        <div class="paginacao-info">Mostrando <strong>${inicio}–${fim}</strong> de <strong>${total}</strong></div>
+        <div class="paginacao-controles">
+            <label>Por página
+                <select class="paginacao-tamanho">${PAGINACAO_TAMANHOS.map(opcao => `<option value="${opcao}" ${opcao === tamanho ? "selected" : ""}>${opcao}</option>`).join("")}</select>
+            </label>
+            <div class="paginacao-botoes">${botoes.join("")}</div>
+        </div>`;
+
+    container.querySelector(".paginacao-tamanho")?.addEventListener("change", event => {
+        onChange(1, Number(event.target.value) || 25);
+    });
+
+    container.querySelectorAll(".pagina-btn").forEach(button => {
+        button.addEventListener("click", () => {
+            if (button.classList.contains("desabilitado")) return;
+            onChange(Number(button.dataset.pagina) || 1, tamanho);
+        });
+    });
+}
+
+
+function atualizarResumoRegistros(lista) {
+    const registros = Array.isArray(lista) ? lista : [];
+    const quantidade = registros.reduce((soma, item) => soma + numero(item.quantidade), 0);
+    const valor = registros.reduce((soma, item) => soma + valorDaAvaria(item), 0);
+    if (resumoRegistrosFiltrados) resumoRegistrosFiltrados.textContent = registros.length;
+    if (resumoQuantidadeRegistros) resumoQuantidadeRegistros.textContent = formatarQuantidade(quantidade);
+    if (resumoValorRegistros) resumoValorRegistros.textContent = moeda(valor);
+}
+
+
+function configurarCabecalhosOrdenaveis(seletor, tipoTabela) {
+    document.querySelectorAll(`${seletor} .th-ordenavel`).forEach(th => {
+        if (th.dataset.ordenacaoConfigurada === "true") return;
+        th.dataset.ordenacaoConfigurada = "true";
+        th.addEventListener("click", () => {
+            const campo = th.dataset.sortKey || "";
+            const estado = tipoTabela === "registros" ? ordenacaoCabecalhoRegistros : ordenacaoCabecalhoHistorico;
+            if (estado.campo === campo) {
+                estado.direcao = estado.direcao === "asc" ? "desc" : "asc";
+            } else {
+                estado.campo = campo;
+                estado.direcao = campo === "data" ? "desc" : "asc";
+            }
+            if (tipoTabela === "registros") {
+                if (ordemRegistros) ordemRegistros.value = campo === "data" ? "data" : campo === "valor" || campo === "quantidade" || campo === "codigo" ? campo : "";
+                if (direcaoRegistros) direcaoRegistros.value = estado.direcao;
+                paginaRegistros = 1;
+                renderizarRegistros();
+            } else {
+                if (ordemHistorico) ordemHistorico.value = campo || "data";
+                if (direcaoHistorico) direcaoHistorico.value = estado.direcao;
+                paginaHistorico = 1;
+                renderizarHistorico();
+            }
+        });
+    });
+}
+
+
+function atualizarIndicadoresOrdenacao(seletor, campo, direcao) {
+    document.querySelectorAll(`${seletor} .th-ordenavel`).forEach(th => {
+        const ativo = (th.dataset.sortKey || "") === campo;
+        th.classList.toggle("ordenado", ativo);
+        th.setAttribute("aria-sort", ativo ? (direcao === "asc" ? "ascending" : "descending") : "none");
+    });
+}
+
+
 function atualizarFornecedoresRegistros() {
     if (!filtroFornecedorRegistros) return;
     const atual = filtroFornecedorRegistros.value || "Todos";
@@ -2085,381 +2374,111 @@ function renderizarRegistros() {
 
     atualizarFornecedoresRegistros();
 
-    const pesquisa =
-        buscaRegistros.value
-            .trim();
+    const pesquisa = buscaRegistros.value.trim();
+    const tipoSelecionado = filtroTipo.value;
+    const statusSelecionado = filtroStatusRegistros?.value || "Todos";
+    const caixaSelecionada = filtroCaixaRegistros?.value || "Todos";
 
+    registrosFiltrados = avarias
+        .filter(avariaVisivel)
+        .filter(avaria => statusSelecionado === "Todos" || avaria.status === statusSelecionado)
+        .filter(avaria => tipoSelecionado === "Todos" || avaria.tipo === tipoSelecionado)
+        .filter(avaria => {
+            const cat = filtroCategoriaRegistros?.value || "Todos";
+            return cat === "Todos" || (avaria.categoria || "Mercearia") === cat;
+        })
+        .filter(avaria => {
+            const fornecedor = filtroFornecedorRegistros?.value || "Todos";
+            return fornecedor === "Todos" || String(avaria.fornecedor || "") === fornecedor;
+        })
+        .filter(avaria => {
+            const setorSelecionado = filtroSetorRegistros?.value || "Todos";
+            return setorSelecionado === "Todos" || String(avaria.setor || "") === setorSelecionado;
+        })
+        .filter(avaria => {
+            if (caixaSelecionada === "com-caixa") return String(avaria.caixa || "").trim() !== "";
+            if (caixaSelecionada === "sem-caixa") return String(avaria.caixa || "").trim() === "";
+            return true;
+        })
+        .filter(correspondeData)
+        .filter(avaria => correspondeBusca(avaria, pesquisa));
 
-    const tipoSelecionado =
-        filtroTipo.value;
+    const campoOrdem = ordemRegistros?.value || ordenacaoCabecalhoRegistros.campo || "";
+    const direcaoOrdem = direcaoRegistros?.value || ordenacaoCabecalhoRegistros.direcao || "desc";
+    if (campoOrdem) ordenarLista(registrosFiltrados, campoOrdem, direcaoOrdem);
 
+    atualizarResumoRegistros(registrosFiltrados);
+    contadorRegistros.textContent = registrosFiltrados.length;
 
-    registrosFiltrados =
-        avarias
-
-        .filter(
-            avariaVisivel
-        )
-
-        .filter(
-
-            avaria => {
-
-                if (
-                    tipoSelecionado ===
-                    "Todos"
-                ) {
-
-                    return true;
-
-                }
-
-
-                return (
-                    avaria.tipo ===
-                    tipoSelecionado
-                );
-
-            }
-
-        )
-
-        .filter(
-            avaria => {
-                const cat = filtroCategoriaRegistros?.value || "Todos";
-                return cat === "Todos" || (avaria.categoria || "Mercearia") === cat;
-            }
-        )
-        .filter(
-            avaria => {
-                const fornecedor = filtroFornecedorRegistros?.value || "Todos";
-                return fornecedor === "Todos" || String(avaria.fornecedor || "") === fornecedor;
-            }
-        )
-        .filter(
-            avaria => {
-                const setorSelecionado = filtroSetorRegistros?.value || "Todos";
-                return setorSelecionado === "Todos" || String(avaria.setor || "") === setorSelecionado;
-            }
-        )
-
-        .filter(
-            correspondeData
-        )
-
-        .filter(
-
-            avaria =>
-                correspondeBusca(
-                    avaria,
-                    pesquisa
-                )
-
-        );
-
-    const campoOrdem = ordemRegistros?.value || "";
-    const direcaoOrdem = direcaoRegistros?.value || "desc";
-
-    // A ordenação é opcional. Sem uma escolha, preservamos exatamente
-    // a ordem recebida da API (normalmente a mais recente primeiro).
-    if (campoOrdem) {
-        registrosFiltrados.sort((a, b) => {
-            let va;
-            let vb;
-            if (campoOrdem === "quantidade") {
-                va = numero(a.quantidade);
-                vb = numero(b.quantidade);
-            } else if (campoOrdem === "valor") {
-                va = valorDaAvaria(a);
-                vb = valorDaAvaria(b);
-            } else if (campoOrdem === "codigo") {
-                va = String(a.codigo || "");
-                vb = String(b.codigo || "");
-                const comparacao = va.localeCompare(vb, "pt-BR", { numeric: true, sensitivity: "base" });
-                return direcaoOrdem === "asc" ? comparacao : -comparacao;
-            } else {
-                va = new Date(a.criadoEm || 0).getTime();
-                vb = new Date(b.criadoEm || 0).getTime();
-            }
-            return direcaoOrdem === "asc" ? va - vb : vb - va;
-        });
-    }
-
-
-    contadorRegistros.textContent =
-        registrosFiltrados.length;
-
+    const totalPaginas = Math.max(1, Math.ceil(registrosFiltrados.length / tamanhoPaginaRegistros));
+    paginaRegistros = Math.min(Math.max(1, paginaRegistros), totalPaginas);
+    const inicio = (paginaRegistros - 1) * tamanhoPaginaRegistros;
+    registrosPaginaAtual = registrosFiltrados.slice(inicio, inicio + tamanhoPaginaRegistros);
 
     atualizarResumoSelecao();
+    atualizarIndicadoresOrdenacao(".tabela-registros", campoOrdem, direcaoOrdem);
+    configurarCabecalhosOrdenaveis(".tabela-registros", "registros");
+    renderizarPaginacao(
+        paginacaoRegistros,
+        registrosFiltrados.length,
+        paginaRegistros,
+        tamanhoPaginaRegistros,
+        (novaPagina, novoTamanho) => {
+            paginaRegistros = novaPagina;
+            tamanhoPaginaRegistros = novoTamanho;
+            renderizarRegistros();
+        }
+    );
 
-
-    if (
-        !registrosFiltrados.length
-    ) {
-
+    if (!registrosFiltrados.length) {
         tabelaRegistros.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="13"
-                    class="vazio"
-                >
-                    Nenhum registro encontrado.
-                </td>
-
-            </tr>
-
-        `;
-
-
+            <tr><td colspan="13" class="vazio">Nenhum registro encontrado.</td></tr>`;
         atualizarCheckboxMestre();
-
-
         return;
-
     }
 
-
-    tabelaRegistros.innerHTML =
-
-        registrosFiltrados
-
-        .map(
-
-            avaria => {
-
-                const id =
-                    String(
-                        avaria.id
-                    );
-
-
-                const marcado =
-                    selecionados.has(
-                        id
-                    )
-                        ? "checked"
-                        : "";
-
-
-                return `
-
-                    <tr>
-
-                        <td class="col-selecao">
-
-                            <input
-                                type="checkbox"
-                                class="checkbox-registro"
-                                data-id="${esc(id)}"
-                                ${marcado}
-                                aria-label="Selecionar registro"
-                            >
-
-                        </td>
-
-
-                        <td>
-
-                            ${formatarData(
-                                avaria.criadoEm
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.codigo || "-"
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.produto
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.fornecedor || "-"
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${usuarioEhAdmin
-                                ? `
-                                    <select
-                                        class="categoria-registro-select"
-                                        data-id="${esc(String(avaria.id))}"
-                                        aria-label="Alterar categoria do produto"
-                                    >
-                                        ${["Frios", "Mercearia", "Padaria", "Limpeza", "Bebidas"].map(cat => `
-                                            <option value="${cat}" ${String(avaria.categoria || "Mercearia") === cat ? "selected" : ""}>${cat}</option>
-                                        `).join("")}
-                                    </select>
-                                `
-                                : esc(avaria.categoria || "Mercearia")}
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.codigoFornecedor || "-"
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${formatarQuantidade(
-                                avaria.quantidade
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            <strong>
-
-                                ${moeda(
-                                    valorDaAvaria(
-                                        avaria
-                                    )
-                                )}
-
-                            </strong>
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.setor || "-"
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.tipo || "-"
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            ${esc(
-                                avaria.usuarioLancamento || "-"
-                            )}
-
-                        </td>
-
-
-                        <td>
-
-                            <button
-                                type="button"
-                                class="btn-editar-baixa btn-editar-registro"
-                                onclick="excluirAvaria('${id}')"
-                            >
-                                🗑 Excluir
-                            </button>
-
-                        </td>
-
-
-                    </tr>
-
-                `;
-
-            }
-
-        )
-
-        .join("");
-
-
-    document
-        .querySelectorAll(
-            ".checkbox-registro"
-        )
-        .forEach(
-
-            checkbox => {
-
-                checkbox.addEventListener(
-
-                    "change",
-
-                    function() {
-
-                        const id =
-                            String(
-                                checkbox.dataset.id
-                            );
-
-
-                        if (
-                            checkbox.checked
-                        ) {
-
-                            selecionados.add(
-                                id
-                            );
-
-                        } else {
-
-                            selecionados.delete(
-                                id
-                            );
-
-                        }
-
-
-                        atualizarResumoSelecao();
-
-                        atualizarCheckboxMestre();
-
-                    }
-
-                );
-
-            }
-
-        );
-
-
-    document
-        .querySelectorAll(".categoria-registro-select")
-        .forEach(select => {
-            select.addEventListener("change", async event => {
-                await alterarCategoriaRegistro(
-                    select.dataset.id,
-                    event.target.value
-                );
-            });
+    tabelaRegistros.innerHTML = registrosPaginaAtual.map(avaria => {
+        const id = String(avaria.id);
+        const marcado = selecionados.has(id) ? "checked" : "";
+        const disponivelDoacao = quantidadeDisponivelParaDoacao(avaria);
+        const botaoDoacaoDesabilitado = disponivelDoacao <= 0 ? "disabled" : "";
+        const tituloDoacao = disponivelDoacao <= 0 ? "Quantidade já encaminhada integralmente para doação" : "Enviar para doação";
+        return `
+            <tr>
+                <td class="col-selecao"><input type="checkbox" class="checkbox-registro" data-id="${esc(id)}" ${marcado} aria-label="Selecionar registro"></td>
+                <td>${formatarData(avaria.criadoEm)}</td>
+                <td>${esc(avaria.codigo || "-")}</td>
+                <td>${esc(avaria.produto)}</td>
+                <td>${esc(avaria.fornecedor || "-")}</td>
+                <td>${usuarioEhAdmin ? `<select class="categoria-registro-select" data-id="${esc(id)}" aria-label="Alterar categoria do produto">${["Frios","Mercearia","Padaria","Limpeza","Bebidas"].map(cat => `<option value="${cat}" ${String(avaria.categoria || "Mercearia") === cat ? "selected" : ""}>${cat}</option>`).join("")}</select>` : esc(avaria.categoria || "Mercearia")}</td>
+                <td>${esc(avaria.codigoFornecedor || "-")}</td>
+                <td>${formatarQuantidade(avaria.quantidade)}</td>
+                <td><strong>${moeda(valorDaAvaria(avaria))}</strong></td>
+                <td>${esc(avaria.setor || "-")}</td>
+                <td>${esc(avaria.tipo || "-")}</td>
+                <td>${esc(avaria.usuarioLancamento || "-")}</td>
+                <td class="acoes-registro-linha">
+                    <button type="button" class="btn-enviar-doacao-linha" onclick="abrirEncaminharDoacaoPorId('${id}')" title="${tituloDoacao}" ${botaoDoacaoDesabilitado}>→</button>
+                    <button type="button" class="btn-editar-baixa btn-editar-registro" onclick="excluirAvaria('${id}')" title="Excluir registro">🗑</button>
+                </td>
+            </tr>`;
+    }).join("");
+
+    document.querySelectorAll(".checkbox-registro").forEach(checkbox => {
+        checkbox.addEventListener("change", function() {
+            const id = String(checkbox.dataset.id);
+            if (checkbox.checked) selecionados.add(id);
+            else selecionados.delete(id);
+            atualizarResumoSelecao();
+            atualizarCheckboxMestre();
         });
+    });
 
+    document.querySelectorAll(".categoria-registro-select").forEach(select => {
+        select.addEventListener("change", async event => {
+            await alterarCategoriaRegistro(select.dataset.id, event.target.value);
+        });
+    });
 
     atualizarCheckboxMestre();
 
@@ -2624,191 +2643,59 @@ function atualizarOpcoesFornecedoresHistorico() {
 }
 
 
+function atualizarOpcoesHistoricoInteligentes() {
+    const atual = filtroHistoricoTipo?.value || "";
+    const tipos = Array.from(new Set(historicoAvarias.map(item => String(item.tipo || "").trim()).filter(Boolean)))
+        .sort((a, b) => a.localeCompare(b, "pt-BR", { sensitivity: "base" }));
+    if (filtroHistoricoTipo) {
+        filtroHistoricoTipo.innerHTML = `<option value="">Todos os motivos</option>` + tipos.map(tipo => `<option value="${esc(tipo)}">${esc(tipo)}</option>`).join("");
+        if (tipos.includes(atual)) filtroHistoricoTipo.value = atual;
+    }
+}
+
+
 function correspondeFiltrosHistorico(
     registro
 ) {
 
-    const pesquisa =
-        normalizarTextoHistorico(
-            buscaHistorico.value
-        );
+    const pesquisa = normalizarTextoHistorico(buscaHistorico.value);
+    if (!correspondeBuscaHistorico(registro, pesquisa)) return false;
 
+    const fornecedor = normalizarTextoHistorico(filtroHistoricoFornecedor.value);
+    if (fornecedor && normalizarTextoHistorico(registro.fornecedor) !== fornecedor) return false;
 
-    if (
-        !correspondeBuscaHistorico(
-            registro,
-            pesquisa
-        )
-    ) {
+    const codigoFornecedor = normalizarTextoHistorico(filtroHistoricoCodigoFornecedor.value);
+    if (codigoFornecedor && !normalizarTextoHistorico(registro.codigoFornecedor).includes(codigoFornecedor)) return false;
 
-        return false;
+    const codigoProduto = normalizarTextoHistorico(filtroHistoricoCodigoProduto.value);
+    if (codigoProduto && !normalizarTextoHistorico(registro.codigo).includes(codigoProduto)) return false;
 
+    const status = normalizarTextoHistorico(filtroHistoricoStatus?.value);
+    if (status && normalizarTextoHistorico(registro.status) !== status) return false;
+
+    const tipo = normalizarTextoHistorico(filtroHistoricoTipo?.value);
+    if (tipo && normalizarTextoHistorico(registro.tipo) !== tipo) return false;
+
+    const caixa = filtroHistoricoCaixa?.value || "";
+    const possuiCaixa = String(registro.caixa || "").trim() !== "";
+    if (caixa === "com-caixa" && !possuiCaixa) return false;
+    if (caixa === "sem-caixa" && possuiCaixa) return false;
+
+    const categoriaHistorico = normalizarTextoHistorico(filtroHistoricoCategoria?.value);
+    if (categoriaHistorico && normalizarTextoHistorico(registro.categoria || "Mercearia") !== categoriaHistorico) return false;
+
+    const setorHistorico = normalizarTextoHistorico(filtroHistoricoSetor?.value);
+    if (setorHistorico && normalizarTextoHistorico(registro.setor) !== setorHistorico) return false;
+
+    const dataRegistroValor = registro.movimentadoEm || registro.criadoEm;
+    if (filtroHistoricoDataInicial.value || filtroHistoricoDataFinal.value) {
+        const dataRegistro = new Date(dataRegistroValor);
+        if (Number.isNaN(dataRegistro.getTime())) return false;
+        if (filtroHistoricoDataInicial.value && dataRegistro < inicioDiaManaira(filtroHistoricoDataInicial.value)) return false;
+        if (filtroHistoricoDataFinal.value && dataRegistro > fimDiaManaira(filtroHistoricoDataFinal.value)) return false;
     }
-
-
-    const fornecedor =
-        normalizarTextoHistorico(
-            filtroHistoricoFornecedor.value
-        );
-
-
-    if (
-        fornecedor &&
-        normalizarTextoHistorico(
-            registro.fornecedor
-        ) !== fornecedor
-    ) {
-
-        return false;
-
-    }
-
-
-    const codigoFornecedor =
-        normalizarTextoHistorico(
-            filtroHistoricoCodigoFornecedor.value
-        );
-
-
-    if (
-        codigoFornecedor &&
-        !normalizarTextoHistorico(
-            registro.codigoFornecedor
-        ).includes(
-            codigoFornecedor
-        )
-    ) {
-
-        return false;
-
-    }
-
-
-    const codigoProduto =
-        normalizarTextoHistorico(
-            filtroHistoricoCodigoProduto.value
-        );
-
-
-    const categoriaHistorico =
-        normalizarTextoHistorico(
-            filtroHistoricoCategoria?.value
-        );
-
-
-    if (
-        categoriaHistorico &&
-        normalizarTextoHistorico(
-            registro.categoria || "Mercearia"
-        ) !== categoriaHistorico
-    ) {
-
-        return false;
-
-    }
-
-
-    const setorHistorico =
-        normalizarTextoHistorico(
-            filtroHistoricoSetor?.value
-        );
-
-
-    if (
-        setorHistorico &&
-        normalizarTextoHistorico(
-            registro.setor
-        ) !== setorHistorico
-    ) {
-
-        return false;
-
-    }
-
-
-    if (
-        codigoProduto &&
-        !normalizarTextoHistorico(
-            registro.codigo
-        ).includes(
-            codigoProduto
-        )
-    ) {
-
-        return false;
-
-    }
-
-
-    const dataRegistroValor =
-        registro.movimentadoEm ||
-        registro.criadoEm;
-
-
-    if (
-        filtroHistoricoDataInicial.value ||
-        filtroHistoricoDataFinal.value
-    ) {
-
-        const dataRegistro =
-            new Date(
-                dataRegistroValor
-            );
-
-
-        if (
-            Number.isNaN(
-                dataRegistro.getTime()
-            )
-        ) {
-
-            return false;
-
-        }
-
-
-        if (
-            filtroHistoricoDataInicial.value
-        ) {
-
-            const inicio =
-                inicioDiaSistema(filtroHistoricoDataInicial.value);
-
-
-            if (
-                dataRegistro < inicio
-            ) {
-
-                return false;
-
-            }
-
-        }
-
-
-        if (
-            filtroHistoricoDataFinal.value
-        ) {
-
-            const fim =
-                fimDiaSistema(filtroHistoricoDataFinal.value);
-
-
-            if (
-                dataRegistro > fim
-            ) {
-
-                return false;
-
-            }
-
-        }
-
-    }
-
 
     return true;
-
 }
 
 
@@ -2888,7 +2775,7 @@ function atualizarCheckboxMestreHistorico() {
 
 
     const idsVisiveis =
-        historicoFiltrado.map(
+        historicoPaginaAtual.map(
             item =>
                 String(
                     item.id
@@ -2968,283 +2855,80 @@ function atualizarCardsBaixasHistorico(lista = historicoFiltrado) {
 
 function renderizarHistorico() {
 
-    const idsExistentes =
-        new Set(
-            historicoAvarias.map(
-                item =>
-                    String(
-                        item.id
-                    )
-            )
-        );
-
-
-    Array
-        .from(
-            historicoSelecionados
-        )
-        .forEach(
-            id => {
-
-                if (!idsExistentes.has(id)) {
-
-                    historicoSelecionados.delete(
-                        id
-                    );
-
-                }
-
-            }
-        );
-
+    const idsExistentes = new Set(historicoAvarias.map(item => String(item.id)));
+    Array.from(historicoSelecionados).forEach(id => {
+        if (!idsExistentes.has(id)) historicoSelecionados.delete(id);
+    });
 
     atualizarOpcoesFornecedoresHistorico();
+    atualizarOpcoesHistoricoInteligentes();
 
+    historicoFiltrado = historicoAvarias.filter(registro => correspondeFiltrosHistorico(registro));
 
-    historicoFiltrado =
-        historicoAvarias.filter(
-            registro =>
-                correspondeFiltrosHistorico(
-                    registro
-                )
-        );
+    const campoOrdem = ordemHistorico?.value || ordenacaoCabecalhoHistorico.campo || "data";
+    const direcaoOrdem = direcaoHistorico?.value || ordenacaoCabecalhoHistorico.direcao || "desc";
+    ordenarLista(historicoFiltrado, campoOrdem, direcaoOrdem);
 
+    contadorHistorico.textContent = historicoFiltrado.length;
+    atualizarCardsBaixasHistorico(historicoFiltrado);
 
-    contadorHistorico.textContent =
-        historicoFiltrado.length;
-
-
-    atualizarCardsBaixasHistorico(
-        historicoFiltrado
-    );
-
+    const totalPaginas = Math.max(1, Math.ceil(historicoFiltrado.length / tamanhoPaginaHistorico));
+    paginaHistorico = Math.min(Math.max(1, paginaHistorico), totalPaginas);
+    const inicio = (paginaHistorico - 1) * tamanhoPaginaHistorico;
+    historicoPaginaAtual = historicoFiltrado.slice(inicio, inicio + tamanhoPaginaHistorico);
 
     atualizarResumoHistorico();
-
+    atualizarIndicadoresOrdenacao(".tabela-historico", campoOrdem, direcaoOrdem);
+    configurarCabecalhosOrdenaveis(".tabela-historico", "historico");
+    renderizarPaginacao(
+        paginacaoHistorico,
+        historicoFiltrado.length,
+        paginaHistorico,
+        tamanhoPaginaHistorico,
+        (novaPagina, novoTamanho) => {
+            paginaHistorico = novaPagina;
+            tamanhoPaginaHistorico = novoTamanho;
+            renderizarHistorico();
+        }
+    );
 
     if (!historicoFiltrado.length) {
-
-        tabelaHistorico.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="13"
-                    class="vazio"
-                >
-                    Nenhum registro encontrado no histórico.
-                </td>
-
-            </tr>
-
-        `;
-
-
+        tabelaHistorico.innerHTML = `<tr><td colspan="13" class="vazio">Nenhum registro encontrado no histórico.</td></tr>`;
         atualizarCheckboxMestreHistorico();
-
         return;
-
     }
 
-
-    tabelaHistorico.innerHTML =
-
-        historicoFiltrado
-
-        .map(
-
-            registro => {
-
-                const id =
-                    String(
-                        registro.id
-                    );
-
-
-                const marcado =
-                    historicoSelecionados.has(
-                        id
-                    )
-                        ? "checked"
-                        : "";
-
-
-                const dataRegistro =
-                    registro.movimentadoEm ||
-                    registro.criadoEm;
-
-
-                return `
-
-                    <tr>
-
-                        <td class="col-selecao">
-
-                            <input
-                                type="checkbox"
-                                class="checkbox-historico"
-                                data-id="${esc(id)}"
-                                ${marcado}
-                                aria-label="Selecionar registro do histórico"
-                            >
-
-                        </td>
-
-
-                        <td>
-                            ${formatarData(
-                                dataRegistro
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.codigo || "-"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.produto || "-"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.fornecedor || "-"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.categoria || "Mercearia"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.codigoFornecedor || "-"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${formatarQuantidade(
-                                registro.quantidade
-                            )}
-                        </td>
-
-
-                        <td>
-                            <strong>
-                                ${moeda(
-                                    valorDaAvaria(
-                                        registro
-                                    )
-                                )}
-                            </strong>
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.setor || "-"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.tipo || "-"
-                            )}
-                        </td>
-
-
-                        <td>
-                            ${esc(
-                                registro.usuarioLancamento || "-"
-                            )}
-                        </td>
-
-
-                        <td class="somente-admin-historico">
-
-                            ${usuarioEhAdmin
-                                ? `
-                                    <button
-                                        type="button"
-                                        class="btn-editar-baixa"
-                                        onclick="abrirModalEditarBaixa('${esc(id)}')"
-                                    >
-                                        ✏️ Editar
-                                    </button>
-                                `
-                                : ""}
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }
-
-        )
-
-        .join("");
-
-
-    document
-        .querySelectorAll(
-            ".checkbox-historico"
-        )
-        .forEach(
-
-            checkbox => {
-
-                checkbox.addEventListener(
-
-                    "change",
-
-                    function() {
-
-                        const id =
-                            String(
-                                checkbox.dataset.id
-                            );
-
-
-                        if (checkbox.checked) {
-
-                            historicoSelecionados.add(
-                                id
-                            );
-
-                        } else {
-
-                            historicoSelecionados.delete(
-                                id
-                            );
-
-                        }
-
-
-                        atualizarResumoHistorico();
-                        atualizarCheckboxMestreHistorico();
-
-                    }
-
-                );
-
-            }
-
-        );
-
+    tabelaHistorico.innerHTML = historicoPaginaAtual.map(registro => {
+        const id = String(registro.id);
+        const marcado = historicoSelecionados.has(id) ? "checked" : "";
+        const dataRegistro = registro.movimentadoEm || registro.criadoEm;
+        return `
+            <tr>
+                <td class="col-selecao"><input type="checkbox" class="checkbox-historico" data-id="${esc(id)}" ${marcado} aria-label="Selecionar registro do histórico"></td>
+                <td>${formatarData(dataRegistro)}</td>
+                <td>${esc(registro.codigo || "-")}</td>
+                <td>${esc(registro.produto || "-")}</td>
+                <td>${esc(registro.fornecedor || "-")}</td>
+                <td>${esc(registro.categoria || "Mercearia")}</td>
+                <td>${esc(registro.codigoFornecedor || "-")}</td>
+                <td>${formatarQuantidade(registro.quantidade)}</td>
+                <td><strong>${moeda(valorDaAvaria(registro))}</strong></td>
+                <td>${esc(registro.setor || "-")}</td>
+                <td>${esc(registro.tipo || "-")}</td>
+                <td>${esc(registro.usuarioLancamento || "-")}</td>
+                <td class="somente-admin-historico">${usuarioEhAdmin ? `<button type="button" class="btn-editar-baixa" onclick="abrirModalEditarBaixa('${esc(id)}')">✏️ Editar</button>` : ""}</td>
+            </tr>`;
+    }).join("");
+
+    document.querySelectorAll(".checkbox-historico").forEach(checkbox => {
+        checkbox.addEventListener("change", function() {
+            const id = String(checkbox.dataset.id);
+            if (checkbox.checked) historicoSelecionados.add(id);
+            else historicoSelecionados.delete(id);
+            atualizarResumoHistorico();
+            atualizarCheckboxMestreHistorico();
+        });
+    });
 
     atualizarCheckboxMestreHistorico();
 
@@ -3264,7 +2948,7 @@ function formatarDataParaInput(valor) {
     }
 
     const partes = new Intl.DateTimeFormat("en-CA", {
-        timeZone: SISTEMA_TIME_ZONE,
+        timeZone: MANAIRA_TIME_ZONE,
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -3393,8 +3077,8 @@ async function salvarEdicaoBaixa(event) {
         return;
     }
 
-    if (!Number.isFinite(quantidadeValor) || quantidadeValor <= 0) {
-        mostrarToast("Informe uma quantidade válida.");
+    if (!Number.isFinite(quantidadeValor) || quantidadeValor <= 0 || quantidadeValor > LIMITE_QUANTIDADE) {
+        mostrarToast(`Informe uma quantidade válida. O limite por lançamento é ${LIMITE_QUANTIDADE.toLocaleString("pt-BR")}.`);
         return;
     }
 
@@ -3835,9 +3519,8 @@ function renderizarTudo() {
 function aplicarFiltrosRegistros() {
 
     selecionados.clear();
-
+    paginaRegistros = 1;
     atualizarResumoSelecao();
-
     renderizarRegistros();
 
 }
@@ -3863,6 +3546,9 @@ filtroTipo.addEventListener(
 
 filtroFornecedorRegistros?.addEventListener("change", aplicarFiltrosRegistros);
 filtroSetorRegistros?.addEventListener("change", aplicarFiltrosRegistros);
+filtroStatusRegistros?.addEventListener("change", aplicarFiltrosRegistros);
+filtroCaixaRegistros?.addEventListener("change", aplicarFiltrosRegistros);
+filtroCategoriaRegistros?.addEventListener("change", aplicarFiltrosRegistros);
 
 
 dataInicial.addEventListener(
@@ -3886,7 +3572,7 @@ selecionarTodos.addEventListener(
 
     function() {
 
-        registrosFiltrados.forEach(
+        registrosPaginaAtual.forEach(
 
             avaria => {
 
@@ -3927,6 +3613,7 @@ selecionarTodos.addEventListener(
 function aplicarFiltrosHistorico() {
 
     historicoSelecionados.clear();
+    paginaHistorico = 1;
     renderizarHistorico();
 
 }
@@ -3967,6 +3654,21 @@ filtroHistoricoSetor?.addEventListener(
     aplicarFiltrosHistorico
 );
 
+filtroHistoricoStatus?.addEventListener(
+    "change",
+    aplicarFiltrosHistorico
+);
+
+filtroHistoricoTipo?.addEventListener(
+    "change",
+    aplicarFiltrosHistorico
+);
+
+filtroHistoricoCaixa?.addEventListener(
+    "change",
+    aplicarFiltrosHistorico
+);
+
 
 filtroHistoricoDataInicial.addEventListener(
     "change",
@@ -3978,6 +3680,18 @@ filtroHistoricoDataFinal.addEventListener(
     "change",
     aplicarFiltrosHistorico
 );
+
+ordemHistorico?.addEventListener("change", () => {
+    ordenacaoCabecalhoHistorico.campo = ordemHistorico.value || "data";
+    paginaHistorico = 1;
+    renderizarHistorico();
+});
+
+direcaoHistorico?.addEventListener("change", () => {
+    ordenacaoCabecalhoHistorico.direcao = direcaoHistorico.value || "desc";
+    paginaHistorico = 1;
+    renderizarHistorico();
+});
 
 
 btnLimparFiltrosHistorico.addEventListener(
@@ -4012,6 +3726,14 @@ btnLimparFiltrosHistorico.addEventListener(
         filtroHistoricoDataFinal.value =
             "";
 
+        if (filtroHistoricoStatus) filtroHistoricoStatus.value = "";
+        if (filtroHistoricoTipo) filtroHistoricoTipo.value = "";
+        if (filtroHistoricoCaixa) filtroHistoricoCaixa.value = "";
+        if (ordemHistorico) ordemHistorico.value = "data";
+        if (direcaoHistorico) direcaoHistorico.value = "desc";
+        ordenacaoCabecalhoHistorico = { campo: "data", direcao: "desc" };
+        paginaHistorico = 1;
+
         aplicarFiltrosHistorico();
 
     }
@@ -4025,7 +3747,7 @@ selecionarTodosHistorico.addEventListener(
 
     function() {
 
-        historicoFiltrado.forEach(
+        historicoPaginaAtual.forEach(
 
             registro => {
 
@@ -4510,6 +4232,164 @@ btnExcluirSelecionados.addEventListener(
 );
 
 /* =========================================================
+   ENCAMINHAR REGISTROS PARA DOAÇÃO
+========================================================= */
+
+function quantidadeDisponivelParaDoacao(avaria) {
+    const total = numero(avaria?.quantidade);
+    const jaDoada = numero(avaria?.quantidadeDoada);
+    return Math.max(0, total - jaDoada);
+}
+
+function abrirModalEncaminharDoacao(itens) {
+    const base = Array.isArray(itens) ? itens : [];
+    const validos = base
+        .map(item => ({ ...item, quantidadeDisponivelDoacao: quantidadeDisponivelParaDoacao(item) }))
+        .filter(item => item.quantidadeDisponivelDoacao > 0);
+
+    if (!validos.length) {
+        mostrarToast("Nenhum dos registros selecionados possui quantidade disponível para doação.");
+        return;
+    }
+
+    itensPendentesParaDoacao = validos.map(item => ({
+        avariaId: String(item.id),
+        produto: item.produto || "-",
+        codigo: item.codigo || "",
+        fornecedor: item.fornecedor || "",
+        disponivel: numero(item.quantidadeDisponivelDoacao),
+        quantidade: numero(item.quantidadeDisponivelDoacao)
+    }));
+
+    beneficiarioEncaminharDoacao.value = "";
+    observacaoEncaminharDoacao.value = "";
+    renderizarItensEncaminharDoacao();
+    modalEncaminharDoacao.classList.add("ativo");
+    modalEncaminharDoacao.setAttribute("aria-hidden", "false");
+    document.body.classList.add("modal-aberto");
+    setTimeout(() => beneficiarioEncaminharDoacao.focus(), 60);
+}
+
+function abrirEncaminharDoacaoPorId(id) {
+    const registro = avarias.find(item => String(item.id) === String(id));
+    if (!registro) {
+        mostrarToast("Registro não encontrado.");
+        return;
+    }
+    abrirModalEncaminharDoacao([registro]);
+}
+
+function fecharModalEncaminharDoacao() {
+    modalEncaminharDoacao.classList.remove("ativo");
+    modalEncaminharDoacao.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("modal-aberto");
+    itensPendentesParaDoacao = [];
+}
+
+function renderizarItensEncaminharDoacao() {
+    const itens = itensPendentesParaDoacao;
+    resumoItensDoacao.textContent = itens.length;
+    resumoQuantidadeDoacao.textContent = formatarQuantidade(itens.reduce((s, item) => s + numero(item.quantidade), 0));
+
+    tabelaItensEncaminharDoacao.innerHTML = itens.map((item, index) => `
+        <tr>
+            <td>
+                <strong>${esc(item.produto)}</strong>
+                <small>${esc(item.codigo || "")}${item.fornecedor ? ` · ${esc(item.fornecedor)}` : ""}</small>
+            </td>
+            <td>${formatarQuantidade(item.disponivel)}</td>
+            <td>
+                <input class="input-qtd-doacao" type="number" min="0" max="${esc(item.disponivel)}" step="0.001" value="${esc(item.quantidade)}" data-index="${index}" aria-label="Quantidade para doação de ${esc(item.produto)}">
+            </td>
+        </tr>`).join("");
+
+    tabelaItensEncaminharDoacao.querySelectorAll(".input-qtd-doacao").forEach(input => {
+        input.addEventListener("input", () => {
+            const i = Number(input.dataset.index);
+            const max = itensPendentesParaDoacao[i]?.disponivel || 0;
+            let valor = numero(input.value);
+            if (valor < 0) valor = 0;
+            if (valor > max) valor = max;
+            itensPendentesParaDoacao[i].quantidade = valor;
+            input.value = String(valor);
+            resumoQuantidadeDoacao.textContent = formatarQuantidade(itensPendentesParaDoacao.reduce((s, item) => s + numero(item.quantidade), 0));
+        });
+    });
+}
+
+async function confirmarEncaminharDoacao() {
+    const itens = itensPendentesParaDoacao
+        .map(item => ({ avariaId: item.avariaId, quantidade: numero(item.quantidade) }))
+        .filter(item => item.quantidade > 0);
+
+    if (!itens.length) {
+        mostrarToast("Informe pelo menos uma quantidade para doação.");
+        return;
+    }
+
+    const beneficiario = beneficiarioEncaminharDoacao.value.trim();
+    if (!beneficiario) {
+        mostrarToast("Informe o beneficiário ou instituição.");
+        beneficiarioEncaminharDoacao.focus();
+        return;
+    }
+
+    const textoOriginal = btnConfirmarEncaminharDoacao.textContent;
+    btnConfirmarEncaminharDoacao.disabled = true;
+    btnConfirmarEncaminharDoacao.textContent = "Enviando...";
+
+    try {
+        const resposta = await fetch(`${API}/api/avarias/encaminhar-doacao`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                ...headersUsuarioAutenticado()
+            },
+            credentials: "include",
+            cache: "no-store",
+            body: JSON.stringify({
+                itens,
+                beneficiario,
+                observacao: observacaoEncaminharDoacao.value.trim()
+            })
+        });
+
+        const dados = await resposta.json().catch(() => ({}));
+        if (!resposta.ok) throw new Error(dados.erro || "Não foi possível encaminhar os registros para doação.");
+
+        fecharModalEncaminharDoacao();
+        selecionados.clear();
+        await carregarAvarias();
+        mostrarToast(`${dados.quantidadeItens || itens.length} item(ns) encaminhado(s) para ${dados.documento || "a doação"}.`);
+    } catch (erro) {
+        console.error("Erro ao encaminhar para doação:", erro);
+        mostrarToast(erro.message || "Erro ao encaminhar para doação.");
+    } finally {
+        btnConfirmarEncaminharDoacao.disabled = false;
+        btnConfirmarEncaminharDoacao.textContent = textoOriginal;
+    }
+}
+
+btnEnviarDoacaoSelecionados?.addEventListener("click", () => {
+    const itens = avarias.filter(item => selecionados.has(String(item.id)));
+    abrirModalEncaminharDoacao(itens);
+});
+
+btnConfirmarEncaminharDoacao?.addEventListener("click", confirmarEncaminharDoacao);
+document.getElementById("btnCancelarEncaminharDoacao")?.addEventListener("click", fecharModalEncaminharDoacao);
+document.getElementById("btnFecharEncaminharDoacao")?.addEventListener("click", fecharModalEncaminharDoacao);
+modalEncaminharDoacao?.addEventListener("click", event => {
+    if (event.target?.dataset?.fecharModalDoacao === "true") fecharModalEncaminharDoacao();
+});
+window.addEventListener("keydown", event => {
+    if (event.key === "Escape" && modalEncaminharDoacao?.classList.contains("ativo")) {
+        event.preventDefault();
+        fecharModalEncaminharDoacao();
+    }
+});
+
+
+/* =========================================================
    LIMPAR FILTROS
 ========================================================= */
 
@@ -4550,6 +4430,11 @@ btnLimparFiltros.addEventListener(
 
         if (ordemRegistros) ordemRegistros.value = "";
         if (direcaoRegistros) direcaoRegistros.value = "desc";
+        if (filtroStatusRegistros) filtroStatusRegistros.value = "Todos";
+        if (filtroCaixaRegistros) filtroCaixaRegistros.value = "Todos";
+        if (filtroCategoriaRegistros) filtroCategoriaRegistros.value = "Todos";
+        paginaRegistros = 1;
+        ordenacaoCabecalhoRegistros = { campo: "", direcao: "desc" };
 
         selecionados.clear();
 
@@ -4573,9 +4458,10 @@ btnLimparFiltros.addEventListener(
 ========================================================= */
 
 function obterBaixasParaExportacao() {
-    return historicoFiltrado.filter(
+    const selecionadosFiltrados = historicoFiltrado.filter(
         registro => historicoSelecionados.has(String(registro.id))
     );
+    return selecionadosFiltrados.length ? selecionadosFiltrados : historicoFiltrado;
 }
 
 function consolidarRegistrosExportacao(lista) {
@@ -4649,7 +4535,7 @@ async function exportarBaixasXlsx() {
         const url = URL.createObjectURL(arquivo);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `baixas_${new Date().toISOString().slice(0,10)}.csv`;
+        link.download = `baixas_${new Date().toISOString().slice(0,10)}.xlsx`;
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -4661,7 +4547,7 @@ async function exportarBaixasXlsx() {
         mostrarToast(erro.message);
     } finally {
         btnExportarBaixasXlsx.disabled = false;
-        btnExportarBaixasXlsx.textContent = "📊 Exportar CSV (Excel)";
+        btnExportarBaixasXlsx.textContent = "📊 Exportar Excel";
     }
 }
 
@@ -4731,12 +4617,9 @@ function obterRegistrosSelecionadosParaCompartilhar() {
         avaria => selecionados.has(String(avaria.id))
     );
 
-    if (!selecionadosParaCompartilhar.length) {
-        mostrarToast("Selecione os registros que deseja compartilhar.");
-        return null;
-    }
-
-    return selecionadosParaCompartilhar;
+    return selecionadosParaCompartilhar.length
+        ? selecionadosParaCompartilhar
+        : registrosFiltrados;
 }
 
 function fecharMenuCompartilhar() {
@@ -4763,7 +4646,7 @@ async function exportarRegistrosXlsx() {
     const selecionadosParaExportar = obterRegistrosSelecionadosParaCompartilhar();
     if (!selecionadosParaExportar) return;
 
-    const textoOriginal = btnCompartilharXlsx?.textContent || "📊 CSV (Excel)";
+    const textoOriginal = btnCompartilharXlsx?.textContent || "📊 Excel (XLSX)";
     if (btnCompartilharXlsx) {
         btnCompartilharXlsx.disabled = true;
         btnCompartilharXlsx.textContent = "Gerando Excel...";
@@ -4829,7 +4712,7 @@ async function exportarRegistrosXlsx() {
         const url = URL.createObjectURL(arquivo);
         const link = document.createElement("a");
         link.href = url;
-        link.download = `avarias_${new Date().toISOString().slice(0, 10)}.csv`;
+        link.download = `avarias_${new Date().toISOString().slice(0, 10)}.xlsx`;
         document.body.appendChild(link);
         link.click();
         link.remove();
@@ -5115,6 +4998,11 @@ function agendarAtualizacaoTempoReal() {
 
 
 function iniciarTempoReal() {
+
+    if (window.CA_LOCAL_MODE) {
+        atualizarStatusConexao("offline", "Modo local — sem sincronização");
+        return;
+    }
 
     if (typeof EventSource === "undefined") {
         atualizarStatusConexao("offline", "Tempo real indisponível");

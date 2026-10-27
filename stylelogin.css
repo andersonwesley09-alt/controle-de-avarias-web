@@ -419,15 +419,25 @@ input:focus {
 
 }
 
-/* Identidade visual genérica do sistema. */
+/* =========================
+   IDENTIDADE MANAÍRA - V8
+========================= */
+
+.logo-box.logo-box-manaira {
+    display: none;
+}
+
+/* =====================================================
+   V12.4 - FOTO DA FACHADA COMO FUNDO DO LOGIN
+   Mantém integralmente o visual original do login com logo.
+===================================================== */
 body {
     background:
         linear-gradient(
             135deg,
-            rgba(0, 0, 255, 0.12),
-            rgba(0, 0, 0, 0.18)
-        ),
-        none;
+            #f3f4f8,
+            #F0F0FF
+        );
 }
 
 .login-page {
@@ -648,15 +658,3 @@ body {
         padding: 24px 20px;
     }
 }
-
-/* V21.5 - versão genérica, sem identidade de empresa. */
-body {
-    background: linear-gradient(135deg, #f3f4f8, #f0f0ff);
-}
-
-
-/* V21.6 Web - pequenos complementos para armazenamento local */
-.acesso-local-hint{margin:12px 0 0;text-align:center;font-size:12px;opacity:.7}
-.painel-produto-local label{display:flex;flex-direction:column;gap:6px;font-size:12px;font-weight:600}
-.painel-produto-local input,.painel-produto-local select{width:100%;box-sizing:border-box}
-@media(max-width:760px){.painel-produto-local form{grid-template-columns:1fr!important}.dados-locais-painel button{width:100%}}
