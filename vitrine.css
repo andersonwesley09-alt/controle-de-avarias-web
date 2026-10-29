@@ -1,0 +1,4 @@
+/* Somente para a vitrine pública: remoção dos ativos privados, sem redesenho das telas. */
+.marca-header{gap:14px!important}.marca-header img.logo-manaira-header,.logo-manaira-login{display:none!important}
+body.login-page,body .login-page{background-image:none!important}
+.logo-box-manaira:empty{display:none!important}

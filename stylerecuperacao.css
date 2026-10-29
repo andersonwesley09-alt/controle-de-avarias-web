@@ -1374,3 +1374,57 @@ body:has(.recuperacao-abas) main .pagina-btn {
         min-width:980px;
     }
 }
+
+
+/* V25.1.26 - alinhamento fixo de ações no histórico de recuperações.
+   O espaço de Gerenciar é reservado em documentos finalizados. */
+#tabelaRecuperacoes td:last-child { white-space: normal; overflow: visible; text-overflow: clip; }
+#tabelaRecuperacoes .acoes-rec-alinhadas {
+    display: inline-grid;
+    grid-template-columns: 76px 190px 100px 76px;
+    align-items: center;
+    column-gap: 6px;
+    width: max-content;
+    max-width: none;
+}
+#tabelaRecuperacoes .acoes-rec-alinhadas .historico-documento-acoes {
+    display: contents;
+}
+#tabelaRecuperacoes .acoes-rec-alinhadas .status-documento {
+    justify-self: center;
+    margin: 0;
+}
+#tabelaRecuperacoes .acoes-rec-alinhadas .btn {
+    width: 100%;
+    min-height: 36px;
+    height: 36px;
+    padding: 0 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+#tabelaRecuperacoes .acoes-rec-alinhadas .espaco-gerenciar-rec {
+    display: block;
+    width: 190px;
+    height: 1px;
+}
+
+/* V25.1.28 - corrigir corte do botão Excluir no histórico de Recuperações.
+   Reservar largura suficiente à coluna Ação sem afetar a tabela de Doações. */
+.tabela-historico-recuperacao {
+    width: 100%;
+    min-width: 1080px;
+    table-layout: fixed;
+}
+.tabela-historico-recuperacao th:nth-child(1) { width: 12%; }
+.tabela-historico-recuperacao th:nth-child(2) { width: 14%; }
+.tabela-historico-recuperacao th:nth-child(3) { width: 8%; }
+.tabela-historico-recuperacao th:nth-child(4) { width: 11%; }
+.tabela-historico-recuperacao th:nth-child(5) { width: 11%; }
+.tabela-historico-recuperacao th:nth-child(6) { width: 44%; }
+#tabelaRecuperacoes .acoes-rec-alinhadas {
+    grid-template-columns: 76px 186px 100px 76px;
+    column-gap: 6px;
+}
+#tabelaRecuperacoes .acoes-rec-alinhadas .espaco-gerenciar-rec { width: 186px; }

@@ -1,5 +1,5 @@
 (() => {
-    const VERSAO_SISTEMA = "V25.1.17";
+    const VERSAO_SISTEMA = "V25.1.28";
 
     function montarRodape() {
         let rodape = document.querySelector("footer.rodape-sistema");

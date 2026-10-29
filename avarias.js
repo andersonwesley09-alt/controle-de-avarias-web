@@ -446,12 +446,12 @@ const menuCompartilhar =
 
 const btnCompartilharXlsx =
     document.getElementById(
-        "btnCompartilharXlsx"
+        "btnCompartilharXlsxPagina"
     );
 
 const btnCompartilharPdf =
     document.getElementById(
-        "btnCompartilharPdf"
+        "btnCompartilharPdfPagina"
     );
 
 
@@ -4361,6 +4361,13 @@ async function confirmarEncaminharDoacao() {
         selecionados.clear();
         await carregarAvarias();
         mostrarToast(`${dados.quantidadeItens || itens.length} item(ns) encaminhado(s) para ${dados.documento || "a doação"}.`);
+        // Abre a aba Doações diretamente no documento recém-criado.
+        if (dados.documentoId) {
+            const destino = new URL("recuperacao.html", window.location.href);
+            destino.searchParams.set("aba", "doacoes");
+            destino.searchParams.set("documentoId", String(dados.documentoId));
+            window.location.assign(destino.href);
+        }
     } catch (erro) {
         console.error("Erro ao encaminhar para doação:", erro);
         mostrarToast(erro.message || "Erro ao encaminhar para doação.");
@@ -4610,16 +4617,10 @@ btnExportarBaixasPdf?.addEventListener("click", exportarBaixasPdf);
    Excel + PDF
 ========================================================= */
 
-function obterRegistrosSelecionadosParaCompartilhar() {
+function obterRegistrosParaExportacao(escopo = "pagina") {
+    // Utiliza os filtros em vigor; a paginacao nao limita a exportacao completa.
     renderizarRegistros();
-
-    const selecionadosParaCompartilhar = registrosFiltrados.filter(
-        avaria => selecionados.has(String(avaria.id))
-    );
-
-    return selecionadosParaCompartilhar.length
-        ? selecionadosParaCompartilhar
-        : registrosFiltrados;
+    return escopo === "todos" ? [...registrosFiltrados] : [...registrosPaginaAtual];
 }
 
 function fecharMenuCompartilhar() {
@@ -4642,9 +4643,9 @@ document.addEventListener("click", (evento) => {
     }
 });
 
-async function exportarRegistrosXlsx() {
-    const selecionadosParaExportar = obterRegistrosSelecionadosParaCompartilhar();
-    if (!selecionadosParaExportar) return;
+async function exportarRegistrosXlsx(escopo = "pagina") {
+    const selecionadosParaExportar = obterRegistrosParaExportacao(escopo);
+    if (!selecionadosParaExportar.length) { mostrarToast("Nenhum registro para exportar."); return; }
 
     const textoOriginal = btnCompartilharXlsx?.textContent || "📊 Excel (XLSX)";
     if (btnCompartilharXlsx) {
@@ -4731,9 +4732,9 @@ async function exportarRegistrosXlsx() {
     }
 }
 
-async function exportarRegistrosPdf() {
-    const selecionadosParaExportar = obterRegistrosSelecionadosParaCompartilhar();
-    if (!selecionadosParaExportar) return;
+async function exportarRegistrosPdf(escopo = "pagina") {
+    const selecionadosParaExportar = obterRegistrosParaExportacao(escopo);
+    if (!selecionadosParaExportar.length) { mostrarToast("Nenhum registro para exportar."); return; }
 
     const textoOriginal = btnCompartilharPdf?.textContent || "📄 PDF";
     if (btnCompartilharPdf) {
@@ -4802,8 +4803,10 @@ async function exportarRegistrosPdf() {
     }
 }
 
-btnCompartilharXlsx?.addEventListener("click", exportarRegistrosXlsx);
-btnCompartilharPdf?.addEventListener("click", exportarRegistrosPdf);
+document.getElementById("btnCompartilharXlsxPagina")?.addEventListener("click", () => exportarRegistrosXlsx("pagina"));
+document.getElementById("btnCompartilharXlsxTodos")?.addEventListener("click", () => exportarRegistrosXlsx("todos"));
+document.getElementById("btnCompartilharPdfPagina")?.addEventListener("click", () => exportarRegistrosPdf("pagina"));
+document.getElementById("btnCompartilharPdfTodos")?.addEventListener("click", () => exportarRegistrosPdf("todos"));
 
 
 /* =========================================================

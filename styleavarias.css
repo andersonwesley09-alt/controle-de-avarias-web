@@ -3210,3 +3210,6 @@ body.modal-aberto {
     align-items: center;
     height: 40px;
 }
+
+/* V25.1.27: grupos de escopo na exportacao */
+.menu-compartilhar .compartilhar-grupo { padding: 9px 13px 4px; font-size: 12px; font-weight: 700; color: #4b5563; }

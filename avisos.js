@@ -9,7 +9,52 @@
         return;
     }
 
-    const API = window.CA_API_BASE || "";
+    // V25.1.19: esta página também pode ser aberta por duplo clique (file://).
+    // Nesse caso window.location.origin é "null" e não pode ser usado como API.
+    // Mantemos o ajuste restrito aos Avisos, sem alterar as demais páginas.
+    function normalizarBase(valor) {
+        try {
+            const bruto = String(valor || "").trim();
+            if (!bruto) return "";
+            const u = new URL(bruto);
+            if (!/^https?:$/.test(u.protocol)) return "";
+            return `${u.protocol}//${u.host}`;
+        } catch (_) {
+            return "";
+        }
+    }
+
+    function obterApiAvisos() {
+        const hostAtual = String(window.location.hostname || "").toLowerCase();
+        const protocolo = String(window.location.protocol || "").toLowerCase();
+
+        // Se a página veio do servidor central por HTTP/HTTPS, usa a própria origem.
+        if ((protocolo === "http:" || protocolo === "https:") &&
+            hostAtual && hostAtual !== "localhost" && hostAtual !== "127.0.0.1" && hostAtual !== "0.0.0.0") {
+            return window.location.origin.replace(/\/$/, "");
+        }
+
+        // Se já houver servidor central salvo, aproveita somente se for válido.
+        try {
+            const salvo = normalizarBase(localStorage.getItem("controleAvariasServidor"));
+            if (salvo) {
+                const u = new URL(salvo);
+                const h = u.hostname.toLowerCase();
+                if (h !== "localhost" && h !== "127.0.0.1" && h !== "0.0.0.0") return salvo;
+            }
+        } catch (_) {}
+
+        try {
+            const configurado = normalizarBase(window.CA_CONFIGURED_SERVER);
+            if (configurado) return configurado;
+        } catch (_) {}
+
+        // Servidor central atual do Controle de Avarias.
+        return "";
+    }
+
+    const API = ''; // modo demonstrativo: nunca usa servidor configurado
+    try { localStorage.setItem("controleAvariasServidor", API); } catch (_) {}
 
     const nomeUsuario = document.getElementById("nomeUsuario");
     const btnSair = document.getElementById("btnSair");
