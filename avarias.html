@@ -2,13 +2,9 @@
 <html lang="pt-BR">
 
 <head>
-  <script src="demo-api-v25.js?v=25.1.28"></script>
-  <script src="xlsx.full.min.js?v=25.1.28"></script>
-  <script src="demo-docs-v25.js?v=25.1.28"></script>
-  <link rel="stylesheet" href="vitrine.css?v=25.1.28">
-    
-    
-    
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="servidor-rede.js?v=25.1.14"></script>
+    <script src="rede-central.js?v=25.1.14"></script>
 
     <meta charset="UTF-8">
 
@@ -23,7 +19,7 @@
 
     <link
         rel="stylesheet"
-        href="styleavarias.css?v=25.1.27"
+        href="styleavarias.css?v=25.1.5"
     >
 
     <link rel="stylesheet" href="rodape.css?v=25.1">
@@ -42,8 +38,6 @@
         <div class="header-container">
 
             <div class="marca-header">
-
-                
 
                 <div>
 
@@ -934,12 +928,18 @@
                             class="menu-compartilhar"
                             hidden
                         >
-                            <div class="compartilhar-grupo">Excel (XLSX)</div>
-                            <button id="btnCompartilharXlsxPagina" type="button">📊 Página atual</button>
-                            <button id="btnCompartilharXlsxTodos" type="button">📊 Todos os filtrados</button>
-                            <div class="compartilhar-grupo">PDF</div>
-                            <button id="btnCompartilharPdfPagina" type="button">📄 Página atual</button>
-                            <button id="btnCompartilharPdfTodos" type="button">📄 Todos os filtrados</button>
+                            <button
+                                id="btnCompartilharXlsx"
+                                type="button"
+                            >
+                                📊 Excel (XLSX)
+                            </button>
+                            <button
+                                id="btnCompartilharPdf"
+                                type="button"
+                            >
+                                📄 PDF
+                            </button>
                         </div>
 
                     </div>
@@ -1682,7 +1682,7 @@
 
 
     <script src="timezone.js?v=25.1"></script>
-    <script src="avarias.js?v=25.1.27"></script>
+    <script src="avarias.js?v=25.1"></script>
 
 
     <script src="rodape.js?v=25.1"></script>

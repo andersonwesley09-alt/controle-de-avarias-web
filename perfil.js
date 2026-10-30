@@ -24,25 +24,7 @@ if (!sessao || !sessao.token) {
     throw new Error("Sessão não encontrada.");
 }
 
-// PERFIL V25.1.20: quando a página é aberta por duplo clique (file://),
-// consulta diretamente o servidor central. Quando é aberta pelo servidor,
-// permanece no mesmo host. Não depende de endereço antigo salvo no navegador.
-function obterApiPerfil() {
-    try {
-        if (window.location.protocol === "http:" || window.location.protocol === "https:") {
-            return window.location.origin.replace(/\/$/, "");
-        }
-    } catch (_) {}
-
-    try {
-        const configurado = String(window.CA_CONFIGURED_SERVER || "").trim();
-        if (configurado) return configurado.replace(/\/$/, "");
-    } catch (_) {}
-
-    return "";
-}
-
-const API = ''; // modo demonstrativo: nenhuma chamada ao servidor central
+const API = window.CA_API_BASE || "";
 
 const $ = id => document.getElementById(id);
 const formPerfil = $("formPerfil");
@@ -74,7 +56,7 @@ async function api(url, options = {}) {
             headers: { ...headers(), ...(options.headers || {}) }
         });
     } catch (erro) {
-        throw new Error("A página demonstrativa não conseguiu carregar os dados locais.");
+        throw new Error("Não foi possível concluir a operação no modo vitrine.");
     }
     let dados = {};
     try { dados = await resposta.json(); } catch {}

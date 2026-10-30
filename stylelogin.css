@@ -424,24 +424,7 @@ input:focus {
 ========================= */
 
 .logo-box.logo-box-manaira {
-    width: 100%;
-    height: auto;
-    min-height: 150px;
-    margin: 0 auto 18px;
-    padding: 18px 22px;
-    border-radius: 14px;
-    background: #0000FF;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.logo-manaira-login {
-    display: block;
-    width: min(280px, 100%);
-    height: auto;
-    max-height: 205px;
-    object-fit: contain;
+    display: none;
 }
 
 /* =====================================================
@@ -452,10 +435,9 @@ body {
     background:
         linear-gradient(
             135deg,
-            rgba(0, 0, 255, 0.12),
-            rgba(0, 0, 0, 0.18)
-        ),
-        none center center / cover fixed no-repeat;
+            #f3f4f8,
+            #F0F0FF
+        );
 }
 
 .login-page {

@@ -78,7 +78,7 @@ html,body{min-height:100%;}
 body{
     background:
         linear-gradient(135deg,rgba(242,244,249,.94),rgba(238,241,248,.88)),
-        none center/cover fixed no-repeat;
+        var(--fundo);
 }
 body::before{
     content:"";
@@ -130,7 +130,7 @@ td{font-size:11px}
 ========================================================= */
 body{background:
     linear-gradient(135deg,rgba(243,246,251,.91),rgba(235,239,247,.84)),
-    none center/cover fixed no-repeat;
+    var(--fundo);
 }
 body::before{background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(242,245,250,.66));}
 .topbar{padding:18px 30px;background:linear-gradient(120deg,rgba(0,0,180,.97),rgba(46,46,255,.93));}
