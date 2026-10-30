@@ -1,0 +1,51 @@
+backend:
+  name: github
+  repo: SEU_USUARIO/SEU_REPOSITORIO
+  branch: main
+  # Para GitHub Pages, configure um servidor OAuth compatível e habilite abaixo:
+  # base_url: https://SEU-SERVIDOR-OAUTH.example.com
+
+media_folder: "assets/uploads"
+public_folder: "assets/uploads"
+
+collections:
+  - name: "portfolio"
+    label: "Portfólio"
+    files:
+      - label: "Projetos"
+        name: "projects"
+        file: "data/projects.json"
+        format: "json"
+        fields:
+          - label: "Projetos publicados"
+            name: "projects"
+            widget: "list"
+            summary: "{{title}}"
+            fields:
+              - {label: "Título", name: "title", widget: "string"}
+              - {label: "Identificador", name: "slug", widget: "string", hint: "Use letras minúsculas e hífens. Ex.: meu-novo-projeto"}
+              - {label: "Categoria", name: "kicker", widget: "string"}
+              - {label: "Tipo", name: "type", widget: "string"}
+              - {label: "Descrição curta", name: "description", widget: "text"}
+              - {label: "Descrição detalhada", name: "details", widget: "text", required: false}
+              - label: "Funcionalidades"
+                name: "points"
+                widget: "list"
+                default: []
+              - label: "Tecnologias"
+                name: "tech"
+                widget: "list"
+                default: []
+              - {label: "Imagem", name: "image", widget: "image", required: false, choose_url: true}
+              - {label: "Texto alternativo da imagem", name: "image_alt", widget: "string", required: false}
+              - {label: "Em destaque", name: "featured", widget: "boolean", default: false}
+              - label: "Galeria de imagens"
+                name: "gallery"
+                widget: "list"
+                required: false
+                fields:
+                  - {label: "Imagem", name: "image", widget: "image"}
+                  - {label: "Descrição da imagem", name: "alt", widget: "string", required: false}
+              - {label: "Publicado", name: "published", widget: "boolean", default: true, hint: "Desative para guardar o projeto como rascunho sem mostrar no site."}
+              - {label: "Link do projeto", name: "link", widget: "string", required: false, hint: "Opcional. Se preencher, o botão abrirá o projeto em nova aba."}
+

@@ -1,22 +1,31 @@
-# Controle de Avarias — Vitrine GitHub Pages V25.1.28
+# Portfólio V4 — Wesley
 
-Esta é a **versão demonstrativa estática** do sistema, com a interface da V25.1.28. **Não** é a versão operacional da empresa.
+Site estático preparado para GitHub Pages, com área pública e painel de projetos administrável.
 
-- HTML, CSS e JavaScript; sem Node.js, PostgreSQL, credenciais ou conexão com o servidor interno.
-- Não contém logo da empresa, fotografia da fachada, banco de dados, backups, documentos privados nem registros reais.
-- Dados de teste fictícios são mantidos **somente na sessão deste navegador** (`sessionStorage`); ao fechar a sessão podem ser perdidos. Não há sincronização entre dispositivos.
-- Login demonstrativo: `admin` / `admin123` (**não é autenticação segura; apenas interface para demonstração**).
-- Inclui telas de Registros, Avarias, Dashboard, Caixas, Recuperações, Doações, Produtos, Tarefas, Auditoria e demais páginas originais. Os fluxos e PDFs demonstrativos são simulados no navegador.
-- Alguns recursos dependentes da infraestrutura real (ex.: notificações em tempo real, processamento no servidor e integrações) **não estão disponíveis nesta vitrine**.
+## Estrutura
+- `index.html` — página principal
+- `projetos.html` — página de projetos mantendo os cards
+- `data/projects.json` — conteúdo dos projetos
+- `admin/` — painel Decap CMS
+- `assets/uploads/` — imagens adicionadas pelo painel
+- `404.html` — página de erro
 
-## Publicação no GitHub Pages
+## Adicionar projeto sem editar código
+O painel administrativo foi preparado para editar `data/projects.json`. Depois de configurar a autenticação do Decap Turbo, acesse `/admin/`, faça login e use **Portfólio → Projetos**. Ao salvar, o conteúdo é gravado no repositório e o GitHub Pages publica a alteração.
 
-Envie o **conteúdo interno deste ZIP** diretamente para a raiz do repositório `controle-de-avarias-web` (branch `main`). Em *Settings → Pages*, selecione *Deploy from a branch*, branch `main`, pasta `/ (root)`.
+## GitHub Pages
+O site é estático e pode ser publicado diretamente pelo GitHub Pages. O GitHub Pages pode ser implantado por GitHub Actions.
 
-Não envie o ZIP de produção, `node_modules`, `.env`, `server.js`, `database`, `backups` ou PDFs originais ao repositório.
+## Administração segura
+Não há senha fixa no JavaScript. A autenticação deve ser feita pelo Decap Turbo/GitHub. Mantenha apenas sua conta com acesso de escrita ao repositório.
 
-## Teste antes de publicar
+## Antes de publicar
+1. Crie o repositório no GitHub.
+2. Envie todos os arquivos.
+3. Ative GitHub Pages.
+4. Crie uma organização/site no Decap Turbo e conecte o repositório GitHub.
+5. Copie o Site ID gerado para `admin/config.yml` no campo `turbo_site_id`.
+6. Cadastre a URL exata de `admin/` no Decap Turbo.
+7. Acesse `https://SEU-USUARIO.github.io/SEU-REPOSITORIO/admin/`.
 
-Abra a pasta em um servidor estático local (por exemplo, VS Code Live Server ou `python -m http.server 8000`) e acesse `/login.html`. Teste login demo, fluxo de cadastro, encaminhamento de uma avaria para Doações, gestão e PDF, filtragem e exportação.
-
-**Versão de produção preservada**: o pacote de GitHub é independente e não modifica o sistema real nem o banco de dados da empresa.
+O backend `turbo-github` usa autenticação hospedada e grava o conteúdo no GitHub; o site público continua hospedado no GitHub Pages.

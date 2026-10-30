@@ -1,0 +1,73 @@
+{
+  "projects": [
+    {
+      "slug": "controle-de-avarias",
+      "kicker": "Projeto em destaque",
+      "type": "Sistema Web",
+      "title": "Controle de Avarias",
+      "description": "Sistema para registrar e acompanhar avarias, baixas e devoluções, com autenticação, módulos operacionais, dashboards e histórico.",
+      "details": "Sistema desenvolvido para organizar o fluxo de avarias e transformar registros operacionais em informações mais fáceis de acompanhar.",
+      "points": [
+        "Login e controle de acesso",
+        "Gestão de avarias e operações",
+        "Dashboards, tarefas e auditoria",
+        "Persistência em PostgreSQL"
+      ],
+      "tech": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Node.js",
+        "PostgreSQL"
+      ],
+      "preview_html": "<div class=\"mock-dashboard project-preview-dashboard\"><div class=\"mock-sidebar\"></div><div class=\"mock-main\"><div class=\"mock-title\"></div><div class=\"mock-cards\"><span></span><span></span><span></span></div><div class=\"mock-chart\"></div></div></div>",
+      "published": true,
+      "featured": true,
+      "gallery": [],
+      "link": "https://andersonwesley09-alt.github.io/controle-de-avarias-web/"
+    },
+    {
+      "slug": "controle-de-trocas",
+      "kicker": "Operação",
+      "type": "Aplicação desktop",
+      "title": "Controle de Trocas",
+      "description": "Aplicação para registrar trocas, fornecedores e produtos, com importação de Excel, histórico, comprovantes e backup automático.",
+      "details": "Aplicação criada para registrar trocas com rapidez e rastreabilidade, relacionando fornecedores e produtos e gerando documentação da operação.",
+      "points": [
+        "Cadastro e busca de fornecedores",
+        "Produtos vinculados ao fornecedor",
+        "Importação de planilhas Excel",
+        "Histórico e comprovantes",
+        "Backup automático do banco"
+      ],
+      "tech": [
+        "Python",
+        "SQLite",
+        "Excel",
+        "PDF"
+      ],
+      "image": "assets/controle-trocas-principal.webp",
+      "image_alt": "Tela principal: cadastro e itens da troca",
+      "published": true,
+      "featured": false,
+      "gallery": [
+        {
+          "image": "assets/controle-trocas-principal.webp",
+          "alt": "Tela principal: cadastro e itens da troca"
+        },
+        {
+          "image": "assets/controle-trocas-dashboard.webp",
+          "alt": "Dashboard: indicadores e desempenho das trocas"
+        },
+        {
+          "image": "assets/controle-trocas-historico.webp",
+          "alt": "Histórico: filtros, consulta e exportação"
+        },
+        {
+          "image": "assets/controle-trocas-administracao.webp",
+          "alt": "Administração: manutenção e segurança"
+        }
+      ]
+    }
+  ]
+}
