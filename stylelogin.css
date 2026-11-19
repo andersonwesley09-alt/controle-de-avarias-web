@@ -424,7 +424,24 @@ input:focus {
 ========================= */
 
 .logo-box.logo-box-manaira {
-    display: none;
+    width: 100%;
+    height: auto;
+    min-height: 150px;
+    margin: 0 auto 18px;
+    padding: 18px 22px;
+    border-radius: 14px;
+    background: #0000FF;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-manaira-login {
+    display: block;
+    width: min(280px, 100%);
+    height: auto;
+    max-height: 205px;
+    object-fit: contain;
 }
 
 /* =====================================================
@@ -435,9 +452,10 @@ body {
     background:
         linear-gradient(
             135deg,
-            #f3f4f8,
-            #F0F0FF
-        );
+            rgba(0, 0, 255, 0.12),
+            rgba(0, 0, 0, 0.18)
+        ),
+        url("fachada-manaira-login.jpg") center center / cover fixed no-repeat;
 }
 
 .login-page {
@@ -657,4 +675,36 @@ body {
     .login-card {
         padding: 24px 20px;
     }
+}
+
+/* Credenciais visíveis somente na versão demonstrativa do GitHub Pages. */
+.acesso-demo {
+    margin-top: 16px;
+    padding: 13px 15px;
+    background: #f5f6ff;
+    border: 1px solid #dfe3ff;
+    border-radius: 10px;
+    color: #202536;
+    font-size: 12px;
+}
+.acesso-demo-titulo {
+    color: #0000cc;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+.acesso-demo-credenciais {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+.acesso-demo-credenciais strong {
+    color: #0000cc;
+    font-size: 13px;
+}
+.acesso-demo small {
+    display: block;
+    color: #697186;
+    line-height: 1.4;
 }
