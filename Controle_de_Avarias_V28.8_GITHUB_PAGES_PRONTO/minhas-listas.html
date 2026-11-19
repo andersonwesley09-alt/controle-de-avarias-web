@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <script src="bcrypt-browser.js?v=25.1.14"></script>
+    <script src="demo-api-v25.js?v=28.8"></script>
+    <script src="demo-api-v28.8.js?v=28.8"></script>
+    
+<script src="estabilidade-leitura.js?v=27.12"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Minhas Listas — Controle de Avarias</title>
+    <link rel="stylesheet" href="styletarefas.css?v=27.4">
+    <link rel="stylesheet" href="minhas-listas.css?v=27.5">
+    <link rel="stylesheet" href="rodape.css?v=27.5">
+</head>
+<body>
+<header class="topbar">
+    <div class="header-container">
+        <div class="marca-header">
+            <img src="logo-manaira.png" class="logo-manaira-header" alt="Supermercado Manaíra">
+            <div><div class="eyebrow">CONTROLE DE AVARIAS</div><h1>Minhas Listas</h1>
+                <p>Organize seus checklists particulares sem misturar com as tarefas do setor.</p></div>
+        </div>
+        <div class="header-actions">
+            <a href="tarefas.html" class="btn-perfil">Tarefas diárias</a>
+            <a href="sistema.html" class="btn-voltar">← Voltar</a>
+            <button type="button" class="btn-sair" id="btnSair">Sair</button>
+        </div>
+    </div>
+</header>
+<main class="lp-main">
+    <section class="lp-boas-vindas">
+        <div><div class="section-kicker">ORGANIZAÇÃO INDIVIDUAL</div><h2>Minhas listas de tarefas</h2>
+            <p>Cada lista pertence ao seu usuário. As tarefas do setor continuam separadas em Tarefas Diárias.</p></div>
+        <span id="nomeUsuario" class="lp-user">Carregando...</span>
+    </section>
+
+    <div class="lp-layout">
+        <aside class="painel lp-sidebar" aria-label="Minhas listas">
+            <div class="lp-sidebar-top"><div><h2>Listas</h2><small>Escolha uma lista para acompanhar</small></div>
+                <span id="totalListas" class="lp-pill">0</span></div>
+            <div id="listasContainer" class="lp-listas" aria-live="polite"><p class="lp-muted">Carregando...</p></div>
+            <form id="formNovaLista" class="lp-criar-lista">
+                <label for="nomeNovaLista">Criar nova lista</label>
+                <input id="nomeNovaLista" type="text" maxlength="100" placeholder="Ex.: Conferência pessoal" required>
+                <button type="submit" class="btn-principal lp-btn-full">+ Criar lista</button>
+            </form>
+        </aside>
+
+        <div class="lp-direita">
+            <section id="semLista" class="painel lp-vazio-inicial">
+                <div class="lp-icone-vazio">☑</div><h2>Suas atividades, do seu jeito</h2>
+                <p>Crie uma lista ao lado para começar. Você poderá cadastrar tarefas individuais, marcar como concluídas, acompanhar atrasos e programar repetições.</p>
+            </section>
+            <div id="conteudoLista" class="lp-oculto">
+                <section class="painel lp-topo-lista">
+                    <div class="lp-titulo-lista"><div class="section-kicker">CHECKLIST PARTICULAR</div>
+                        <h2 id="tituloLista">—</h2><p id="descricaoLista">—</p></div>
+                    <div class="lp-cabecalho-acoes">
+                        <button class="lp-btn-suave" id="btnEditarLista" type="button">✎ Editar lista</button>
+                        <button class="lp-btn-perigo-suave" id="btnExcluirLista" type="button">Excluir lista</button>
+                    </div>
+                </section>
+                <section class="lp-datas-toolbar">
+                    <div><label for="dataVisualizacao">Visualizar data</label><div class="lp-data-input">
+                        <input type="date" id="dataVisualizacao"><button type="button" id="btnHoje" class="btn-hoje">Hoje</button>
+                    </div></div>
+                    <p>Consulte outras datas e o histórico para acompanhar atividades anteriores.</p>
+                </section>
+                <section class="cards resumo-cards lp-resumos" aria-label="Indicadores da lista">
+                    <article class="card card-pendente"><div class="card-top"><span class="card-icon">⏳</span><span class="card-label">Pendentes no dia</span></div><strong id="qtdPendentes">0</strong></article>
+                    <article class="card card-concluida"><div class="card-top"><span class="card-icon">✓</span><span class="card-label">Concluídas no dia</span></div><strong id="qtdConcluidas">0</strong></article>
+                    <article class="card card-total"><div class="card-top"><span class="card-icon">☷</span><span class="card-label">Total no dia</span></div><strong id="qtdTotal">0</strong></article>
+                    <article class="card card-progresso"><div class="card-top"><span class="card-icon">↗</span><span class="card-label">Progresso no dia</span></div><strong id="qtdProgresso">0%</strong></article>
+                </section>
+                <section class="painel lp-hoje" aria-labelledby="tituloDia">
+                    <div class="lp-painel-head"><div><div class="section-kicker">MEU CHECKLIST</div><h2 id="tituloDia">Atividades do dia</h2>
+                        <p>As conclusões registram a data e hora reais.</p></div>
+                        <span id="progressoTexto" class="status-resumo">0% concluído</span></div>
+                    <div class="progresso-wrap"><div class="progresso-barra"><div id="barraDia"></div></div><span id="contadorProgresso">0 de 0 concluídas</span></div>
+                    <div class="lp-toolbar">
+                        <div class="checklist-filtros" role="group" aria-label="Filtrar tarefas da lista">
+                            <button type="button" class="filtro-minha ativo" data-filtro="todas">Todas</button>
+                            <button type="button" class="filtro-minha" data-filtro="pendentes">Pendentes</button>
+                            <button type="button" class="filtro-minha" data-filtro="concluidas">Concluídas</button>
+                        </div>
+                        <input type="search" id="pesquisaTarefas" placeholder="Pesquisar atividade..." aria-label="Pesquisar tarefas">
+                        <button type="button" id="btnConcluirTodas" class="btn-concluir-pendentes">✓ Concluir pendentes</button>
+                    </div>
+                    <div id="listaDia" class="lp-items" aria-live="polite"></div>
+                </section>
+                <section class="painel lp-cadastro">
+                    <div class="lp-painel-head"><div><div class="section-kicker">CADASTRO PESSOAL</div><h2>Nova tarefa</h2>
+                        <p>Você escolhe se será uma atividade única ou recorrente.</p></div></div>
+                    <form id="formNovaTarefa" class="lp-form-tarefa">
+                        <div class="lp-campos-tarefa">
+                            <div class="lp-campo lp-titulo-campo"><label for="tituloTarefa">Atividade *</label><input id="tituloTarefa" maxlength="255" required placeholder="Ex.: Conferir planilha de bonificações"></div>
+                            <div class="lp-campo"><label for="dataTarefa">Início / data *</label><input id="dataTarefa" type="date" required></div>
+                            <div class="lp-campo"><label for="frequenciaTarefa">Repetição</label>
+                                <select id="frequenciaTarefa">
+                                    <option value="unica">Não repetir</option>
+                                    <option value="diaria">Todos os dias</option>
+                                    <option value="uteis">Segunda a sexta-feira</option>
+                                    <option value="semanal">Escolher dias da semana</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="diasSemanaBox" class="lp-dias lp-oculto" aria-label="Selecionar dias da semana">
+                            <label><input type="checkbox" value="1"> Seg</label><label><input type="checkbox" value="2"> Ter</label>
+                            <label><input type="checkbox" value="3"> Qua</label><label><input type="checkbox" value="4"> Qui</label>
+                            <label><input type="checkbox" value="5"> Sex</label><label><input type="checkbox" value="6"> Sáb</label>
+                            <label><input type="checkbox" value="7"> Dom</label>
+                        </div>
+                        <div class="lp-campo"><label for="descricaoTarefa">Observações (opcional)</label>
+                            <textarea id="descricaoTarefa" maxlength="1000" rows="2" placeholder="Orientações para executar a tarefa"></textarea></div>
+                        <div class="lp-form-actions"><button id="btnCriarTarefa" type="submit" class="btn-principal">+ Adicionar tarefa</button>
+                            <span id="textoRecorrencia" class="lp-muted">Tarefa única, com data definida.</span></div>
+                    </form>
+                </section>
+                <section class="painel lp-regras">
+                    <div class="lp-painel-head"><div><div class="section-kicker">AUTOMAÇÃO</div><h2>Repetições programadas</h2>
+                        <p>Pause, retome ou encerre uma tarefa recorrente. O histórico anterior permanece.</p></div></div>
+                    <div id="listaRecorrencias" class="lp-items"></div>
+                </section>
+                <section class="painel lp-historico">
+                    <div class="lp-painel-head"><div><div class="section-kicker">HISTÓRICO</div><h2>Últimas atividades</h2>
+                        <p>Consulte até 300 atividades da lista e quem concluiu cada uma.</p></div>
+                        <button id="btnAtualizarHistorico" type="button" class="lp-btn-suave">↻ Atualizar</button></div>
+                    <div class="table-wrap"><table><thead><tr><th>Data prevista</th><th>Atividade</th><th>Status</th><th>Conclusão real</th></tr></thead>
+                        <tbody id="historicoTarefas"><tr><td colspan="4">Carregando histórico...</td></tr></tbody></table></div>
+                </section>
+            </div>
+        </div>
+    </div>
+</main>
+<div id="modalEdicao" class="lp-modal lp-oculto" role="dialog" aria-modal="true" aria-label="Editar atividade">
+    <div class="lp-modal-box"><h2>Editar atividade</h2>
+        <form id="formEditarTarefa"><input type="hidden" id="editId"><label for="editTitulo">Atividade</label><input id="editTitulo" maxlength="255" required>
+            <label for="editDescricao">Observações</label><textarea id="editDescricao" maxlength="1000"></textarea>
+            <label for="editData">Data prevista</label><input id="editData" type="date" required>
+            <p id="avisoEditar" class="lp-muted"></p>
+            <div class="lp-modal-acoes"><button type="button" class="lp-btn-suave" id="btnFecharEdicao">Cancelar</button>
+                <button type="submit" class="btn-principal">Salvar alterações</button></div>
+        </form>
+    </div>
+</div>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<footer class="rodape-sistema"></footer>
+<script src="timezone.js?v=20.3"></script>
+<script src="minhas-listas.js?v=27.12"></script>
+<script src="rodape.js?v=28.8"></script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+.rodape-sistema {
+    width: 100%;
+    padding: 18px 20px 22px;
+    margin-top: 12px;
+    color: #7d8595;
+    font-size: 11px;
+    text-align: center;
+}
+
+.rodape-conteudo {
+    max-width: 1250px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+}
+
+.rodape-conteudo span + span::before {
+    content: "•";
+    margin-right: 18px;
+    color: #b0b6c2;
+}
+
+.rodape-conteudo strong {
+    color: #4f5870;
+}
+
+@media (max-width: 620px) {
+    .rodape-sistema {
+        padding: 14px 12px 18px;
+    }
+
+    .rodape-conteudo {
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .rodape-conteudo span + span::before {
+        content: "";
+        margin: 0;
+    }
+}

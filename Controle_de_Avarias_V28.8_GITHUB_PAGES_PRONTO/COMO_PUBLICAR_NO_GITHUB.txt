@@ -1,0 +1,13 @@
+CONTROLE DE AVARIAS V28.8 — VERSÃO DEMONSTRATIVA PARA GITHUB PAGES
+
+1. Extraia todo o ZIP.
+2. No GitHub, abra o repositório controle-de-avarias-web.
+3. Clique em Add file > Upload files.
+4. Selecione todos os arquivos extraídos, e NÃO o ZIP.
+5. Confirme em Commit changes.
+6. Acesse Settings > Pages e confira main / (root).
+7. Abra https://andersonwesley09-alt.github.io/controle-de-avarias-web/
+8. Entre com admin / admin123 (somente demonstração).
+
+IMPORTANTE: nenhum arquivo deste pacote está ligado ao PostgreSQL real.
+Faça backup do repositório antes de substituir arquivos existentes.
