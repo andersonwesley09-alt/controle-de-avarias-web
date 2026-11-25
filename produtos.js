@@ -17,13 +17,15 @@ if (!sessao) {
 }
 
 const dadosSessao = JSON.parse(sessao);
-if (dadosSessao.perfil !== "admin" || !dadosSessao.token) {
-    window.location.href = "sistema.html";
-    throw new Error("Acesso administrativo necessário.");
+if (!dadosSessao.token || (dadosSessao.perfil !== 'admin' &&
+    dadosSessao.permissoes?.['produtos.consultar'] !== true &&
+    dadosSessao.permissoes?.['produtos.importar'] !== true)) {
+    window.location.href='sistema.html';
+    throw new Error('Sem permissão para acessar produtos.');
 }
 
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 
 const arquivoProdutos =
@@ -77,9 +79,11 @@ async function carregarResumo() {
             );
 
 
-        const dados =
-            await resposta.json();
-
+        if (!resposta.ok) throw new Error(`Erro HTTP ${resposta.status} ao carregar o resumo de produtos.`);
+        const dados = await resposta.json();
+        if (!Number.isFinite(Number(dados.total)) || !Number.isFinite(Number(dados.ativos))) {
+            throw new Error('Resposta incompleta do resumo de produtos.');
+        }
 
         totalProdutos.textContent =
             dados.total;
@@ -328,6 +332,12 @@ btnImportar.addEventListener(
                     <strong>${retorno.produtosUnicos ?? "-"}</strong>
                 </p>
 
+                ${retorno.colunaSetorReconhecida ? `
+                <p>
+                    Produtos com setor informado na planilha:
+                    <strong>${retorno.produtosComSetor ?? 0}</strong>
+                </p>` : ""}
+
                 <p>
                     Produtos novos:
                     <strong>${retorno.novos}</strong>
@@ -405,6 +415,7 @@ btnImportar.addEventListener(
 
 
 carregarResumo();
+window.addEventListener('ca:reconexao', () => carregarResumo());
 
 /* =========================================================
    TEMPO REAL ENTRE OS PCS
@@ -423,4 +434,9 @@ if (typeof EventSource !== "undefined") {
             carregarResumo()
     );
 
+}
+
+// Somente consulta: não apresentar importação ao usuário sem autorização.
+if (dadosSessao.perfil !== 'admin' && dadosSessao.permissoes && !dadosSessao.permissoes['produtos.importar']) {
+    arquivoProdutos.closest('section')?.querySelectorAll('input[type=file],button').forEach(e=>{e.style.display='none';});
 }

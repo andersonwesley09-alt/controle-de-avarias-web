@@ -2,12 +2,13 @@
 const sessao = sessionStorage.getItem("usuarioLogado");
 let dadosSessao = null;
 try { dadosSessao = JSON.parse(sessao || "null"); } catch {}
-if (!dadosSessao || dadosSessao.perfil !== "admin" || !dadosSessao.token) {
+if (!dadosSessao || !dadosSessao.token ||
+    (dadosSessao.perfil !== 'admin' && dadosSessao.permissoes?.['auditoria.consultar'] !== true)) {
     window.location.href = "sistema.html";
     throw new Error("Acesso administrativo necessário.");
 }
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 const tabela = document.getElementById("tabelaAuditoria");
 const total = document.getElementById("totalAuditoria");
@@ -30,10 +31,18 @@ let tamanhoPagina = 25;
 let ordenacao = { campo: "data", direcao: "desc" };
 const selecionados = new Set();
 
+// Registros associados ao desfazimento precisam continuar na auditoria.
+function protegidoParaExclusao(item) {
+    return Boolean(item?.desfeitoEm) || String(item?.acao || '').trim().toUpperCase() === 'DESFAZER';
+}
+function removiveis(itens) {
+    return itens.filter(item => !protegidoParaExclusao(item));
+}
+
 function esc(v){return String(v ?? "").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
 function mostrarToast(msg){toast.textContent=msg;toast.classList.add("ativo");setTimeout(()=>toast.classList.remove("ativo"),2500);}
 function formatarDataHoraSistema(valor){
-    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
+    if (typeof window.formatarDataHoraEmpresaExemplo === "function") return window.formatarDataHoraEmpresaExemplo(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", {timeZone:"America/Sao_Paulo", dateStyle:"short", timeStyle:"short"}).format(d);
@@ -157,15 +166,18 @@ function renderizar(){
     const inicio=(pagina-1)*tamanhoPagina;
     const paginaAtual=filtrados.slice(inicio,inicio+tamanhoPagina);
     tabela.innerHTML=paginaAtual.length?paginaAtual.map(item=>`<tr>
-        <td class="td-selecao"><input class="checkbox-auditoria checkbox-registro" type="checkbox" data-id="${esc(item.id)}" ${selecionados.has(String(item.id))?"checked":""} aria-label="Selecionar registro ${esc(item.id)}"></td>
+        <td class="td-selecao"><input class="checkbox-auditoria checkbox-registro" type="checkbox" data-id="${esc(item.id)}" ${selecionados.has(String(item.id)) && !protegidoParaExclusao(item)?"checked":""} ${protegidoParaExclusao(item)?'disabled title="Histórico de desfazimento protegido"':''} aria-label="Selecionar registro ${esc(item.id)}"></td>
         <td>${formatarDataHoraSistema(item.criadoEm)}</td>
         <td>${esc(item.usuario)}</td>
         <td><span class="badge">${esc(item.acao)}</span></td>
         <td>${esc(item.entidade)}</td>
         <td>${esc(item.registroId||"—")}</td>
         <td>${esc(item.detalhes||"—")}</td>
-        <td>${resultadoAuditoria(item.acao)}</td>
+        <td><div class="auditoria-resultado-acoes">${resultadoAuditoria(item.acao)}${item.desfeitoEm ? `<span class="audit-desfeito" title="Desfeito por ${esc(item.desfeitoPor||'administrador')}">Desfeito</span>` : (item.podeDesfazer && dadosSessao.perfil === 'admin' ? `<button type="button" class="btn-desfazer-registro" data-id="${esc(item.id)}" title="${esc(item.descricaoDesfazer || 'Desfazer alteração')}">↶ Desfazer</button>` : '')}</div></td>
     </tr>`).join(""):"<tr><td colspan=\"8\" class=\"vazio\">Nenhuma alteração encontrada com os filtros atuais.</td></tr>";
+    tabela.querySelectorAll(".btn-desfazer-registro").forEach(botao=>{
+        botao.addEventListener("click",()=>abrirDesfazimento(String(botao.dataset.id)));
+    });
     tabela.querySelectorAll(".checkbox-registro").forEach(check=>check.addEventListener("change",()=>{
         const id=String(check.dataset.id||"");
         if(check.checked) selecionados.add(id); else selecionados.delete(id);
@@ -187,6 +199,8 @@ async function carregar(){
         const dados=await r.json();
         if(!r.ok) throw new Error(dados.erro||"Erro ao carregar auditoria.");
         registros=Array.isArray(dados)?dados:[];
+        const disponiveis = new Set(removiveis(registros).map(item => String(item.id)));
+        for (const id of selecionados) if (!disponiveis.has(id)) selecionados.delete(id);
         popularFiltros();
         pagina=1;
         renderizar();
@@ -216,25 +230,34 @@ document.querySelectorAll("table thead th").forEach((th,index)=>{
     });
 });
 
-function atualizarControlesSelecao(paginaAtual=[]) {
+function atualizarControlesSelecao(paginaAtual=null) {
+    if (!paginaAtual) {
+        const inicio=(pagina-1)*tamanhoPagina;
+        paginaAtual=filtrados.slice(inicio,inicio+tamanhoPagina);
+    }
     const quantidade=selecionados.size;
     if(btnExcluirSelecionados){
         btnExcluirSelecionados.disabled=quantidade===0;
-        btnExcluirSelecionados.textContent=quantidade?`🗑 Excluir selecionados (${quantidade})`:"🗑 Excluir selecionados";
+        btnExcluirSelecionados.textContent=quantidade?`🗑 Excluir selecionados (${quantidade})`:'🗑 Excluir selecionados';
     }
-    if(btnSelecionarTodos) btnSelecionarTodos.textContent=filtrados.length && filtrados.every(item=>selecionados.has(String(item.id)))?"☐ Limpar seleção":"☑ Selecionar todos";
+    const elegiveis=removiveis(filtrados);
+    const todos=elegiveis.length>0 && elegiveis.every(item=>selecionados.has(String(item.id)));
+    if(btnSelecionarTodos) {
+        btnSelecionarTodos.textContent=todos?'☐ Limpar seleção':'☑ Selecionar disponíveis';
+        btnSelecionarTodos.disabled=elegiveis.length===0;
+    }
     if(checkTodos){
-        const idsPagina=paginaAtual.map(item=>String(item.id));
+        const idsPagina=removiveis(paginaAtual).map(item=>String(item.id));
         const todosPagina=idsPagina.length>0 && idsPagina.every(id=>selecionados.has(id));
+        checkTodos.disabled=idsPagina.length===0;
         checkTodos.checked=todosPagina;
         checkTodos.indeterminate=!todosPagina && idsPagina.some(id=>selecionados.has(id));
     }
 }
 
-checkTodos?.addEventListener("change",()=>{
-    const totalPaginas=Math.max(1,Math.ceil(filtrados.length/tamanhoPagina));
+checkTodos?.addEventListener('change',()=>{
     const inicio=(pagina-1)*tamanhoPagina;
-    const paginaAtual=filtrados.slice(inicio,inicio+tamanhoPagina);
+    const paginaAtual=removiveis(filtrados.slice(inicio,inicio+tamanhoPagina));
     paginaAtual.forEach(item=>{
         const id=String(item.id);
         if(checkTodos.checked) selecionados.add(id); else selecionados.delete(id);
@@ -242,37 +265,103 @@ checkTodos?.addEventListener("change",()=>{
     renderizar();
 });
 
-btnSelecionarTodos?.addEventListener("click",()=>{
-    const todos=filtrados.length>0 && filtrados.every(item=>selecionados.has(String(item.id)));
-    filtrados.forEach(item=>{
+btnSelecionarTodos?.addEventListener('click',()=>{
+    const elegiveis=removiveis(filtrados);
+    const todos=elegiveis.length>0 && elegiveis.every(item=>selecionados.has(String(item.id)));
+    elegiveis.forEach(item=>{
         const id=String(item.id);
         if(todos) selecionados.delete(id); else selecionados.add(id);
     });
     renderizar();
+    if(!todos){
+        const protegidos=filtrados.length-elegiveis.length;
+        if(protegidos) mostrarToast(`${protegidos} registro(s) de desfazimento protegido(s) ficaram fora da seleção.`);
+    }
 });
 
-btnExcluirSelecionados?.addEventListener("click",async()=>{
+btnExcluirSelecionados?.addEventListener('click',async()=>{
     const ids=Array.from(selecionados);
     if(!ids.length) return;
-    const confirmado=window.confirm(`Deseja excluir ${ids.length} registro${ids.length===1?"":"s"} do histórico de alterações?\n\nEssa ação não pode ser desfeita.`);
+    const confirmado=window.confirm(`Excluir ${ids.length} registro${ids.length===1?'':'s'} permitido${ids.length===1?'':'s'} da auditoria?\n\nRegistros vinculados a desfazimentos serão preservados. A exclusão é definitiva e não altera os lançamentos operacionais.`);
     if(!confirmado) return;
     btnExcluirSelecionados.disabled=true;
     try{
         const r=await fetch(`${API}/api/auditoria`,{
-            method:"DELETE",
-            headers:{"Content-Type":"application/json",Authorization:`Bearer ${dadosSessao.token}`},
-            credentials:"include",
+            method:'DELETE',
+            headers:{'Content-Type':'application/json',Authorization:`Bearer ${dadosSessao.token}`},
+            credentials:'include',
             body:JSON.stringify({ids})
         });
         const dados=await r.json();
-        if(!r.ok) throw new Error(dados.erro||"Erro ao excluir os registros selecionados.");
+        if(!r.ok) throw new Error(dados.erro||'Erro ao excluir os registros selecionados.');
         ids.forEach(id=>selecionados.delete(String(id)));
-        mostrarToast(`${dados.excluidos||ids.length} registro${(dados.excluidos||ids.length)===1?"":"s"} excluído${(dados.excluidos||ids.length)===1?"":"s"}.`);
+        const n=Number(dados.excluidos||0);
+        const p=Number(dados.protegidos||0);
+        mostrarToast(`${n} registro(s) excluído(s).${p ? ` ${p} protegido(s) preservado(s).` : ''}`);
         await carregar();
     }catch(e){
-        console.error("Erro ao excluir auditoria:",e);
-        mostrarToast(e.message||"Erro ao excluir os registros selecionados.");
+        console.error('Erro ao excluir auditoria:',e);
+        mostrarToast(e.message||'Erro ao excluir os registros selecionados.');
         atualizarControlesSelecao();
+    }
+});
+
+const modalDesfazer = document.getElementById("modalDesfazerAuditoria");
+const motivoDesfazer = document.getElementById("motivoDesfazerAuditoria");
+const erroDesfazer = document.getElementById("erroDesfazerAuditoria");
+const confirmarDesfazer = document.getElementById("confirmarDesfazerAuditoria");
+let registroAReverter = null;
+let desfazimentoExecutando = false;
+
+function fecharDesfazimento(){
+    if (desfazimentoExecutando) return;
+    modalDesfazer.hidden = true;
+    registroAReverter = null;
+    motivoDesfazer.value = "";
+    erroDesfazer.textContent = "";
+    confirmarDesfazer.disabled = true;
+}
+function abrirDesfazimento(id){
+    if (dadosSessao.perfil !== 'admin') return;
+    const registro = registros.find(r=>String(r.id) === id);
+    if (!registro || !registro.podeDesfazer || registro.desfeitoEm) return;
+    registroAReverter = registro;
+    const descricao = registro.descricaoDesfazer || 'Reverter alteração selecionada';
+    document.getElementById("descricaoDesfazerAuditoria").textContent = `${descricao}. Registro: ${registro.registroId || '—'}. Operação: ${registro.acao}.`;
+    erroDesfazer.textContent = "";
+    motivoDesfazer.value = "";
+    confirmarDesfazer.disabled = true;
+    modalDesfazer.hidden = false;
+    motivoDesfazer.focus();
+}
+motivoDesfazer?.addEventListener('input',()=>{confirmarDesfazer.disabled = desfazimentoExecutando || motivoDesfazer.value.trim().length < 8;});
+document.getElementById("cancelarDesfazerAuditoria")?.addEventListener("click",fecharDesfazimento);
+modalDesfazer?.addEventListener("click",e=>{if(e.target===modalDesfazer) fecharDesfazimento();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape' && !modalDesfazer.hidden) fecharDesfazimento();});
+confirmarDesfazer?.addEventListener('click',async()=>{
+    if (desfazimentoExecutando || !registroAReverter || motivoDesfazer.value.trim().length < 8) return;
+    desfazimentoExecutando = true;
+    confirmarDesfazer.disabled = true;
+    erroDesfazer.textContent = "";
+    try {
+        const resposta = await fetch(`${API}/api/auditoria/${encodeURIComponent(registroAReverter.id)}/desfazer`,{
+            method:'POST',credentials:'include',
+            headers:{'Content-Type':'application/json',Authorization:`Bearer ${dadosSessao.token}`},
+            body:JSON.stringify({motivo:motivoDesfazer.value.trim()})
+        });
+        const dados = await resposta.json();
+        if (!resposta.ok) throw new Error(dados.erro || 'Falha ao desfazer a alteração.');
+        modalDesfazer.hidden = true;
+        registroAReverter = null;
+        motivoDesfazer.value = "";
+        mostrarToast('Alteração desfeita e registrada no histórico.');
+        await carregar();
+    } catch (erro) {
+        erroDesfazer.textContent = erro.message || 'Não foi possível desfazer.';
+        console.error('Erro ao desfazer alteração:',erro);
+    } finally {
+        desfazimentoExecutando = false;
+        confirmarDesfazer.disabled = motivoDesfazer.value.trim().length < 8;
     }
 });
 
@@ -280,6 +369,13 @@ document.getElementById("btnAtualizar").addEventListener("click",carregar);
 document.getElementById("btnSair").addEventListener("click",()=>{fetch(`${API}/api/logout`,{method:"POST",credentials:"include",keepalive:true}).catch(()=>{});sessionStorage.removeItem("usuarioLogado");location.href="login.html";});
 if(typeof EventSource!=="undefined"){
     const ev=new EventSource(`${API}/api/eventos`);
-    ["historico-atualizado","avarias-atualizadas","produtos-atualizados"].forEach(t=>ev.addEventListener(t,carregar));
+    ["historico-atualizado","avarias-atualizadas","produtos-atualizados","auditoria-atualizada"].forEach(t=>ev.addEventListener(t,carregar));
 }
+window.addEventListener('ca:reconexao', carregar);
 carregar();
+
+if(dadosSessao.perfil!=='admin') {
+    btnExcluirSelecionados?.setAttribute('hidden','hidden');
+    btnSelecionarTodos?.setAttribute('hidden','hidden');
+    checkTodos?.setAttribute('hidden','hidden');
+}

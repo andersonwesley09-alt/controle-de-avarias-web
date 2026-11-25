@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none';">
+<script src="demo-local.js"></script>
     <script src="bcrypt-browser.js?v=25.1.14"></script>
-    <script src="servidor-rede.js?v=25.1.14"></script>
-    <script src="rede-central.js?v=25.1.14"></script>
+    
+    
+<script src="estabilidade-leitura.js?v=27.12"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mapeamento - Controle de Avarias</title>
@@ -15,6 +18,7 @@
 <header class="topbar">
     <div class="header-container">
         <div class="marca-header">
+            <img src="logo-Empresa Exemplo.png" alt="Empresa Exemplo" class="logo-Empresa Exemplo-header">
             <div>
                 <h1>Mapeamento</h1>
                 <p>Mapa físico das caixas e posições da operação</p>
@@ -99,7 +103,7 @@
 
 <div id="toast" class="toast"></div>
 <script src="timezone.js?v=20.3"></script>
-    <script src="mapeamento.js?v=20.3"></script>
-    <script src="rodape.js?v=20.3"></script>
+    <script src="mapeamento.js?v=27.12"></script>
+    <script src="rodape.js?v=28.8"></script>
 </body>
 </html>

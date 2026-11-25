@@ -21,7 +21,7 @@
     const btnLimparLidas = document.getElementById("btnLimparNotificacoesLidas");
     if (!area || !botao || !badge || !painel || !lista || !subtitulo || !btnLidas || !btnLimparLidas) return;
 
-    const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+    const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
     let notificacoes = [];
     let naoLidas = 0;
@@ -48,7 +48,7 @@
         const dias = Math.floor(horas / 24);
         if (dias === 1) return "Ontem";
         if (dias < 7) return `Há ${dias} dias`;
-        return typeof formatarDataManaira === "function" ? formatarDataManaira(data) : new Date(data).toLocaleString("pt-BR");
+        return typeof formatarDataEmpresaExemplo === "function" ? formatarDataEmpresaExemplo(data) : new Date(data).toLocaleString("pt-BR");
     }
 
     function atualizarCabecalho() {

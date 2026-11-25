@@ -61,8 +61,8 @@ if (usuarioEhAdmin) {
 ========================= */
 
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraManaira === "function") {
-        return window.formatarDataHoraManaira(valor);
+    if (typeof window.formatarDataHoraEmpresaExemplo === "function") {
+        return window.formatarDataHoraEmpresaExemplo(valor);
     }
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
@@ -75,7 +75,7 @@ const formatarDataHoraSistema = (valor) => {
 
 
 const LIMITE_QUANTIDADE = 100000;
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 
 async function sincronizarPermissaoAdminHistorico() {
@@ -438,22 +438,6 @@ const btnCompartilhar =
     document.getElementById(
         "btnCompartilhar"
     );
-
-const menuCompartilhar =
-    document.getElementById(
-        "menuCompartilhar"
-    );
-
-const btnCompartilharXlsx =
-    document.getElementById(
-        "btnCompartilharXlsx"
-    );
-
-const btnCompartilharPdf =
-    document.getElementById(
-        "btnCompartilharPdf"
-    );
-
 
 let registrosFiltrados =
     [];
@@ -1025,10 +1009,41 @@ function atualizarBotoesFiltroAba(aba) {
     if (btnFiltrosBaixas) btnFiltrosBaixas.style.display = aba === "baixas" ? "inline-flex" : "none";
 }
 
+function usuarioPodeAcessarAba(aba) {
+    if (window.CA_ACL) return window.CA_ACL.permitidoAba(aba);
+    if (dadosSessao?.perfil === "admin") return true;
+    const chave = {cadastro:"avarias.cadastrar", registros:"avarias.consultar", baixas:"baixas.consultar", nfs:"nfs.consultar"}[aba];
+    if (!chave) return false;
+    return dadosSessao?.permissoes == null || dadosSessao.permissoes[chave] === true;
+}
+function mostrarAvisoAcesso(mensagem) {
+    const elemento=document.getElementById('avariasAvisoAcesso');
+    if (!elemento) return;
+    elemento.textContent=mensagem;
+    elemento.hidden=!mensagem;
+}
+function abrirAbaAutorizada() {
+    const primeira=['cadastro','registros','baixas','nfs'].find(usuarioPodeAcessarAba);
+    if (!primeira) {
+        botoesAbas.forEach(b=>b.classList.remove('ativo'));
+        conteudosAbas.forEach(b=>b.classList.remove('ativo'));
+        atualizarBotoesFiltroAba('');
+        mostrarAvisoAcesso('Este usuário não possui acesso às áreas de Avarias e Baixas. Solicite autorização ao administrador.');
+        return false;
+    }
+    return abrirAba(primeira);
+}
+window.caAbrirAbaAutorizada=abrirAbaAutorizada;
 function abrirAba(
     aba
 ) {
-
+    if (!usuarioPodeAcessarAba(aba)) {
+        mostrarToast(aba === 'nfs'
+            ? 'Sem acesso às NFs Pendentes. Peça ao administrador para liberar: Consultar NFs pendentes.'
+            : 'Seu usuário não tem permissão para acessar esta área.');
+        return false;
+    }
+    mostrarAvisoAcesso('');
     atualizarBotoesFiltroAba(aba);
 
     botoesAbas.forEach(
@@ -1119,6 +1134,11 @@ function abrirAba(
         carregarHistorico();
 
     }
+    if (aba === "nfs") {
+        document.getElementById("abaNfs").classList.add("ativo");
+        window.NFsPendentes?.carregar();
+    }
+    return true;
 
 }
 
@@ -1216,6 +1236,7 @@ async function carregarAvarias() {
         }));
 
         renderizarTudo();
+        window.__caAvariasCarregadas = true;
 
     } catch (erro) {
         console.error("V21.5: erro ao carregar avarias:", erro);
@@ -1224,11 +1245,9 @@ async function carregarAvarias() {
         // O histórico preserva registros excluídos e não pode repovoar
         // a lista de avarias atuais, senão o item volta após uma exclusão.
         // Mantemos somente os dados atuais já carregados, se houver.
-        if (!Array.isArray(avarias) || !avarias.length) {
-            avarias = [];
-            renderizarTudo();
+        if (!window.__caAvariasCarregadas && tabelaRegistros) {
+            tabelaRegistros.innerHTML = `<tr><td colspan="13" class="vazio">Falha na consulta. Os dados serão recuperados quando a conexão voltar.</td></tr>`;
         }
-
         mostrarToast(`Não foi possível carregar as avarias atuais: ${erro.message || "erro desconhecido"}`);
     }
 
@@ -1317,6 +1336,7 @@ async function carregarHistorico() {
             mostrarToast(`Histórico carregado (${historicoAvarias.length} registros). A tela foi recuperada automaticamente.`);
         }
 
+        window.__caHistoricoCarregado = true;
         // O histórico é usado apenas para o módulo Histórico/Baixas.
         // Ele não deve preencher a aba Registros, pois pode conter itens
         // que já foram excluídos da tabela avarias.
@@ -1329,6 +1349,9 @@ async function carregarHistorico() {
         // O histórico deve permanecer independente da tabela avarias.
         // Não usamos /api/avarias como fallback aqui para evitar misturar
         // registros atuais com o histórico de itens já excluídos.
+        if (!window.__caHistoricoCarregado && tabelaHistorico) {
+            tabelaHistorico.innerHTML = `<tr><td colspan="13" class="vazio">Erro na consulta do histórico; aguardando reconexão.</td></tr>`;
+        }
         mostrarToast(`Não foi possível carregar o histórico: ${erroApi?.message || "erro desconhecido"}`);
         return [];
     }
@@ -1449,6 +1472,10 @@ function mostrarProduto(
             : "Mercearia";
     }
 
+
+    // O setor de origem pertence ao LANCAMENTO, nao ao cadastro do produto.
+    // Nao modifica a escolha manual do operador ao consultar outro codigo.
+    // A categoria continua sendo preenchida a partir de produto.categoria.
 
     produtoInfo.classList.remove(
         "oculto"
@@ -2090,7 +2117,7 @@ function correspondeData(
     if (dataInicial.value) {
 
         const inicio =
-            inicioDiaManaira(dataInicial.value);
+            inicioDiaEmpresaExemplo(dataInicial.value);
 
 
         if (
@@ -2108,7 +2135,7 @@ function correspondeData(
     if (dataFinal.value) {
 
         const fim =
-            fimDiaManaira(dataFinal.value);
+            fimDiaEmpresaExemplo(dataFinal.value);
 
 
         if (
@@ -2441,6 +2468,7 @@ function renderizarRegistros() {
         const id = String(avaria.id);
         const marcado = selecionados.has(id) ? "checked" : "";
         const disponivelDoacao = quantidadeDisponivelParaDoacao(avaria);
+        const podeEnviarDoacao = usuarioPodeEncaminharDoacao();
         const botaoDoacaoDesabilitado = disponivelDoacao <= 0 ? "disabled" : "";
         const tituloDoacao = disponivelDoacao <= 0 ? "Quantidade já encaminhada integralmente para doação" : "Enviar para doação";
         return `
@@ -2458,7 +2486,7 @@ function renderizarRegistros() {
                 <td>${esc(avaria.tipo || "-")}</td>
                 <td>${esc(avaria.usuarioLancamento || "-")}</td>
                 <td class="acoes-registro-linha">
-                    <button type="button" class="btn-enviar-doacao-linha" onclick="abrirEncaminharDoacaoPorId('${id}')" title="${tituloDoacao}" ${botaoDoacaoDesabilitado}>→</button>
+                    ${podeEnviarDoacao ? `<button type="button" class="btn-enviar-doacao-linha" onclick="abrirEncaminharDoacaoPorId('${id}')" title="${tituloDoacao}" ${botaoDoacaoDesabilitado}>→</button>` : ""}
                     <button type="button" class="btn-editar-baixa btn-editar-registro" onclick="excluirAvaria('${id}')" title="Excluir registro">🗑</button>
                 </td>
             </tr>`;
@@ -2691,8 +2719,8 @@ function correspondeFiltrosHistorico(
     if (filtroHistoricoDataInicial.value || filtroHistoricoDataFinal.value) {
         const dataRegistro = new Date(dataRegistroValor);
         if (Number.isNaN(dataRegistro.getTime())) return false;
-        if (filtroHistoricoDataInicial.value && dataRegistro < inicioDiaManaira(filtroHistoricoDataInicial.value)) return false;
-        if (filtroHistoricoDataFinal.value && dataRegistro > fimDiaManaira(filtroHistoricoDataFinal.value)) return false;
+        if (filtroHistoricoDataInicial.value && dataRegistro < inicioDiaEmpresaExemplo(filtroHistoricoDataInicial.value)) return false;
+        if (filtroHistoricoDataFinal.value && dataRegistro > fimDiaEmpresaExemplo(filtroHistoricoDataFinal.value)) return false;
     }
 
     return true;
@@ -2948,7 +2976,7 @@ function formatarDataParaInput(valor) {
     }
 
     const partes = new Intl.DateTimeFormat("en-CA", {
-        timeZone: MANAIRA_TIME_ZONE,
+        timeZone: EmpresaExemplo_TIME_ZONE,
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -4233,7 +4261,24 @@ btnExcluirSelecionados.addEventListener(
 
 /* =========================================================
    ENCAMINHAR REGISTROS PARA DOAÇÃO
+   V27.14: a permissão de doações também se aplica à seta
+   individual, à janela e ao envio (a API continua autoritativa).
 ========================================================= */
+
+function usuarioPodeEncaminharDoacao() {
+    try {
+        const atual = JSON.parse(sessionStorage.getItem("usuarioLogado") || "null");
+        if (!atual) return false;
+        if (atual.perfil === "admin") return true;
+        // Usuários legados sem configuração explícita mantêm o comportamento
+        // anterior; a API verifica as autorizações reais antes da gravação.
+        if (atual.permissoes === null) return true;
+        return atual.permissoes?.["avarias.consultar"] === true &&
+               atual.permissoes?.["doacoes.criar"] === true;
+    } catch {
+        return false;
+    }
+}
 
 function quantidadeDisponivelParaDoacao(avaria) {
     const total = numero(avaria?.quantidade);
@@ -4242,6 +4287,10 @@ function quantidadeDisponivelParaDoacao(avaria) {
 }
 
 function abrirModalEncaminharDoacao(itens) {
+    if (!usuarioPodeEncaminharDoacao()) {
+        mostrarToast("Seu usuário não tem permissão para enviar registros para doação.");
+        return;
+    }
     const base = Array.isArray(itens) ? itens : [];
     const validos = base
         .map(item => ({ ...item, quantidadeDisponivelDoacao: quantidadeDisponivelParaDoacao(item) }))
@@ -4318,6 +4367,10 @@ function renderizarItensEncaminharDoacao() {
 }
 
 async function confirmarEncaminharDoacao() {
+    if (!usuarioPodeEncaminharDoacao()) {
+        mostrarToast("Seu usuário não tem permissão para enviar registros para doação.");
+        return;
+    }
     const itens = itensPendentesParaDoacao
         .map(item => ({ avariaId: item.avariaId, quantidade: numero(item.quantidade) }))
         .filter(item => item.quantidade > 0);
@@ -4361,6 +4414,13 @@ async function confirmarEncaminharDoacao() {
         selecionados.clear();
         await carregarAvarias();
         mostrarToast(`${dados.quantidadeItens || itens.length} item(ns) encaminhado(s) para ${dados.documento || "a doação"}.`);
+        // Abre a aba Doações diretamente no documento recém-criado.
+        if (dados.documentoId) {
+            const destino = new URL("recuperacao.html", window.location.href);
+            destino.searchParams.set("aba", "doacoes");
+            destino.searchParams.set("documentoId", String(dados.documentoId));
+            window.location.assign(destino.href);
+        }
     } catch (erro) {
         console.error("Erro ao encaminhar para doação:", erro);
         mostrarToast(erro.message || "Erro ao encaminhar para doação.");
@@ -4606,204 +4666,87 @@ btnExportarBaixasPdf?.addEventListener("click", exportarBaixasPdf);
 
 
 /* =========================================================
-   COMPARTILHAR REGISTROS
-   Excel + PDF
+   V27 — EXPORTAÇÃO PERSONALIZADA: janela do botão Compartilhar.
+   O servidor consulta novamente os IDs; não recebe valores editáveis.
 ========================================================= */
+const modalExportV27 = document.getElementById("modalExportacaoRegistros");
+const btnExportV27Gerar = document.getElementById("exportV27Gerar");
+const resumoExportV27 = document.getElementById("exportV27Resumo");
+const radiosExportV27 = (name) => modalExportV27?.querySelector(`input[name="${name}"]:checked`)?.value;
 
-function obterRegistrosSelecionadosParaCompartilhar() {
+function listaExportV27(escopo) {
     renderizarRegistros();
-
-    const selecionadosParaCompartilhar = registrosFiltrados.filter(
-        avaria => selecionados.has(String(avaria.id))
-    );
-
-    return selecionadosParaCompartilhar.length
-        ? selecionadosParaCompartilhar
-        : registrosFiltrados;
+    if (escopo === "pagina") return [...registrosPaginaAtual];
+    if (escopo === "todos") return avarias.filter(avariaVisivel);
+    return [...registrosFiltrados];
 }
-
-function fecharMenuCompartilhar() {
-    if (!menuCompartilhar || !btnCompartilhar) return;
-    menuCompartilhar.hidden = true;
-    btnCompartilhar.setAttribute("aria-expanded", "false");
+function atualizarResumoExportV27() {
+    if (!modalExportV27 || modalExportV27.hidden) return;
+    const lista = listaExportV27(radiosExportV27('exportV27Escopo'));
+    const tipo = radiosExportV27('exportV27Tipo');
+    const codigos = new Set(lista.map(item => String(item.codigo || item.produto || '').trim().replace(/^0+(?=\d)/, '')));
+    const valor = lista.reduce((t, a) => t + valorDaAvaria(a), 0);
+    resumoExportV27.textContent = `${lista.length.toLocaleString('pt-BR')} lançamento(s) · ${codigos.size.toLocaleString('pt-BR')} referência(s) · ${moeda(valor)} | ${tipo === 'consolidado' ? 'Agrupados por produto' : 'Detalhado'} | ${radiosExportV27('exportV27Formato') === 'pdf' ? 'PDF' : 'Excel'}`;
+    btnExportV27Gerar.disabled = !lista.length;
 }
+function abrirExportV27() {
+    if (!modalExportV27) return;
+    modalExportV27.hidden = false;
+    modalExportV27.setAttribute('aria-hidden','false');
+    atualizarResumoExportV27();
+    document.getElementById('exportV27Fechar')?.focus();
+}
+function fecharExportV27() {
+    if (!modalExportV27) return;
+    modalExportV27.hidden = true;
+    modalExportV27.setAttribute('aria-hidden','true');
+    btnCompartilhar?.focus();
+}
+btnCompartilhar?.addEventListener('click', abrirExportV27);
+document.getElementById('exportV27Fechar')?.addEventListener('click',fecharExportV27);
+document.getElementById('exportV27Cancelar')?.addEventListener('click',fecharExportV27);
+modalExportV27?.addEventListener('click',e => {if(e.target===modalExportV27)fecharExportV27();});
+modalExportV27?.addEventListener('change',atualizarResumoExportV27);
+document.addEventListener('keydown',e => {if(e.key==='Escape' && modalExportV27 && !modalExportV27.hidden)fecharExportV27();});
 
-btnCompartilhar?.addEventListener("click", (evento) => {
-    evento.stopPropagation();
-    if (!menuCompartilhar) return;
-    const aberto = !menuCompartilhar.hidden;
-    menuCompartilhar.hidden = aberto;
-    btnCompartilhar.setAttribute("aria-expanded", String(!aberto));
-});
-
-document.addEventListener("click", (evento) => {
-    if (!evento.target.closest?.(".compartilhar-registros")) {
-        fecharMenuCompartilhar();
-    }
-});
-
-async function exportarRegistrosXlsx() {
-    const selecionadosParaExportar = obterRegistrosSelecionadosParaCompartilhar();
-    if (!selecionadosParaExportar) return;
-
-    const textoOriginal = btnCompartilharXlsx?.textContent || "📊 Excel (XLSX)";
-    if (btnCompartilharXlsx) {
-        btnCompartilharXlsx.disabled = true;
-        btnCompartilharXlsx.textContent = "Gerando Excel...";
-    }
-
+async function gerarExportacaoV27() {
+    const formato = radiosExportV27('exportV27Formato') || 'xlsx';
+    const tipo = radiosExportV27('exportV27Tipo') || 'consolidado';
+    const escopo = radiosExportV27('exportV27Escopo') || 'filtrados';
+    const lista = listaExportV27(escopo);
+    if (!lista.length) { mostrarToast('Nenhum registro para exportar.');return; }
+    const ids = lista.map(item=>String(item.id));
+    const colunas = [...modalExportV27.querySelectorAll('input[name="exportV27Coluna"]:checked')].map(item=>item.value);
+    const totais = document.getElementById('exportV27Totais')?.checked !== false;
+    const textoOriginal = btnExportV27Gerar.textContent;
+    btnExportV27Gerar.disabled=true;
+    btnExportV27Gerar.textContent='Gerando arquivo...';
     try {
-        const registros = selecionadosParaExportar.map(avaria => ({
-            data: formatarData(avaria.criadoEm),
-            codigo: avaria.codigo || "",
-            produto: avaria.produto || "",
-            fornecedor: avaria.fornecedor || "",
-            categoria: avaria.categoria || "Mercearia",
-            codigoFornecedor: avaria.codigoFornecedor || "",
-            quantidade: numero(avaria.quantidade),
-            valorUnitario: numero(avaria.valorUnitario),
-            valorTotal: valorDaAvaria(avaria),
-            setor: avaria.setor || "",
-            tipo: avaria.tipo || "",
-            usuario: avaria.usuarioLancamento || "",
-            caixa: avaria.caixa || "",
-            status: avaria.status || "",
-            observacao: avaria.observacao || ""
-        }));
-
-        const agrupados = new Map();
-        for (const registro of registros) {
-            const chave = String(registro.codigo || registro.produto || "").trim().toLowerCase();
-            if (!chave) continue;
-            if (!agrupados.has(chave)) {
-                agrupados.set(chave, {
-                    ...registro,
-                    quantidade: numero(registro.quantidade),
-                    valorTotal: numero(registro.valorTotal)
-                });
-            } else {
-                const atual = agrupados.get(chave);
-                atual.quantidade += numero(registro.quantidade);
-                atual.valorTotal += numero(registro.valorTotal);
-            }
-        }
-
-        const registrosAgrupados = Array.from(agrupados.values());
-        const resposta = await fetch(`${API}/api/avarias/exportar`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...headersUsuarioAutenticado()
-            },
-            credentials: "include",
-            body: JSON.stringify({ registros: registrosAgrupados })
+        const resposta=await fetch(`${API}/api/avarias/exportar-configurado`,{
+            method:'POST',credentials:'include',
+            headers:{'Content-Type':'application/json',...headersUsuarioAutenticado()},
+            body:JSON.stringify({ids,formato,tipo,escopo,colunas,totais})
         });
-
         if (!resposta.ok) {
-            let mensagem = "Erro ao gerar XLSX.";
-            try {
-                const erro = await resposta.json();
-                mensagem = erro.erro || mensagem;
-            } catch {}
-            throw new Error(mensagem);
+            const dado=await resposta.json().catch(()=>({}));
+            throw new Error(dado.erro||`Falha na exportação (HTTP ${resposta.status}). Reinicie o servidor da V27.`);
         }
-
-        const arquivo = await resposta.blob();
-        const url = URL.createObjectURL(arquivo);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `avarias_${new Date().toISOString().slice(0, 10)}.xlsx`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-
-        mostrarToast(`${registrosAgrupados.length} item(ns) compartilhado(s) em Excel.`);
-        fecharMenuCompartilhar();
+        const arquivo=await resposta.blob();
+        const url=URL.createObjectURL(arquivo);
+        const link=document.createElement('a');
+        link.href=url;link.download=`avarias_${tipo}_${new Date().toISOString().slice(0,10)}.${formato==='pdf'?'pdf':'xlsx'}`;
+        document.body.appendChild(link);link.click();link.remove();
+        setTimeout(()=>URL.revokeObjectURL(url),1000);
+        mostrarToast(`${lista.length} registro(s) incluído(s) no relatório ${formato.toUpperCase()}.`);
+        fecharExportV27();
     } catch (erro) {
-        console.error("Erro ao compartilhar em Excel:", erro);
-        mostrarToast(erro.message || "Erro ao gerar Excel.");
+        console.error('V27: falha ao exportar registros:',erro);
+        mostrarToast(erro.message||'Falha ao gerar relatório.');
     } finally {
-        if (btnCompartilharXlsx) {
-            btnCompartilharXlsx.disabled = false;
-            btnCompartilharXlsx.textContent = textoOriginal;
-        }
+        btnExportV27Gerar.disabled=false;btnExportV27Gerar.textContent=textoOriginal;
     }
 }
-
-async function exportarRegistrosPdf() {
-    const selecionadosParaExportar = obterRegistrosSelecionadosParaCompartilhar();
-    if (!selecionadosParaExportar) return;
-
-    const textoOriginal = btnCompartilharPdf?.textContent || "📄 PDF";
-    if (btnCompartilharPdf) {
-        btnCompartilharPdf.disabled = true;
-        btnCompartilharPdf.textContent = "Gerando PDF...";
-    }
-
-    try {
-        const registros = selecionadosParaExportar.map(avaria => ({
-            data: formatarData(avaria.criadoEm),
-            codigo: avaria.codigo || "",
-            produto: avaria.produto || "",
-            fornecedor: avaria.fornecedor || "",
-            categoria: avaria.categoria || "Mercearia",
-            codigoFornecedor: avaria.codigoFornecedor || "",
-            quantidade: numero(avaria.quantidade),
-            valorUnitario: numero(avaria.valorUnitario),
-            valorTotal: valorDaAvaria(avaria),
-            setor: avaria.setor || "",
-            tipo: avaria.tipo || "",
-            usuario: avaria.usuarioLancamento || "",
-            caixa: avaria.caixa || "",
-            status: avaria.status || "",
-            observacao: avaria.observacao || ""
-        }));
-
-        const resposta = await fetch(`${API}/api/avarias/exportar-pdf-registros`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                ...headersUsuarioAutenticado()
-            },
-            credentials: "include",
-            body: JSON.stringify({ registros })
-        });
-
-        if (!resposta.ok) {
-            let mensagem = "Erro ao gerar PDF.";
-            try {
-                const erro = await resposta.json();
-                mensagem = erro.erro || mensagem;
-            } catch {}
-            throw new Error(mensagem);
-        }
-
-        const arquivo = await resposta.blob();
-        const url = URL.createObjectURL(arquivo);
-        const link = document.createElement("a");
-        link.href = url;
-        link.download = `avarias_${new Date().toISOString().slice(0, 10)}.pdf`;
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
-        URL.revokeObjectURL(url);
-
-        mostrarToast(`${registros.length} registro(s) compartilhado(s) em PDF.`);
-        fecharMenuCompartilhar();
-    } catch (erro) {
-        console.error("Erro ao compartilhar em PDF:", erro);
-        mostrarToast(erro.message || "Erro ao gerar PDF.");
-    } finally {
-        if (btnCompartilharPdf) {
-            btnCompartilharPdf.disabled = false;
-            btnCompartilharPdf.textContent = textoOriginal;
-        }
-    }
-}
-
-btnCompartilharXlsx?.addEventListener("click", exportarRegistrosXlsx);
-btnCompartilharPdf?.addEventListener("click", exportarRegistrosPdf);
+btnExportV27Gerar?.addEventListener('click',gerarExportacaoV27);
 
 
 /* =========================================================
@@ -4906,11 +4849,11 @@ document.addEventListener(
             event.preventDefault();
 
 
-            abrirAba(
-                "cadastro"
-            );
-
-
+            if (!usuarioPodeAcessarAba("cadastro")) {
+                mostrarToast("Seu usuário não tem permissão para cadastrar avarias.");
+                return;
+            }
+            abrirAba("cadastro");
             codigoProduto.focus();
 
             codigoProduto.select();
@@ -5011,8 +4954,11 @@ function iniciarTempoReal() {
 
     const eventos = new EventSource(`${API}/api/eventos`);
 
+    let estavaDesconectado = false;
     eventos.addEventListener("open", () => {
         atualizarStatusConexao("online", "Tempo real conectado");
+        if (estavaDesconectado) agendarAtualizacaoTempoReal();
+        estavaDesconectado = false;
     });
 
     eventos.addEventListener("conectado", () => {
@@ -5020,6 +4966,7 @@ function iniciarTempoReal() {
     });
 
     eventos.addEventListener("error", () => {
+        estavaDesconectado = true;
         atualizarStatusConexao("reconectando", "Reconectando...");
     });
 
@@ -5038,30 +4985,39 @@ function iniciarTempoReal() {
    INICIAR
 ========================================================= */
 
+// Bloqueio preventivo da interface. A API continua a validação definitiva.
+formAvaria?.addEventListener('submit', evento => {
+    if (!usuarioPodeAcessarAba('cadastro')) {
+        evento.preventDefault();
+        evento.stopImmediatePropagation();
+        mostrarToast('Seu usuário não tem permissão para cadastrar avarias.');
+    }
+}, true);
+
 prepararModalEditarBaixa();
 
 
 async function iniciar() {
-
     limparProduto();
-
-
-    await Promise.allSettled([
-        carregarAvarias(),
-        carregarHistorico()
-    ]);
-
-
-    abrirAba(
-        "cadastro"
-    );
-
-
+    // Não selecionar uma aba antes de verificar a permissão atual no servidor.
+    const acessoPronto = window.CA_ACL ? await window.CA_ACL.pronto : true;
+    if (!acessoPronto) {
+        botoesAbas.forEach(b=>b.classList.remove('ativo'));
+        conteudosAbas.forEach(b=>b.classList.remove('ativo'));
+        mostrarAvisoAcesso('Não foi possível confirmar suas permissões. Verifique a conexão e atualize a página.');
+        return;
+    }
+    const consultas=[];
+    if (usuarioPodeAcessarAba('registros')) consultas.push(carregarAvarias());
+    if (usuarioPodeAcessarAba('baixas')) consultas.push(carregarHistorico());
+    await Promise.allSettled(consultas);
+    abrirAbaAutorizada();
+    window.CA_ACL?.aplicar();
     iniciarTempoReal();
-
 }
 
 
+window.addEventListener('ca:reconexao', agendarAtualizacaoTempoReal);
 iniciar();
 
 // V20.9: confirma a permissão real no servidor.

@@ -46,3 +46,23 @@
 .checkbox-auditoria{width:16px;height:16px;margin:0;accent-color:var(--azul);cursor:pointer;vertical-align:middle}
 .td-selecao{vertical-align:middle!important}
 @media(max-width:900px){.acoes-auditoria{width:100%;justify-content:flex-start}.acoes-auditoria button{flex:1;min-width:140px}}
+
+/* V28.1 - reversão auditável, somente para operações compatíveis */
+.auditoria-resultado-acoes{display:flex;flex-wrap:wrap;align-items:center;gap:5px}
+.btn-desfazer-registro{background:#fff;border:1px solid #bcc7e6;color:#132c8f;border-radius:7px;font-size:10px;font-weight:800;padding:6px 8px;cursor:pointer;white-space:nowrap}
+.btn-desfazer-registro:hover{background:#edf2ff;border-color:#123ee0}
+.audit-desfeito{font-size:10px;font-weight:700;color:#555f7e}
+.modal-desfazer-auditoria{position:fixed;inset:0;z-index:10000;background:rgba(16,25,52,.58);display:flex;justify-content:center;align-items:center;padding:16px}
+.modal-desfazer-auditoria[hidden]{display:none!important}
+.modal-desfazer-conteudo{width:min(100%,510px);max-height:90vh;overflow:auto;background:#fff;border-radius:14px;padding:24px;box-shadow:0 12px 44px rgba(0,0,0,.2)}
+.modal-desfazer-conteudo h2{font-size:19px;margin:0 0 10px}
+.modal-desfazer-conteudo p{font-size:13px;line-height:1.45}
+.modal-desfazer-conteudo label{display:block;font-size:12px;font-weight:800;margin:14px 0 6px}
+.modal-desfazer-conteudo textarea{display:block;resize:vertical;width:100%;border:1px solid #cdd4e5;border-radius:8px;padding:10px;font:inherit;font-size:13px}
+.alerta-desfazer{background:#fff7e5;color:#765015;padding:10px;border-radius:8px}
+.erro-desfazer{color:#ba2828;font-size:12px;min-height:18px}
+.modal-desfazer-acoes{display:flex;justify-content:flex-end;gap:10px}
+.modal-desfazer-acoes button{border-radius:8px;padding:10px 14px;cursor:pointer;font-size:12px;font-weight:800}
+.botao-cancelar-desfazer{border:1px solid #d1d9eb;background:#fff;color:#1b3152}
+.botao-confirmar-desfazer{border:1px solid #0a2dd7;background:#1239e9;color:#fff}
+.botao-confirmar-desfazer:disabled{opacity:.5;cursor:not-allowed}

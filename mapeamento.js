@@ -23,7 +23,7 @@ try {
     window.location.href = "login.html";
 }
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 const mapa = document.getElementById("mapa");
 const modal = document.getElementById("modalEditar");
@@ -520,5 +520,6 @@ window.addEventListener("resize", () => {
     requestAnimationFrame(ajustarTextosPosicoes);
 });
 
+window.addEventListener('ca:reconexao', () => carregarMapa());
 carregarMapa();
 conectarEventos();

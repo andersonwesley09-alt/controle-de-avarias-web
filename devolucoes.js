@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
+    if (typeof window.formatarDataHoraEmpresaExemplo === "function") return window.formatarDataHoraEmpresaExemplo(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone:"America/Sao_Paulo", dateStyle:"short", timeStyle:"short" }).format(d);
@@ -30,4 +30,5 @@ async function carregar(){try{const [p,d]=await Promise.all([api("/api/avarias?s
 async function registrarDevolucao(id){const a=avarias.find(x=>String(x.id)===String(id));if(!a)return mostrarToast("Avaria não encontrada.");const v=total(a);if(!confirm(`Confirmar devolução?\n\nProduto: ${a.produto}\nFornecedor: ${a.fornecedor}\nQuantidade: ${a.quantidade}\nValor: ${moeda(v)}`))return;try{await api(`/api/avarias/${encodeURIComponent(id)}/status`,{method:"PATCH",headers:{"Content-Type":"application/json"},body:JSON.stringify({status:"Devolução"})});mostrarToast("Devolução registrada com sucesso em todos os PCs.");await carregar();}catch(e){mostrarToast(e.message);}}
 tabelaPendentes.addEventListener("click",e=>{const b=e.target.closest("[data-devolver]");if(b)registrarDevolucao(b.dataset.devolver);});buscaPendentes.addEventListener("input",renderizarPendentes);buscaHistorico.addEventListener("input",renderizarHistorico);btnSair.addEventListener("click",async()=>{if(!confirm("Deseja sair do sistema?"))return;try{await api("/api/logout",{method:"POST"});}catch{}sessionStorage.removeItem("usuarioLogado");window.location.href="login.html";});
 if(typeof EventSource!=="undefined"){try{const ev=new EventSource(`${API}/api/eventos`);["avarias-atualizadas","historico-atualizado","produtos-atualizados"].forEach(t=>ev.addEventListener(t,carregar));}catch(e){console.warn(e);}}
+window.addEventListener('ca:reconexao', carregar);
 carregar();

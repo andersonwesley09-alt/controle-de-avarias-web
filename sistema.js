@@ -156,6 +156,52 @@ if (usuarioLogado) {
 }
 
 
+/* V27.13: permissões para exibição dos módulos; o servidor valida as ações. */
+function usuarioTemPermissao(chave) {
+    if (usuarioLogado?.perfil === 'admin') return true;
+    const p=usuarioLogado?.permissoes;
+    if (p===null||p===undefined) return !['produtos.consultar','produtos.importar','auditoria.consultar','tarefas.gerenciar'].includes(chave);
+    return p[chave]===true;
+}
+const MODULOS_ACESSO = {
+    dashboard: ['dashboard.visualizar'],
+    avarias: ['avarias.consultar','avarias.cadastrar','baixas.consultar'],
+    caixas: ['caixas.consultar'],
+    recuperacao: ['recuperacoes.consultar','doacoes.consultar'],
+    documentos: ['documentos.consultar'],
+    avisos: ['avisos.consultar'],
+    tarefas: ['tarefas.consultar'],
+    'minhas-listas': ['listas.proprias'],
+    produtos: ['produtos.consultar','produtos.importar'],
+    auditoria: ['auditoria.consultar'],
+    usuarios: []
+};
+function ajustarModulosAoAcesso() {
+    if (!usuarioLogado) return;
+    document.querySelectorAll('[data-modulo]').forEach(card => {
+        const nome=card.dataset.modulo;
+        const chaves=MODULOS_ACESSO[nome];
+        if(!chaves) return;
+        const autorizado=nome==='usuarios'
+            ? usuarioLogado.perfil==='admin'
+            : chaves.some(usuarioTemPermissao);
+        card.classList.toggle('oculto',!autorizado);
+        card.hidden=!autorizado;
+    });
+}
+if (usuarioLogado) {
+    ajustarModulosAoAcesso();
+    const headers = usuarioLogado.token?{Authorization:`Bearer ${usuarioLogado.token}`} : {};
+    fetch(`${API}/api/sessao`,{credentials:'include',headers,cache:'no-store'})
+    .then(r=>{if(!r.ok)throw Error('Falha na consulta da sessão');return r.json();})
+    .then(d=>{
+        usuarioLogado.permissoes=d.permissoes??null;
+        usuarioLogado.perfil=d.perfil;
+        sessionStorage.setItem('usuarioLogado',JSON.stringify(usuarioLogado));
+        ajustarModulosAoAcesso();
+    }).catch(e=>console.warn('Permissões: sessão indisponível',e));
+}
+
 /* =========================
    SAIR
 ========================= */
@@ -253,7 +299,8 @@ async function abrirDashboardComSessao() {
                 nome: dados.nome,
                 perfil: dados.perfil,
                 token: sessaoLocal?.token || "",
-                loginEm: sessaoLocal?.loginEm || new Date().toISOString()
+                loginEm: sessaoLocal?.loginEm || new Date().toISOString(),
+                permissoes: dados.permissoes ?? null
             };
             sessionStorage.setItem("usuarioLogado", JSON.stringify(sessaoAtual));
             // A chamada acima também garante que o cookie HttpOnly esteja
@@ -351,14 +398,21 @@ function abrirModulo(modulo) {
 
 
     /* =========================
+       LISTAS PESSOAIS — V27.5
+    ========================= */
+    if (modulo === "minhas-listas") {
+        window.location.href = "minhas-listas.html";
+        return;
+    }
+
+    /* =========================
        PRODUTOS
     ========================= */
 
     if (modulo === "produtos") {
 
-        if (!usuarioLogado || usuarioLogado.perfil !== "admin") {
-            alert("Apenas o administrador pode acessar a atualização dos produtos.");
-            return;
+        if (!usuarioTemPermissao('produtos.consultar') && !usuarioTemPermissao('produtos.importar')) {
+            alert('Seu perfil não possui acesso a Produtos.');return;
         }
 
         window.location.href =
@@ -371,9 +425,8 @@ function abrirModulo(modulo) {
 
     if (modulo === "auditoria") {
 
-        if (!usuarioLogado || usuarioLogado.perfil !== "admin") {
-            alert("Apenas o administrador pode acessar o histórico de alterações.");
-            return;
+        if (!usuarioTemPermissao('auditoria.consultar')) {
+            alert('Seu perfil não possui acesso à Auditoria.');return;
         }
 
         window.location.href = "auditoria.html";
@@ -433,7 +486,7 @@ async function carregarResumoTarefas() {
     }
 
     try {
-        const hoje = hojeManaira();
+        const hoje = hojeEmpresaExemplo();
         const resposta = await fetch(
             `/api/tarefas/minhas?data=${encodeURIComponent(hoje)}`,
             {

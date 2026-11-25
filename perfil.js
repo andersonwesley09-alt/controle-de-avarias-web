@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
+    if (typeof window.formatarDataHoraEmpresaExemplo === "function") return window.formatarDataHoraEmpresaExemplo(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -24,7 +24,25 @@ if (!sessao || !sessao.token) {
     throw new Error("Sessão não encontrada.");
 }
 
-const API = window.CA_API_BASE || "";
+// PERFIL V25.1.20: quando a página é aberta por duplo clique (file://),
+// consulta diretamente o servidor central. Quando é aberta pelo servidor,
+// permanece no mesmo host. Não depende de endereço antigo salvo no navegador.
+function obterApiPerfil() {
+    try {
+        if (window.location.protocol === "http:" || window.location.protocol === "https:") {
+            return window.location.origin.replace(/\/$/, "");
+        }
+    } catch (_) {}
+
+    try {
+        const configurado = String(window.CA_CONFIGURED_SERVER || "").trim();
+        if (configurado) return configurado.replace(/\/$/, "");
+    } catch (_) {}
+
+    return "";
+}
+
+const API = obterApiPerfil();
 
 const $ = id => document.getElementById(id);
 const formPerfil = $("formPerfil");
@@ -56,7 +74,7 @@ async function api(url, options = {}) {
             headers: { ...headers(), ...(options.headers || {}) }
         });
     } catch (erro) {
-        throw new Error("Não foi possível concluir a operação no modo vitrine.");
+        throw new Error("Não foi possível conectar ao servidor central. Confirme se o servidor está aberto e se o endereço servidor de exemplo está acessível.");
     }
     let dados = {};
     try { dados = await resposta.json(); } catch {}

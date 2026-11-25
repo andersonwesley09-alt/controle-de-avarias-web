@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
+    if (typeof window.formatarDataHoraEmpresaExemplo === "function") return window.formatarDataHoraEmpresaExemplo(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -10,7 +10,7 @@ const formatarDataHoraSistema = (valor) => {
    USUÁRIOS - ADMIN
 ========================================================= */
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 
 let usuarios = [];
@@ -424,6 +424,7 @@ function renderizarUsuarios() {
                         <td>${dataHora(item.criadoEm)}</td>
                         <td>
                             <div class="acoes">
+                                ${!admin ? `<button type="button" class="btn-permissoes" data-id="${item.id}">Permissões</button>` : ''}
                                 <button
                                     type="button"
                                     class="btn-editar-usuario"
@@ -472,6 +473,11 @@ function renderizarUsuarios() {
 
             }
         ).join("");
+
+
+    tabelaUsuarios.querySelectorAll('.btn-permissoes').forEach(botao => {
+        botao.addEventListener('click', () => abrirPermissoes(botao.dataset.id));
+    });
 
 
     tabelaUsuarios
@@ -628,7 +634,8 @@ formUsuario.addEventListener(
                         body: JSON.stringify({
                             nome: nomeValor,
                             usuario: usuarioValor,
-                            senha: senhaValor
+                            senha: senhaValor,
+                            modeloPermissoes: document.getElementById('modeloNovoUsuario').value
                         })
                     }
                 );
@@ -1075,6 +1082,7 @@ document.addEventListener("keydown", event => {
     }
 });
 
+window.addEventListener('ca:reconexao', () => carregarUsuarios());
 carregarUsuarios();
 
 
@@ -1096,3 +1104,90 @@ if (typeof EventSource !== "undefined") {
     );
 
 }
+
+
+/* V27.13 — Permissões individuais. Não altera a autenticação administrativa. */
+const modalPermissoes=document.getElementById('modalPermissoes');
+const gradePermissoes=document.getElementById('gradePermissoes');
+const modeloPermissoes=document.getElementById('modeloPermissoes');
+const resumoPermissoes=document.getElementById('resumoPermissoes');
+let usuarioPermissoesAtual=null;
+let catalogoPermissoes=null;
+let marcacoesPermissoes={};
+async function abrirPermissoes(id) {
+    const item=usuarios.find(u=>String(u.id)===String(id));
+    if (!item || item.perfil==='admin') return;
+    try {
+        const [rCatalogo,rUsuario]=await Promise.all([
+            fetch(`${API}/api/usuarios/permissoes/catalogo`,{headers:headersAdmin()}),
+            fetch(`${API}/api/usuarios/${encodeURIComponent(id)}/permissoes`,{headers:headersAdmin()})
+        ]);
+        catalogoPermissoes=await tratarResposta(rCatalogo);
+        const registro=await tratarResposta(rUsuario);
+        usuarioPermissoesAtual=id;
+        // Usuário legado: representamos as permissões operacionais; nenhuma
+        // alteração é gravada até o administrador clicar em Salvar.
+        const chaves=catalogoPermissoes.grupos.flatMap(g=>g.opcoes.map(o=>o[0]));
+        marcacoesPermissoes=registro.permissoes
+            ? {...registro.permissoes}
+            : Object.fromEntries(chaves.map(chave=>[chave, !['tarefas.gerenciar','produtos.editar','produtos.importar','mapeamento.editar','auditoria.consultar','baixas.editar','baixas.excluir'].includes(chave)]));
+        document.getElementById('permissoesSubtitulo').textContent=`${registro.nome} (${registro.usuario})`+(registro.herdadas?' · regras anteriores ainda ativas':'');
+        modeloPermissoes.value='personalizado';
+        renderizarPermissoes();
+        modalPermissoes.classList.add('ativo');
+        modalPermissoes.setAttribute('aria-hidden','false');
+        document.getElementById('fecharPermissoes').focus();
+    } catch(e) { mostrarToast(e.message); }
+}
+function renderizarPermissoes() {
+    if(!catalogoPermissoes) return;
+    gradePermissoes.innerHTML=catalogoPermissoes.grupos.map(grupo=>`
+      <section class="permissoes-grupo"><h3>${esc(grupo.titulo)}</h3>
+      <div class="permissoes-grade">${grupo.opcoes.map(([chave,label])=>`
+        <label class="permissoes-item"><input type="checkbox" data-permissao="${esc(chave)}" ${marcacoesPermissoes[chave]===true?'checked':''}>
+          <span>${esc(label)}</span></label>`).join('')}</div></section>`).join('');
+    gradePermissoes.querySelectorAll('[data-permissao]').forEach(inp=>{
+        inp.addEventListener('change',()=>{
+            marcacoesPermissoes[inp.dataset.permissao]=inp.checked;
+            modeloPermissoes.value='personalizado';
+            atualizarResumoPermissoes();
+        });
+    });
+    atualizarResumoPermissoes();
+}
+function atualizarResumoPermissoes() {
+    resumoPermissoes.textContent=`${Object.values(marcacoesPermissoes).filter(Boolean).length} ações permitidas`;
+}
+function fecharModalPermissoes() {
+    modalPermissoes.classList.remove('ativo');
+    modalPermissoes.setAttribute('aria-hidden','true');
+    usuarioPermissoesAtual=null;
+}
+modeloPermissoes.addEventListener('change',()=>{
+    const modelo=modeloPermissoes.value;
+    if(modelo==='personalizado'||!catalogoPermissoes) return;
+    const todas=catalogoPermissoes.grupos.flatMap(g=>g.opcoes.map(o=>o[0]));
+    marcacoesPermissoes=modelo==='nenhum'?Object.fromEntries(todas.map(k=>[k,false])):
+        {...catalogoPermissoes.modelos[modelo]};
+    renderizarPermissoes();
+    modeloPermissoes.value=modelo;
+});
+document.getElementById('fecharPermissoes').addEventListener('click',fecharModalPermissoes);
+document.getElementById('cancelarPermissoes').addEventListener('click',fecharModalPermissoes);
+modalPermissoes.addEventListener('click',e=>{if(e.target===modalPermissoes) fecharModalPermissoes();});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&modalPermissoes.classList.contains('ativo')) fecharModalPermissoes();});
+document.getElementById('salvarPermissoes').addEventListener('click',async()=>{
+    if(!usuarioPermissoesAtual) return;
+    const botao=document.getElementById('salvarPermissoes');
+    const id=usuarioPermissoesAtual;
+    botao.disabled=true;
+    try {
+        const r=await fetch(`${API}/api/usuarios/${encodeURIComponent(id)}/permissoes`,{
+            method:'PUT',headers:headersAdmin(),body:JSON.stringify({permissoes:marcacoesPermissoes})
+        });
+        await tratarResposta(r);
+        fecharModalPermissoes();
+        mostrarToast('Permissões atualizadas. O novo acesso vale imediatamente.');
+        await carregarUsuarios();
+    }catch(e){mostrarToast(e.message);}finally{botao.disabled=false;}
+});

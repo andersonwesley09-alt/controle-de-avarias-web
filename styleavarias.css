@@ -2462,7 +2462,7 @@ body:not(.perfil-admin) .aviso-admin-historico {
 }
 
 /* =========================
-   IDENTIDADE MANAÍRA - V8
+   IDENTIDADE EmpresaExemplo - V8
 ========================= */
 
 .marca-header {
@@ -2472,7 +2472,7 @@ body:not(.perfil-admin) .aviso-admin-historico {
     min-width: 0;
 }
 
-.logo-manaira-header {
+.logo-EmpresaExemplo-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -2483,7 +2483,7 @@ body:not(.perfil-admin) .aviso-admin-historico {
 }
 
 @media (max-width: 650px) {
-    .logo-manaira-header {
+    .logo-EmpresaExemplo-header {
         width: 105px;
         height: 58px;
     }
@@ -3209,4 +3209,126 @@ body.modal-aberto {
     display: inline-flex;
     align-items: center;
     height: 40px;
+}
+
+/* V25.1.27: grupos de escopo na exportacao */
+.menu-compartilhar .compartilhar-grupo { padding: 9px 13px 4px; font-size: 12px; font-weight: 700; color: #4b5563; }
+
+/* V27.1 — Janela de exportação compacta. Estilos limitados a este modal. */
+.export-v27-overlay[hidden] { display: none !important; }
+.export-v27-overlay {
+    position: fixed; inset: 0; z-index: 10050;
+    background: rgba(13,18,45,.64);
+    display: flex; align-items: center; justify-content: center;
+    padding: 10px;
+}
+.export-v27-card {
+    width: min(680px, 100%); max-height: min(96vh, 740px);
+    overflow: hidden; display: flex; flex-direction: column;
+    background: #fff; color: #202536; border-radius: 13px;
+    box-shadow: 0 20px 70px rgba(0,0,0,.28);
+}
+.export-v27-header {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-shrink: 0; padding: 12px 18px 10px;
+    border-bottom: 1px solid #e0e3eb;
+}
+.export-v27-header h2 { font-size: 18px; margin: 0 0 3px; line-height: 1.25; }
+.export-v27-header p { font-size: 11px; color: #747985; margin: 0; line-height: 1.35; }
+.export-v27-x {
+    flex-shrink: 0; border: 1px solid #dce0ee; background: #f7f8fa;
+    color: #313649; font-size: 21px; line-height: 1; border-radius: 8px;
+    width: 32px; height: 32px; cursor: pointer;
+}
+.export-v27-content {
+    overflow-y: auto; min-height: 0; padding: 11px 18px 12px;
+    display: grid; gap: 9px;
+}
+.export-v27-fieldset {
+    border: 0; border-bottom: 1px solid #e7e8f0;
+    padding: 0 0 9px; margin: 0; min-width: 0;
+}
+.export-v27-fieldset legend {
+    padding: 0; margin-bottom: 6px; color: #202536;
+    font-size: 12px; font-weight: 800; line-height: 1.3;
+}
+.export-v27-options { display: grid; gap: 7px; }
+.export-v27-two { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.export-v27-scope { grid-template-columns: repeat(3,minmax(0,1fr)); }
+.export-v27-options label {
+    min-width: 0; min-height: 49px; margin: 0; padding: 7px 10px;
+    display: grid; grid-template-columns: 16px minmax(0,1fr);
+    column-gap: 7px; row-gap: 2px; align-content: center; align-items: center;
+    border: 1px solid #dce0ee; border-radius: 8px; cursor: pointer;
+    font-size: 12px; font-weight: 700; line-height: 1.25;
+}
+.export-v27-scope label { min-height: 38px; }
+.export-v27-options label:has(input:checked) {
+    background: #f5f6ff; border-color: #0000ff;
+}
+.export-v27-options small {
+    grid-column: 2; display: block; margin: 0;
+    font-size: 10.5px; font-weight: 400; color: #697083; line-height: 1.3;
+}
+/* O CSS global define input com 100% de largura e 42px de altura;
+   esta redefinição localizada evita controles de seleção enormes. */
+.export-v27-card input[type="radio"],
+.export-v27-card input[type="checkbox"] {
+    appearance: auto; -webkit-appearance: auto;
+    display: inline-block; flex: 0 0 15px;
+    width: 15px; min-width: 15px; max-width: 15px;
+    height: 15px; min-height: 15px; max-height: 15px;
+    padding: 0; margin: 0; border: 0; border-radius: 50%;
+    box-shadow: none; accent-color: #0000ff;
+    vertical-align: middle; cursor: pointer;
+}
+.export-v27-card input[type="checkbox"] { border-radius: 3px; }
+.export-v27-card input[type="radio"]:focus,
+.export-v27-card input[type="checkbox"]:focus { box-shadow: none; }
+.export-v27-card input[type="radio"]:focus-visible,
+.export-v27-card input[type="checkbox"]:focus-visible {
+    outline: 2px solid #0000ff; outline-offset: 3px;
+}
+.export-v27-checks {
+    display: grid; grid-template-columns: repeat(2,minmax(0,1fr));
+    gap: 4px 14px;
+}
+.export-v27-checks label {
+    display: flex; align-items: center; gap: 8px;
+    min-height: 24px; margin: 0; padding: 1px 0;
+    font-size: 12px; font-weight: 500; line-height: 1.25; cursor: pointer;
+}
+.export-v27-note {
+    margin: 6px 0 0; font-size: 10.5px;
+    color: #697083; line-height: 1.35;
+}
+.export-v27-preview {
+    background: #f3f5ff; border: 1px solid #e1e4f5;
+    padding: 9px 11px; border-radius: 8px;
+    display: grid; gap: 3px; font-size: 11.5px; line-height: 1.35;
+}
+.export-v27-preview strong { color: #0000ff; }
+.export-v27-preview small { color: #697083; line-height: 1.3; }
+.export-v27-footer {
+    flex-shrink: 0; display: flex; gap: 9px; justify-content: flex-end;
+    padding: 10px 18px; border-top: 1px solid #e0e3eb;
+}
+.export-v27-footer button {
+    padding: 9px 16px; border-radius: 8px;
+    font-weight: 800; font-size: 12px; cursor: pointer;
+}
+.export-v27-cancelar { border: 1px solid #d9deea; background: #fff; color: #384055; }
+.export-v27-gerar { border: 0; background: #0000ff; color: #fff; }
+.export-v27-gerar:disabled { opacity: .55; cursor: wait; }
+@media(max-width:620px) {
+    .export-v27-overlay { padding: 6px; }
+    .export-v27-card { max-height: 97vh; }
+    .export-v27-header,.export-v27-content,.export-v27-footer {
+        padding-left: 12px; padding-right: 12px;
+    }
+    .export-v27-two,.export-v27-scope { grid-template-columns: 1fr; }
+    .export-v27-checks { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media(max-width:380px) {
+    .export-v27-checks { grid-template-columns: 1fr; }
 }

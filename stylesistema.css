@@ -620,7 +620,7 @@ footer {
 
 
 /* =========================
-   IDENTIDADE MANAÍRA - V8
+   IDENTIDADE EmpresaExemplo - V8
 ========================= */
 
 .marca-header {
@@ -630,7 +630,7 @@ footer {
     min-width: 0;
 }
 
-.logo-manaira-header {
+.logo-EmpresaExemplo-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -641,7 +641,7 @@ footer {
 }
 
 @media (max-width: 650px) {
-    .logo-manaira-header {
+    .logo-EmpresaExemplo-header {
         width: 105px;
         height: 58px;
     }

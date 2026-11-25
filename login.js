@@ -9,7 +9,7 @@
    API
 ========================= */
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 // Permite corrigir o endereço do servidor sem editar o código.
 try {
@@ -285,6 +285,7 @@ formLogin.addEventListener(
 
                 perfil:
                     dados.perfil,
+                permissoes: dados.permissoes || null,
 
                 token:
                     dados.token || "",

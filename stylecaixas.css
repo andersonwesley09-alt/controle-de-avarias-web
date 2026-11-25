@@ -1367,7 +1367,7 @@ tbody tr:hover {
 
 
 /* =========================
-   IDENTIDADE MANAÍRA - V8
+   IDENTIDADE EmpresaExemplo - V8
 ========================= */
 
 .marca-header {
@@ -1377,7 +1377,7 @@ tbody tr:hover {
     min-width: 0;
 }
 
-.logo-manaira-header {
+.logo-EmpresaExemplo-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -1388,7 +1388,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 650px) {
-    .logo-manaira-header {
+    .logo-EmpresaExemplo-header {
         width: 105px;
         height: 58px;
     }

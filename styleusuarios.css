@@ -512,7 +512,7 @@ tbody tr:hover {
 
 
 /* =========================
-   IDENTIDADE MANAÍRA - V8
+   IDENTIDADE EmpresaExemplo - V8
 ========================= */
 
 .marca-header {
@@ -522,7 +522,7 @@ tbody tr:hover {
     min-width: 0;
 }
 
-.logo-manaira-header {
+.logo-EmpresaExemplo-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -533,7 +533,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 650px) {
-    .logo-manaira-header {
+    .logo-EmpresaExemplo-header {
         width: 105px;
         height: 58px;
     }
@@ -541,4 +541,27 @@ tbody tr:hover {
     .marca-header {
         gap: 10px;
     }
+}
+
+/* V28 — Campo Acesso inicial com a mesma apresentação dos demais campos. */
+#modeloNovoUsuario {
+    display:block;
+    width:100%;
+    min-width:0;
+    height:42px;
+    padding:0 11px;
+    border:1px solid var(--borda);
+    border-radius:8px;
+    background-color:#fff;
+    color:#202c44;
+    font:inherit;
+    font-size:13px;
+    outline:none;
+    cursor:pointer;
+    box-sizing:border-box;
+    text-overflow:ellipsis;
+}
+#modeloNovoUsuario:focus-visible {
+    border-color:var(--roxo);
+    box-shadow:0 0 0 3px rgba(0,0,255,.12);
 }

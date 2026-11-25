@@ -9,14 +9,14 @@ let sessao=null;try{sessao=JSON.parse(sessaoRaw||"null");}catch{sessao=null;}
 if(!sessao) window.location.href="login.html";
 
 const LIMITE_QUANTIDADE = 100000;
-const API=window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API=window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 const authHeaders=()=>sessao?.token?{Authorization:`Bearer ${sessao.token}`}:{};
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
 const numero=v=>{const n=Number(v);return Number.isFinite(n)?n:0;};
 const moeda=v=>new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"}).format(numero(v));
 const quantidadeFormatada=v=>numero(v).toLocaleString("pt-BR",{maximumFractionDigits:3});
-const dataHora=v=>{if(!v)return"-";if(typeof window.formatarDataHoraManaira==="function")return window.formatarDataHoraManaira(v);const d=new Date(v);return Number.isNaN(d.getTime())?"-":new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",dateStyle:"short",timeStyle:"short"}).format(d);};
+const dataHora=v=>{if(!v)return"-";if(typeof window.formatarDataHoraEmpresaExemplo==="function")return window.formatarDataHoraEmpresaExemplo(v);const d=new Date(v);return Number.isNaN(d.getTime())?"-":new Intl.DateTimeFormat("pt-BR",{timeZone:"America/Sao_Paulo",dateStyle:"short",timeStyle:"short"}).format(d);};
 const dataSomente=v=>{if(!v)return"-";const d=new Date(`${String(v).slice(0,10)}T12:00:00`);return Number.isNaN(d.getTime())?String(v).slice(0,10):d.toLocaleDateString("pt-BR");};
 const hoje=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;};
 function toast(msg){const el=$("toast");if(!el)return;el.textContent=msg;el.classList.add("show");clearTimeout(window.__toastTimer);window.__toastTimer=setTimeout(()=>el.classList.remove("show"),3200);}
@@ -134,6 +134,22 @@ async function abrirPdfNovaAba(endpoint){
 }
 async function abrirDocumentoRecuperacao(id){const docId=id||documentoRecuperacaoAtual?.id;if(!docId)return toast("Nenhum documento disponível.");return abrirPdfNovaAba(`/api/recuperacoes/documento?id=${encodeURIComponent(docId)}`);}
 $("btnGerarDocumentoDiaRecuperacao")?.addEventListener("click",()=>abrirDocumentoRecuperacao($("btnGerarDocumentoDiaRecuperacao")?.dataset.documentoId));
+async function gerenciarDocumentoRecuperacao(id){
+    if(!id)return toast("Documento não informado.");
+    try{
+        const resposta=await requisicao(`/api/recuperacoes/documento/info?id=${encodeURIComponent(id)}`);
+        const doc=resposta.documento;
+        if(!doc)return toast("Documento não encontrado.");
+        documentoRecuperacaoAtual=doc;
+        limparFormularioRecuperacao();
+        modalCadastroRecuperacao?.classList.add("ativo");
+        modalCadastroRecuperacao?.setAttribute("aria-hidden","false");
+        document.body.classList.add("modal-aberto");
+        await carregarProdutosLancadosRecuperacao();
+        await atualizarStatusDocumentoRecuperacao();
+        if(doc.status!=="FINALIZADO")setTimeout(()=>$('codigoRecuperacao')?.focus(),60);
+    }catch(e){toast(e.message||"Não foi possível abrir a recuperação.");}
+}
 async function finalizarDocumentoRecuperacao(){const doc=documentoRecuperacaoAtual;if(!doc?.id)return toast("Nenhum documento aberto.");if(doc.status==="FINALIZADO")return toast(`O documento ${documentoLabel(doc,"RECUPERACAO")} já está finalizado.`);if(!confirm(`Finalizar o documento ${documentoLabel(doc,"RECUPERACAO")}? Depois disso não será possível incluir, editar ou excluir itens dele.`))return;try{const r=await requisicao("/api/recuperacoes/documento/finalizar",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({data:doc.dataDocumento||hoje(),documentoId:doc.id})});documentoRecuperacaoAtual=r.documento;toast(`${r.documento.documento} finalizado.`);await Promise.all([atualizarStatusDocumentoRecuperacao(),carregarRecuperacoes()]);}catch(e){toast(e.message);}}
 $("btnFinalizarDocumentoRecuperacao")?.addEventListener("click",finalizarDocumentoRecuperacao);
 
@@ -226,7 +242,7 @@ async function abrirDocumentoDoacaoNoModal(id){
         const descricao=$("tituloModalCadastroDoacao")?.parentElement?.querySelector("p");
         if(descricao)descricao.textContent=doc.status==="FINALIZADO"?"Documento finalizado. Consulta e impressão disponíveis.":"Documento aberto. Você pode incluir produtos e finalizar quando necessário.";
         limparFormularioDoacao();
-        $("dataDoacao").value=doc.dataDocumento||hoje();
+        $("dataDoacao").value=String(doc.dataDocumento||hoje()).slice(0,10);
         $("beneficiarioDoacao").value=doc.beneficiario||"";
         await carregarProdutosLancadosDoacao();
         await atualizarStatusDocumentoDoacao();
@@ -272,21 +288,48 @@ async function excluirDoacao(id){if(!confirm("Excluir esta doação? O documento
 ========================================================= */
 const usuarioEhAdminModulo = () => sessao?.perfil === "admin";
 async function excluirDocumentoRecuperacao(id,documento){if(!usuarioEhAdminModulo())return toast("Apenas o administrador pode excluir documentos do histórico.");if(!confirm(`Excluir o documento ${documento}? Todos os lançamentos desse documento também serão excluídos.`))return;try{const r=await requisicao(`/api/recuperacoes/documentos/${encodeURIComponent(id)}`,{method:"DELETE"});toast(`${r.documento||documento} excluído do histórico.`);await carregarRecuperacoes();}catch(e){toast(e.message);}}
-async function excluirDocumentoDoacao(id,documento){if(!usuarioEhAdminModulo())return toast("Apenas o administrador pode excluir documentos do histórico.");if(!confirm(`Excluir o documento ${documento}? Todos os lançamentos dessa doação também serão excluídos.`))return;try{const r=await requisicao(`/api/doacoes/documentos/${encodeURIComponent(id)}`,{method:"DELETE"});toast(`${r.documento||documento} excluído do histórico.`);await carregarDoacoes();}catch(e){toast(e.message);}}
+async function excluirDocumentoDoacao(id,documento){
+    const motivoDigitado=prompt(`Informe o MOTIVO para excluir definitivamente ${documento} e todos os seus itens:`);
+    if(motivoDigitado===null)return;
+    const motivo=motivoDigitado.trim();
+    if(motivo.length<3){alert("Informe um motivo válido (mínimo de 3 caracteres). Nenhum documento foi excluído.");return;}
+    if(!confirm(`Confirmar a exclusão PERMANENTE de ${documento} e todos os seus itens?\n\nMotivo: ${motivo}\n\nEsta operação não pode ser desfeita.`))return;
+    const botao=[...document.querySelectorAll("[data-excluir-documento-do]")].find(b=>b.dataset.excluirDocumentoDo===String(id));
+    if(botao)botao.disabled=true;
+    try{
+        const r=await requisicao(`/api/doacoes/documentos/${encodeURIComponent(id)}`,{
+            method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({motivo})
+        });
+        if(!r?.ok)throw new Error("O servidor não confirmou a exclusão.");
+        const dados=await carregarDoacoes();
+        if(!dados){alert(`A exclusão de ${documento} foi confirmada, mas não foi possível atualizar o histórico. Atualize a página.`);return;}
+        if(dados.documentos?.some(d=>String(d.id)===String(id))){
+            alert(`O servidor confirmou a exclusão de ${documento}, mas ele ainda aparece na consulta. Recarregue a página e verifique o servidor.`);return;
+        }
+        if(r.auditoriaRegistrada===false)alert(`${documento} foi excluído, mas não foi possível registrar a auditoria. Avise o administrador.`);
+        else toast(`${r.documento||documento} excluído do histórico.`);
+    }catch(e){
+        // Mesmo quando a API falha depois de gravar, atualiza o histórico para evitar lista desatualizada.
+        await carregarDoacoes();
+        alert(`Não foi possível confirmar a exclusão de ${documento}. ${e.message||"Erro desconhecido."}`);
+    }finally{if(botao)botao.disabled=false;}
+}
 
 /* =========================================================
    HISTÓRICOS POR DOCUMENTO
 ========================================================= */
 const estadoRec={page:1,limit:25,sort:"data_documento",dir:"desc"};
+let filtrosRecAplicados={busca:"",fornecedor:"",dataInicio:"",dataFim:""};
 function filtrosRec(){return new URLSearchParams({page:estadoRec.page,limit:estadoRec.limit,sort:estadoRec.sort,dir:estadoRec.dir,busca:$("filtroRecuperacaoBusca").value.trim(),fornecedor:$("filtroRecuperacaoFornecedor").value.trim(),dataInicio:$("filtroRecuperacaoDataInicial").value,dataFim:$("filtroRecuperacaoDataFinal").value}).toString();}
 function renderPaginacao(containerId,meta,onPage){const c=$(containerId);if(!c)return;const total=Number(meta.total||0),page=Number(meta.page||1),limit=Number(meta.limit||25),pages=Math.max(1,Number(meta.totalPaginas||1));if(!total){c.innerHTML="";return;}const start=(page-1)*limit+1,end=Math.min(page*limit,total);let buttons=`<button class="pagina-btn" data-page="1" ${page===1?"disabled":""}>«</button><button class="pagina-btn" data-page="${page-1}" ${page===1?"disabled":""}>‹</button>`;for(let i=Math.max(1,page-2);i<=Math.min(pages,page+2);i++)buttons+=`<button class="pagina-btn ${i===page?"ativo":""}" data-page="${i}">${i}</button>`;buttons+=`<button class="pagina-btn" data-page="${page+1}" ${page===pages?"disabled":""}>›</button><button class="pagina-btn" data-page="${pages}" ${page===pages?"disabled":""}>»</button>`;c.innerHTML=`<div class="paginacao-info">Mostrando <strong>${start}–${end}</strong> de <strong>${total}</strong></div><div class="paginacao-controles"><label>Por página <select class="paginacao-tamanho"><option value="10" ${limit===10?"selected":""}>10</option><option value="25" ${limit===25?"selected":""}>25</option><option value="50" ${limit===50?"selected":""}>50</option><option value="100" ${limit===100?"selected":""}>100</option></select></label><div class="paginacao-botoes">${buttons}</div></div>`;c.querySelectorAll(".pagina-btn").forEach(b=>b.addEventListener("click",()=>onPage(Number(b.dataset.page))));c.querySelector("select")?.addEventListener("change",e=>onPage(1,Number(e.target.value)));}
-async function carregarRecuperacoes(){try{const dados=await requisicao(`/api/recuperacoes/documentos?${filtrosRec()}`);const resumo=dados.resumo||{};$("totalRecuperacoes").textContent=Number(resumo.documentos||0).toLocaleString("pt-BR");$("quantidadeRecuperadaHistorico").textContent=quantidadeFormatada(resumo.quantidadeRecuperada||0);$("valorRecuperadoHistorico").textContent=moeda(resumo.valorRecuperado||0);$("contadorRecuperacoes").textContent=Number(resumo.documentos||0).toLocaleString("pt-BR");const tbody=$("tabelaRecuperacoes");if(!dados.documentos?.length)tbody.innerHTML='<tr><td colspan="6" class="vazio">Nenhum documento encontrado.</td></tr>';else tbody.innerHTML=dados.documentos.map(d=>`<tr><td>${esc(dataSomente(d.dataDocumento))}</td><td><strong>${esc(d.documento)}</strong></td><td>${esc(d.registros)}</td><td>${esc(quantidadeFormatada(d.quantidadeRecuperada))}</td><td>${esc(moeda(d.valorRecuperado))}</td><td><span class="status-documento ${statusClasse(d.status)}">${esc(statusTexto(d.status))}</span><span class="historico-documento-acoes"><button class="btn btn-documento" type="button" data-documento-rec="${esc(d.id)}">Documento</button>${usuarioEhAdminModulo()?`<button class="btn btn-excluir-documento" type="button" data-excluir-documento-rec="${esc(d.id)}" data-documento-label="${esc(d.documento)}">Excluir</button>`:""}</span></td></tr>`).join("");tbody.querySelectorAll("[data-documento-rec]").forEach(b=>b.addEventListener("click",()=>abrirDocumentoRecuperacao(b.dataset.documentoRec)));tbody.querySelectorAll("[data-excluir-documento-rec]").forEach(b=>b.addEventListener("click",()=>excluirDocumentoRecuperacao(b.dataset.excluirDocumentoRec,b.dataset.documentoLabel)));renderPaginacao("paginacaoRecuperacao",dados,(p,l)=>{estadoRec.page=p;if(l)estadoRec.limit=l;carregarRecuperacoes();});}catch(e){toast(e.message);}}
+async function carregarRecuperacoes(){try{const filtrosUsados=new URLSearchParams(filtrosRec());const dados=await requisicao(`/api/recuperacoes/documentos?${filtrosUsados}`);filtrosRecAplicados=Object.fromEntries(filtrosUsados);const resumo=dados.resumo||{};$("totalRecuperacoes").textContent=Number(resumo.documentos||0).toLocaleString("pt-BR");$("quantidadeRecuperadaHistorico").textContent=quantidadeFormatada(resumo.quantidadeRecuperada||0);$("valorRecuperadoHistorico").textContent=moeda(resumo.valorRecuperado||0);$("contadorRecuperacoes").textContent=Number(resumo.documentos||0).toLocaleString("pt-BR");const tbody=$("tabelaRecuperacoes");if(!dados.documentos?.length)tbody.innerHTML='<tr><td colspan="6" class="vazio">Nenhum documento encontrado.</td></tr>';else tbody.innerHTML=dados.documentos.map(d=>`<tr><td>${esc(dataSomente(d.dataDocumento))}</td><td><strong>${esc(d.documento)}</strong></td><td>${esc(d.registros)}</td><td>${esc(quantidadeFormatada(d.quantidadeRecuperada))}</td><td>${esc(moeda(d.valorRecuperado))}</td><td><span class="acoes-rec-alinhadas"><span class="status-documento ${statusClasse(d.status)}">${esc(statusTexto(d.status))}</span><span class="historico-documento-acoes">${d.status!=="FINALIZADO"?`<button class="btn btn-documento" type="button" data-gerenciar-rec="${esc(d.id)}">Gerenciar / adicionar itens</button>`:`<span class="espaco-gerenciar-rec" aria-hidden="true"></span>`}<button class="btn btn-documento" type="button" data-documento-rec="${esc(d.id)}">Documento</button>${usuarioEhAdminModulo()?`<button class="btn btn-excluir-documento" type="button" data-excluir-documento-rec="${esc(d.id)}" data-documento-label="${esc(d.documento)}">Excluir</button>`:""}</span></span></td></tr>`).join("");tbody.querySelectorAll("[data-gerenciar-rec]").forEach(b=>b.addEventListener("click",()=>gerenciarDocumentoRecuperacao(b.dataset.gerenciarRec)));tbody.querySelectorAll("[data-documento-rec]").forEach(b=>b.addEventListener("click",()=>abrirDocumentoRecuperacao(b.dataset.documentoRec)));tbody.querySelectorAll("[data-excluir-documento-rec]").forEach(b=>b.addEventListener("click",()=>excluirDocumentoRecuperacao(b.dataset.excluirDocumentoRec,b.dataset.documentoLabel)));renderPaginacao("paginacaoRecuperacao",dados,(p,l)=>{estadoRec.page=p;if(l)estadoRec.limit=l;carregarRecuperacoes();});}catch(e){toast(e.message);}}
 $("btnFiltrarRecuperacao")?.addEventListener("click",()=>{estadoRec.page=1;carregarRecuperacoes();});$("btnLimparFiltrosRecuperacao")?.addEventListener("click",()=>{$("filtroRecuperacaoBusca").value="";$ ("filtroRecuperacaoFornecedor").value="";$ ("filtroRecuperacaoDataInicial").value="";$ ("filtroRecuperacaoDataFinal").value="";estadoRec.page=1;carregarRecuperacoes();});
 
 const estadoDo={page:1,limit:25,sort:"data_documento",dir:"desc"};
+let filtrosDoAplicados={busca:"",dataInicio:"",dataFim:""};
 function filtrosDo(){return new URLSearchParams({page:estadoDo.page,limit:estadoDo.limit,sort:estadoDo.sort,dir:estadoDo.dir,busca:$("filtroDoacaoBusca").value.trim(),dataInicio:$("filtroDoacaoInicio").value,dataFim:$("filtroDoacaoFim").value}).toString();}
 function renderResumoDo(res){const cards=[["Documentos",res.documentos||0,"Documentos no período"],["Quantidade doada",quantidadeFormatada(res.quantidadeDoada),"Total de produtos/peso"],["Valor estimado",moeda(res.valorDoado),"Valor de custo estimado"]];$("resumoDoacaoCards").innerHTML=cards.map(c=>`<article class="metric-card-modulo"><span>${esc(c[0])}</span><strong>${esc(c[1])}</strong><small>${esc(c[2])}</small></article>`).join("");}
-async function carregarDoacoes(){try{const dados=await requisicao(`/api/doacoes/documentos?${filtrosDo()}`);renderResumoDo(dados.resumo||{});$("resumoHistoricoDoacao").innerHTML=`<span class="resumo-chip">Documentos: <strong>${dados.resumo?.documentos||0}</strong></span><span class="resumo-chip">Quantidade: <strong>${quantidadeFormatada(dados.resumo?.quantidadeDoada||0)}</strong></span><span class="resumo-chip">Valor: <strong>${moeda(dados.resumo?.valorDoado||0)}</strong></span>`;const tbody=$("tabelaDoacoes");if(!dados.documentos?.length)tbody.innerHTML='<tr><td colspan="7" class="vazio">Nenhum documento encontrado.</td></tr>';else tbody.innerHTML=dados.documentos.map(d=>`<tr><td>${esc(dataSomente(d.dataDocumento))}</td><td><strong>${esc(d.documento)}</strong></td><td>${esc(d.beneficiario||"-")}</td><td>${esc(d.registros)}</td><td>${esc(quantidadeFormatada(d.quantidadeDoada))}</td><td>${esc(moeda(d.valorDoado))}</td><td><span class="status-documento ${statusClasse(d.status)}">${esc(statusTexto(d.status))}</span><span class="historico-documento-acoes"><button class="btn btn-documento" type="button" data-documento-do="${esc(d.id)}">Documento</button>${usuarioEhAdminModulo()?`<button class="btn btn-excluir-documento" type="button" data-excluir-documento-do="${esc(d.id)}" data-documento-label="${esc(d.documento)}">Excluir</button>`:""}</span></td></tr>`).join("");tbody.querySelectorAll("[data-documento-do]").forEach(b=>b.addEventListener("click",()=>abrirDocumentoDoacaoNoModal(b.dataset.documentoDo)));tbody.querySelectorAll("[data-excluir-documento-do]").forEach(b=>b.addEventListener("click",()=>excluirDocumentoDoacao(b.dataset.excluirDocumentoDo,b.dataset.documentoLabel)));renderPaginacao("paginacaoDoacao",dados,(p,l)=>{estadoDo.page=p;if(l)estadoDo.limit=l;carregarDoacoes();});}catch(e){toast(e.message);}}
+async function carregarDoacoes(){try{const filtrosUsados=new URLSearchParams(filtrosDo());const dados=await requisicao(`/api/doacoes/documentos?${filtrosUsados}`);filtrosDoAplicados=Object.fromEntries(filtrosUsados);renderResumoDo(dados.resumo||{});$("resumoHistoricoDoacao").innerHTML=`<span class="resumo-chip">Documentos: <strong>${dados.resumo?.documentos||0}</strong></span><span class="resumo-chip">Quantidade: <strong>${quantidadeFormatada(dados.resumo?.quantidadeDoada||0)}</strong></span><span class="resumo-chip">Valor: <strong>${moeda(dados.resumo?.valorDoado||0)}</strong></span>`;$("contadorDoacoes").textContent=Number(dados.resumo?.documentos??dados.total??0).toLocaleString("pt-BR");const tbody=$("tabelaDoacoes");if(!dados.documentos?.length)tbody.innerHTML='<tr><td colspan="7" class="vazio">Nenhum documento encontrado.</td></tr>';else tbody.innerHTML=dados.documentos.map(d=>`<tr><td>${esc(dataSomente(d.dataDocumento))}</td><td><strong>${esc(d.documento)}</strong></td><td>${esc(d.beneficiario||"-")}</td><td>${esc(d.registros)}</td><td>${esc(quantidadeFormatada(d.quantidadeDoada))}</td><td>${esc(moeda(d.valorDoado))}</td><td><span class="status-documento ${statusClasse(d.status)}">${esc(statusTexto(d.status))}</span><span class="historico-documento-acoes"><button class="btn btn-documento" type="button" data-documento-do="${esc(d.id)}">${d.status==="FINALIZADO"?"Consultar":"Gerenciar / adicionar itens"}</button><button class="btn btn-documento" type="button" data-pdf-documento-do="${esc(d.id)}">PDF</button><button class="btn btn-excluir-documento" type="button" data-excluir-documento-do="${esc(d.id)}" data-documento-label="${esc(d.documento)}" title="Excluir definitivamente documento de doação">Excluir</button></span></td></tr>`).join("");tbody.querySelectorAll("[data-documento-do]").forEach(b=>b.addEventListener("click",()=>abrirDocumentoDoacaoNoModal(b.dataset.documentoDo)));tbody.querySelectorAll("[data-pdf-documento-do]").forEach(b=>b.addEventListener("click",()=>abrirPdfDoacao(b.dataset.pdfDocumentoDo)));tbody.querySelectorAll("[data-excluir-documento-do]").forEach(b=>b.addEventListener("click",()=>excluirDocumentoDoacao(b.dataset.excluirDocumentoDo,b.dataset.documentoLabel)));renderPaginacao("paginacaoDoacao",dados,(p,l)=>{estadoDo.page=p;if(l)estadoDo.limit=l;carregarDoacoes();});return dados;}catch(e){toast(e.message);}}
 $("btnFiltrarDoacao")?.addEventListener("click",()=>{estadoDo.page=1;carregarDoacoes();});$("btnLimparFiltrosDoacao")?.addEventListener("click",()=>{$("filtroDoacaoBusca").value="";$ ("filtroDoacaoInicio").value="";$ ("filtroDoacaoFim").value="";estadoDo.page=1;carregarDoacoes();});
 
 document.querySelectorAll('.tabela-modulo th[data-sort]').forEach(th=>th.addEventListener('click',()=>{const key=th.dataset.sort;if(key&&key.includes("doacao")){estadoDo.sort=key;estadoDo.dir=estadoDo.dir==='asc'?'desc':'asc';estadoDo.page=1;carregarDoacoes();}}));
@@ -294,12 +337,12 @@ document.querySelectorAll('.tabela-modulo th[data-sort]').forEach(th=>th.addEven
 /* =========================================================
    EXPORTAÇÕES
 ========================================================= */
-async function baixar(url,body,fallback){try{const r=await fetch(`${API}${url}`,{method:"POST",headers:{"Content-Type":"application/json",...authHeaders()},credentials:"include",body:JSON.stringify(body)});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.erro||"Falha ao exportar.");}const blob=await r.blob(),link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download=fallback;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),1000);}catch(e){toast(e.message);}}
-function filtrosExportRecuperacao(){return{filtros:{busca:$("filtroRecuperacaoBusca").value.trim(),fornecedor:$("filtroRecuperacaoFornecedor").value.trim(),dataInicio:$("filtroRecuperacaoDataInicial").value,dataFim:$("filtroRecuperacaoDataFinal").value}};}
+async function baixar(url,body,fallback){try{const r=await fetch(`${API}${url}`,{method:"POST",headers:{"Content-Type":"application/json",...authHeaders()},credentials:"include",body:JSON.stringify(body)});if(!r.ok){const d=await r.json().catch(()=>({}));throw new Error(d.erro||"Falha ao exportar.");}const blob=await r.blob(),link=document.createElement("a");link.href=URL.createObjectURL(blob);link.download=fallback;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(link.href),60000);}catch(e){toast(e.message);}}
+function filtrosExportRecuperacao(){return{filtros:{...filtrosRecAplicados}};}
 $("btnExportarRecuperacao")?.addEventListener("click",()=>{const m=$("menuExportarRecuperacao");if(!m)return;m.hidden=!m.hidden;$("btnExportarRecuperacao").setAttribute("aria-expanded",String(!m.hidden));});
 $("btnExportarRecuperacaoExcel")?.addEventListener("click",()=>{$("menuExportarRecuperacao").hidden=true;baixar("/api/recuperacoes/exportar-xlsx",filtrosExportRecuperacao(),`recuperacoes_${hoje()}.xlsx`);});$("btnExportarRecuperacaoPdf")?.addEventListener("click",()=>{$("menuExportarRecuperacao").hidden=true;baixar("/api/recuperacoes/exportar-pdf",filtrosExportRecuperacao(),`recuperacoes_${hoje()}.pdf`);});
 $("btnExportarDoacao")?.addEventListener("click",()=>{const m=$("menuExportarDoacao");if(!m)return;m.hidden=!m.hidden;$("btnExportarDoacao").setAttribute("aria-expanded",String(!m.hidden));});
-$("btnExportarDoacaoExcel")?.addEventListener("click",()=>{$("menuExportarDoacao").hidden=true;baixar("/api/doacoes/exportar-xlsx",{filtros:{busca:$("filtroDoacaoBusca").value.trim(),dataInicio:$("filtroDoacaoInicio").value,dataFim:$("filtroDoacaoFim").value}},`doacoes_${hoje()}.xlsx`);});$("btnExportarDoacaoPdf")?.addEventListener("click",()=>{ $("menuExportarDoacao").hidden=true;baixar("/api/doacoes/exportar-pdf",{filtros:{busca:$("filtroDoacaoBusca").value.trim(),dataInicio:$("filtroDoacaoInicio").value,dataFim:$("filtroDoacaoFim").value}},`doacoes_${hoje()}.pdf`);});
+$("btnExportarDoacaoExcel")?.addEventListener("click",()=>{$("menuExportarDoacao").hidden=true;baixar("/api/doacoes/exportar-xlsx",{filtros:{...filtrosDoAplicados}},`doacoes_${hoje()}.xlsx`);});$("btnExportarDoacaoPdf")?.addEventListener("click",()=>{ $("menuExportarDoacao").hidden=true;baixar("/api/doacoes/exportar-pdf",{filtros:{...filtrosDoAplicados}},`doacoes_${hoje()}.pdf`);});
 document.addEventListener("click",e=>{if(!e.target.closest(".export-dropdown")){document.querySelectorAll(".export-menu").forEach(m=>m.hidden=true);document.querySelectorAll(".btn-exportar").forEach(b=>b.setAttribute("aria-expanded","false"));}});
 
 /* V25.1.7 - tempo real entre PCs para Recuperação/Doações no modo servidor. */
@@ -312,6 +355,24 @@ if(!window.CA_LOCAL_MODE && typeof EventSource!=="undefined"){
     }catch(e){console.warn("Tempo real de Recuperação/Doações indisponível:",e);}
 }
 
+window.addEventListener('ca:reconexao', () => {
+    Promise.allSettled([carregarRecuperacoes(), carregarDoacoes()]);
+});
 window.addEventListener("keydown",e=>{if(e.key==="F2"){e.preventDefault();const ativo=document.querySelector('.aba-conteudo.ativo')?.id;if(ativo==="abaDoacoes")codigoDoacao?.focus();else codigoRecuperacao?.focus();}if(e.key==="F4"){const recAberto=modalCadastroRecuperacao?.classList.contains("ativo"),doacaoAberto=modalCadastroDoacao?.classList.contains("ativo");if(recAberto||doacaoAberto){e.preventDefault();if(recAberto)finalizarDocumentoRecuperacao();else finalizarDocumentoDoacao();}}if(e.key==="Escape"&&modalCadastroRecuperacao?.classList.contains("ativo")){e.preventDefault();fecharCadastroRecuperacao();}if(e.key==="Escape"&&modalCadastroDoacao?.classList.contains("ativo")){e.preventDefault();fecharCadastroDoacao();}});
 
-carregarRecuperacoes();carregarDoacoes();
+// Ao receber um encaminhamento de Registros, mostrar a aba e o documento correto.
+(async function abrirDoacaoEncaminhada() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("aba") !== "doacoes") {
+        carregarRecuperacoes();
+        carregarDoacoes();
+        return;
+    }
+    alternarAba("doacoes");
+    const documentoId = params.get("documentoId");
+    if (documentoId) {
+        await abrirDocumentoDoacaoNoModal(documentoId);
+    }
+    // Evita reabrir o modal em uma atualização de página.
+    window.history.replaceState(null, "", window.location.pathname + window.location.hash);
+})();

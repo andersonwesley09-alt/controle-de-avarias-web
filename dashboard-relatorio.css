@@ -1,0 +1,34 @@
+/* V25.1.34 - Relatórios: estilos isolados para preservar todo o Dashboard. */
+.dr-header-acoes{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-end}
+.dr-btn-relatorio,.dr-confirmar{border:0;border-radius:9px;padding:12px 18px;background:linear-gradient(125deg,#0000ff,#263fff);color:#fff;font-weight:700;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,255,.16)}
+.dr-btn-relatorio:hover,.dr-confirmar:hover{filter:brightness(.93)}
+.dr-overlay[hidden],.dr-aviso[hidden],.dr-erro[hidden]{display:none!important}
+.dr-overlay{position:fixed;inset:0;z-index:10050;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(12,21,57,.57);overflow:auto}
+.dr-modal{width:min(670px,100%);max-height:94vh;overflow:auto;background:#fff;border-radius:17px;box-shadow:0 22px 65px rgba(0,0,0,.24);color:#1d2540;font-family:Arial,Helvetica,sans-serif}
+.dr-modal-topo{padding:20px 24px 16px;border-bottom:1px solid #e5e8f2;display:flex;justify-content:space-between;gap:12px;align-items:start}
+.dr-modal-topo h2{font-size:21px;margin:0 0 4px}
+.dr-modal-topo p{font-size:12px;margin:0;color:#687185}
+.dr-fechar{border:0;border-radius:9px;width:34px;height:34px;background:#f1f3fa;color:#424e6a;font-size:21px;cursor:pointer}
+.dr-modal form{padding:18px 24px 24px}
+.dr-grupo{margin:0 0 18px;padding:0;border:0}
+.dr-grupo legend{font-weight:700;font-size:13px;margin:0 0 10px}
+.dr-escolhas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dr-opcao{display:flex;gap:10px;align-items:start;background:#fff;border:1px solid #dce1ed;border-radius:10px;padding:12px;cursor:pointer;min-height:73px}
+.dr-opcao:has(input:checked){background:#f1f4ff;border-color:#0000ff;box-shadow:0 0 0 1px #0000ff inset}
+.dr-opcao input{accent-color:#0000ff;margin-top:3px}
+.dr-opcao span{display:flex;flex-direction:column;gap:4px}
+.dr-opcao strong{font-size:13px}
+.dr-opcao small,.dr-aviso{font-size:11px;line-height:1.35;color:#6b7181}
+.dr-periodo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.dr-periodo label{font-size:11px;font-weight:700;color:#566174}
+.dr-periodo input{display:block;margin-top:6px;width:100%;padding:10px;border:1px solid #d9ddea;border-radius:8px;font:inherit;font-size:13px;color:#1e2944;background:#fff}
+.dr-periodo input:disabled{background:#f4f5f8;color:#8c94a4}
+.dr-aviso{margin:8px 0 0}
+.dr-check{display:flex;align-items:center;gap:10px;color:#34405d;font-size:13px;cursor:pointer}
+.dr-check input{accent-color:#0000ff;width:16px;height:16px}
+.dr-resumo{font-size:12px;color:#344d83;background:#f1f4ff;border:1px solid #e1e7ff;border-radius:8px;padding:11px 12px;margin:0 0 14px}
+.dr-erro{color:#9d2d1d;background:#fff0ed;border:1px solid #f2b9b1;border-radius:8px;font-size:12px;padding:10px 12px;margin-bottom:14px}
+.dr-rodape{display:flex;gap:10px;justify-content:flex-end;border-top:1px solid #edf0f6;padding-top:15px}
+.dr-cancelar{border:1px solid #dce1ea;background:#fff;border-radius:8px;padding:11px 20px;font-weight:700;color:#3c465f;cursor:pointer}
+.dr-confirmar:disabled{opacity:.55;cursor:wait}
+@media(max-width:700px){.dr-header-acoes{gap:8px}.dr-btn-relatorio{font-size:12px;padding:10px}.dr-modal form{padding:16px}.dr-modal-topo{padding:17px}.dr-escolhas{grid-template-columns:1fr}.dr-overlay{align-items:flex-start}.dr-rodape button{flex:1}.dr-periodo{grid-template-columns:1fr}}

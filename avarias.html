@@ -2,9 +2,12 @@
 <html lang="pt-BR">
 
 <head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: blob: 'unsafe-inline'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self'; object-src 'none';">
+<script src="demo-local.js"></script>
     <script src="bcrypt-browser.js?v=25.1.14"></script>
-    <script src="servidor-rede.js?v=25.1.14"></script>
-    <script src="rede-central.js?v=25.1.14"></script>
+    
+    
+<script src="estabilidade-leitura.js?v=27.12"></script>
 
     <meta charset="UTF-8">
 
@@ -19,10 +22,161 @@
 
     <link
         rel="stylesheet"
-        href="styleavarias.css?v=25.1.5"
+        href="styleavarias.css?v=28.8"
     >
 
     <link rel="stylesheet" href="rodape.css?v=25.1">
+    <link rel="stylesheet" href="nfs-pendentes.css?v=28.8">
+    <style id="export-v27-2-estilo-compacto">
+
+    /* V27.2: compactacao aplicada no proprio HTML; independe do cache da folha CSS. */
+    #modalExportacaoRegistros.export-v27-overlay {
+        padding: 8px !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    #modalExportacaoRegistros .export-v27-card {
+        width: min(640px, calc(100vw - 16px)) !important;
+        max-height: min(94dvh, 650px) !important;
+        border-radius: 12px !important;
+        overflow: hidden !important;
+    }
+    #modalExportacaoRegistros .export-v27-header {
+        padding: 10px 15px 8px !important;
+        gap: 8px !important;
+    }
+    #modalExportacaoRegistros .export-v27-header h2 { font-size: 17px !important; margin: 0 0 2px !important; }
+    #modalExportacaoRegistros .export-v27-header p { font-size: 11px !important; margin: 0 !important; }
+    #modalExportacaoRegistros .export-v27-x { width: 29px !important; height: 29px !important; min-height: 29px !important; padding: 0 !important; }
+    #modalExportacaoRegistros .export-v27-content {
+        padding: 8px 15px !important;
+        gap: 6px !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+    }
+    #modalExportacaoRegistros .export-v27-fieldset {
+        min-width: 0 !important; margin: 0 !important;
+        padding: 0 0 7px !important;
+    }
+    #modalExportacaoRegistros .export-v27-fieldset legend {
+        font-size: 11.5px !important;
+        margin: 0 0 5px !important;
+        padding: 0 !important;
+        line-height: 1.2 !important;
+    }
+    #modalExportacaoRegistros .export-v27-options {
+        display: grid !important; gap: 6px !important;
+    }
+    #modalExportacaoRegistros .export-v27-options.export-v27-two {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+    #modalExportacaoRegistros .export-v27-options.export-v27-scope {
+        grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    }
+    #modalExportacaoRegistros .export-v27-options > label {
+        display: grid !important;
+        grid-template-columns: 14px minmax(0, 1fr) !important;
+        grid-template-rows: auto auto !important;
+        align-content: center !important;
+        align-items: center !important;
+        gap: 1px 6px !important;
+        min-height: 42px !important;
+        max-height: none !important;
+        padding: 5px 8px !important;
+        margin: 0 !important;
+        border-radius: 7px !important;
+        font-size: 11.5px !important;
+        line-height: 1.2 !important;
+        text-align: left !important;
+    }
+    #modalExportacaoRegistros .export-v27-options.export-v27-scope > label {
+        min-height: 33px !important;
+        grid-template-rows: auto !important;
+        white-space: normal !important;
+    }
+    #modalExportacaoRegistros .export-v27-options small {
+        grid-column: 2 !important;
+        display: block !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        font-size: 10px !important;
+        line-height: 1.2 !important;
+        font-weight: 400 !important;
+    }
+    #modalExportacaoRegistros input[type="radio"],
+    #modalExportacaoRegistros input[type="checkbox"] {
+        appearance: auto !important;
+        -webkit-appearance: auto !important;
+        display: inline-block !important;
+        box-sizing: border-box !important;
+        width: 14px !important;
+        min-width: 14px !important;
+        max-width: 14px !important;
+        height: 14px !important;
+        min-height: 14px !important;
+        max-height: 14px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        flex: 0 0 14px !important;
+        position: static !important;
+        transform: none !important;
+        float: none !important;
+        opacity: 1 !important;
+        accent-color: #0000ff !important;
+    }
+    #modalExportacaoRegistros .export-v27-checks {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 3px 10px !important;
+    }
+    #modalExportacaoRegistros .export-v27-checks label {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: flex-start !important;
+        gap: 6px !important;
+        min-height: 19px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        font-size: 11px !important;
+        line-height: 1.2 !important;
+    }
+    #modalExportacaoRegistros .export-v27-note {
+        margin: 5px 0 0 !important;
+        font-size: 10px !important;
+        line-height: 1.25 !important;
+    }
+    #modalExportacaoRegistros .export-v27-preview {
+        padding: 7px 9px !important;
+        gap: 2px !important;
+        font-size: 10.5px !important;
+        line-height: 1.25 !important;
+    }
+    #modalExportacaoRegistros .export-v27-preview small { font-size: 9.5px !important; }
+    #modalExportacaoRegistros .export-v27-footer {
+        padding: 8px 15px !important;
+        gap: 7px !important;
+    }
+    #modalExportacaoRegistros .export-v27-footer button {
+        min-height: 32px !important;
+        padding: 6px 12px !important;
+        font-size: 11.5px !important;
+        border-radius: 7px !important;
+    }
+    @media (max-width: 460px) {
+        #modalExportacaoRegistros .export-v27-card { max-height: 96dvh !important; }
+        #modalExportacaoRegistros .export-v27-content { padding: 8px 10px !important; }
+        #modalExportacaoRegistros .export-v27-two,
+        #modalExportacaoRegistros .export-v27-scope {
+            grid-template-columns: 1fr !important;
+        }
+        #modalExportacaoRegistros .export-v27-header,
+        #modalExportacaoRegistros .export-v27-footer { padding-left: 10px !important; padding-right: 10px !important; }
+    }
+    @media (max-width: 340px) {
+        #modalExportacaoRegistros .export-v27-checks { grid-template-columns: 1fr !important; }
+    }
+    </style>
 </head>
 
 
@@ -38,6 +192,8 @@
         <div class="header-container">
 
             <div class="marca-header">
+
+                <img src="logo-Empresa Exemplo.png" alt="Empresa Exemplo" class="logo-Empresa Exemplo-header">
 
                 <div>
 
@@ -91,7 +247,7 @@
         <div class="abas-container">
 
             <button
-                class="aba-btn ativo"
+                class="aba-btn"
                 type="button"
                 data-aba="cadastro"
             >
@@ -115,12 +271,13 @@
             >
                 🧾 Baixas
             </button>
+            <button class="aba-btn" type="button" data-aba="nfs">🗂 NFs Pendentes</button>
 
         </div>
 
     </nav>
 
-
+    <div id="avariasAvisoAcesso" role="status" style="max-width:960px;margin:22px auto;padding:18px;border:1px solid #e2e6f0;border-radius:10px;background:#fff;color:#24314b;text-align:center">Verificando permissões e carregando informações...</div>
 
     <main>
 
@@ -131,7 +288,7 @@
 
         <section
             id="abaCadastro"
-            class="aba-conteudo ativo"
+            class="aba-conteudo"
         >
 
             <div class="cadastro-grid">
@@ -923,24 +1080,7 @@
                             ↗ Compartilhar
                         </button>
 
-                        <div
-                            id="menuCompartilhar"
-                            class="menu-compartilhar"
-                            hidden
-                        >
-                            <button
-                                id="btnCompartilharXlsx"
-                                type="button"
-                            >
-                                📊 Excel (XLSX)
-                            </button>
-                            <button
-                                id="btnCompartilharPdf"
-                                type="button"
-                            >
-                                📄 PDF
-                            </button>
-                        </div>
+
 
                     </div>
 
@@ -1428,6 +1568,59 @@
         </section>
 
 
+        <section id="abaNfs" class="aba-conteudo" aria-labelledby="tituloNfs">
+            <div class="painel nf-modulo">
+              <div class="nf-titulo">
+                <div><h2 id="tituloNfs">NFs Pendentes</h2><p>Consulte e acompanhe notas fiscais que precisam de providências.</p></div>
+                <div class="nf-acoes">
+                  <label id="nfImportarLabel" class="nf-botao secundario" for="nfArquivoImportacao">Importar Excel</label>
+                  <input type="file" id="nfArquivoImportacao" accept=".xlsx,.xls" hidden>
+                  <button type="button" id="nfNova" class="nf-botao">+ Nova pendência</button>
+                </div>
+              </div>
+              <div id="nfMensagem" role="status" class="nf-mensagem" hidden></div>
+              <div class="nf-indicadores">
+                <div><small>Pendentes</small><strong id="nfQtdPendentes">—</strong></div>
+                <div><small>Total de NFs</small><strong id="nfQtdTotal">—</strong></div>
+                <div><small>Resolvidos</small><strong id="nfQtdResolvidas">—</strong></div>
+                <div><small>Valor em aberto</small><strong id="nfValorAberto">—</strong></div>
+              </div>
+              <div class="nf-filtros">
+                <label>Pesquisar <input id="nfBusca" placeholder="NF, fornecedor, responsável ou motivo"></label>
+                <label>Fornecedor <select id="nfFornecedorFiltro" aria-label="Filtrar notas por fornecedor"><option value="">Todos os fornecedores</option></select></label>
+                <label>Situação <select id="nfSituacao"><option value="">Todas</option><option value="Pendente">Pendente</option><option value="Resolvida">Resolvido</option></select></label>
+                <label>Emissão inicial <input type="date" id="nfInicio"></label>
+                <label>Emissão final <input type="date" id="nfFim"></label>
+                <button id="nfFiltrar" type="button" class="nf-botao">Filtrar</button>
+                <button id="nfLimpar" type="button" class="nf-botao secundario">Limpar</button>
+              </div>
+              <div class="nf-lista-wrap">
+                <table class="nf-tabela"><thead><tr><th>NF / Série</th><th>Emissão</th><th>Fornecedor</th><th>Valor</th><th>Motivo</th><th>Situação</th><th>Responsável</th><th>Ações</th></tr></thead><tbody id="nfTabela"><tr><td colspan="8">Carregando...</td></tr></tbody></table>
+              </div>
+              <div class="nf-rodape-tabela"><span id="nfResumoTabela">—</span><div><button type="button" class="nf-botao secundario" id="nfExportar">Exportar Excel</button> <button type="button" class="nf-botao secundario" id="nfAnterior">Anterior</button> <span id="nfPagina">1</span> <button type="button" class="nf-botao secundario" id="nfProximo">Próxima</button></div></div>
+            </div>
+            <dialog id="nfDialog" class="nf-dialog" aria-labelledby="nfDialogTitulo">
+              <form id="nfFormulario">
+                <h2 id="nfDialogTitulo">Nova pendência</h2>
+                <input id="nfId" type="hidden">
+                <div class="nf-form-grid">
+                  <label>Número da NF *<input name="numero" maxlength="40" required></label>
+                  <label>Série<input name="serie" maxlength="20"></label>
+                  <label>Fornecedor *<input name="fornecedor" maxlength="200" required></label>
+                  <label>Emissão *<input name="emissao" type="date" required></label>
+                  <label>Valor (R$) *<input name="valor" type="number" min="0" step="0.01" required></label>
+                  <label>Prazo para resolver<input name="prazo" type="date"></label>
+                  <label>Motivo da pendência *<input name="motivo" maxlength="500" required></label>
+                  <label>Responsável<input name="responsavel" maxlength="150"></label>
+                  <label>Situação<select name="situacao" required><option value="Pendente">Pendente</option><option value="Resolvida">Resolvido</option></select></label>
+                  <label class="nf-largo">Observações<textarea name="observacao" rows="3" maxlength="3000"></textarea></label>
+                </div>
+                <div id="nfDadosRegistro" class="nf-dados-registro" hidden></div>
+                <div class="nf-form-acoes"><button type="button" class="nf-botao secundario" id="nfBaixarAnexo" hidden>Baixar anexo PDF/XML</button><button type="button" class="nf-botao secundario" id="nfCancelar">Cancelar</button><button class="nf-botao" type="submit" id="nfSalvar">Salvar pendência</button></div>
+              </form>
+            </dialog>
+            <input type="file" id="nfAnexoEscolha" accept=".pdf,.xml,application/pdf,text/xml,application/xml" hidden>
+        </section>
     </main>
 
     <button id="btnFiltrosRegistros" class="btn-filtros-flutuante" type="button" aria-expanded="false">🔎 Filtros</button>
@@ -1670,6 +1863,65 @@
     </div>
 
 
+
+    <!-- V27: apenas a janela de configuração de exportação dos registros. -->
+    <div id="modalExportacaoRegistros" class="export-v27-overlay" hidden aria-hidden="true">
+        <section class="export-v27-card" role="dialog" aria-modal="true" aria-labelledby="exportV27Titulo">
+            <header class="export-v27-header">
+                <div>
+                    <h2 id="exportV27Titulo">Exportar registros de avarias</h2>
+                    <p>Escolha o formato e o conteúdo do relatório.</p>
+                </div>
+                <button type="button" id="exportV27Fechar" aria-label="Fechar janela" class="export-v27-x">×</button>
+            </header>
+            <div class="export-v27-content">
+                <fieldset class="export-v27-fieldset">
+                    <legend>1. Formato do arquivo</legend>
+                    <div class="export-v27-options export-v27-two">
+                        <label><input type="radio" name="exportV27Formato" value="xlsx" checked> 📊 Excel (XLSX)<small>Para filtros, cálculos e análises.</small></label>
+                        <label><input type="radio" name="exportV27Formato" value="pdf"> 📄 PDF<small>Para impressão e compartilhamento.</small></label>
+                    </div>
+                </fieldset>
+                <fieldset class="export-v27-fieldset">
+                    <legend>2. Organização</legend>
+                    <div class="export-v27-options export-v27-two">
+                        <label><input type="radio" name="exportV27Tipo" value="consolidado" checked> Consolidado por produto<small>Soma quantidades e valores dos produtos iguais.</small></label>
+                        <label><input type="radio" name="exportV27Tipo" value="detalhado"> Detalhado por lançamento<small>Preserva cada registro e sua data.</small></label>
+                    </div>
+                </fieldset>
+                <fieldset class="export-v27-fieldset">
+                    <legend>3. Quais registros?</legend>
+                    <div class="export-v27-options export-v27-scope">
+                        <label><input type="radio" name="exportV27Escopo" value="filtrados" checked> Todos os filtrados</label>
+                        <label><input type="radio" name="exportV27Escopo" value="pagina"> Página atual</label>
+                        <label><input type="radio" name="exportV27Escopo" value="todos"> Todos, sem filtros</label>
+                    </div>
+                </fieldset>
+                <fieldset class="export-v27-fieldset">
+                    <legend>4. Informações opcionais</legend>
+                    <div class="export-v27-checks">
+                        <label><input type="checkbox" name="exportV27Coluna" value="fornecedor" checked> Fornecedor</label>
+                        <label><input type="checkbox" name="exportV27Coluna" value="categoria" checked> Categoria</label>
+                        <label><input type="checkbox" name="exportV27Coluna" value="setor" checked> Setor</label>
+                        <label><input type="checkbox" name="exportV27Coluna" value="motivo" checked> Motivo da avaria</label>
+                        <label><input type="checkbox" name="exportV27Coluna" value="custo" checked> Custo unitário / médio</label>
+                        <label><input type="checkbox" id="exportV27Totais" checked> Totais no final</label>
+                    </div>
+                    <p class="export-v27-note">Código, produto, quantidade, unidade e valor total permanecem no relatório. A data aparece no modo detalhado.</p>
+                </fieldset>
+                <div class="export-v27-preview" aria-live="polite">
+                    <strong>Resumo da exportação</strong>
+                    <span id="exportV27Resumo">Calculando registros...</span>
+                    <small id="exportV27Aviso">Códigos com zero inicial serão normalizados somente para identificar produtos iguais.</small>
+                </div>
+            </div>
+            <footer class="export-v27-footer">
+                <button type="button" class="export-v27-cancelar" id="exportV27Cancelar">Cancelar</button>
+                <button type="button" class="export-v27-gerar" id="exportV27Gerar">⬇ Gerar arquivo</button>
+            </footer>
+        </section>
+    </div>
+
     <!-- =========================
          TOAST
     ========================== -->
@@ -1682,10 +1934,10 @@
 
 
     <script src="timezone.js?v=25.1"></script>
-    <script src="avarias.js?v=25.1"></script>
-
-
-    <script src="rodape.js?v=25.1"></script>
+    <script src="permissoes-ui.js?v=28.8"></script>
+    <script src="nfs-pendentes.js?v=28.8"></script>
+    <script src="avarias.js?v=28.8"></script>
+    <script src="rodape.js?v=28.8"></script>
 </body>
 
 </html>

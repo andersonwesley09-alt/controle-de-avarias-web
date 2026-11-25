@@ -16,12 +16,16 @@ if (!sessao || !sessao.token) {
     throw new Error("Sessão não encontrada.");
 }
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 const dataMinha = document.getElementById("dataMinha");
 const dataTarefa = document.getElementById("dataTarefa");
 const dataAdmin = document.getElementById("dataAdmin");
 const listaMinhasTarefas = document.getElementById("listaMinhasTarefas");
+const listaPendenciasAnteriores = document.getElementById("listaPendenciasAnteriores");
+const contadorPendenciasAnteriores = document.getElementById("contadorPendenciasAnteriores");
+const tabelaAdminPendencias = document.getElementById("tabelaAdminPendencias");
+const contadorAdminPendencias = document.getElementById("contadorAdminPendencias");
 const tabelaAdminTarefas = document.getElementById("tabelaAdminTarefas");
 const painelAdmin = document.getElementById("painelAdmin");
 const formTarefa = document.getElementById("formTarefa");
@@ -57,13 +61,17 @@ const contadorFiltroConcluidas = document.getElementById("contadorFiltroConcluid
 const btnCopiarOntem = document.getElementById("btnCopiarOntem");
 
 let minhasTarefas = [];
+let minhasAtrasadas = [];
 let tarefasAdmin = [];
+let tarefasAdminAtrasadas = [];
+let seqMinhas = 0;
+let seqAdmin = 0;
 let usuarios = [];
 let filtroMinha = "todas";
 let timerToast;
 
 function hojeLocal() {
-    return hojeManaira();
+    return hojeEmpresaExemplo();
 }
 
 function adicionarDias(data, quantidade) {
@@ -81,7 +89,11 @@ function formatarData(data) {
 }
 
 function formatarHora(dataHora) {
-    return formatarHoraManaira(dataHora);
+    return formatarHoraEmpresaExemplo(dataHora);
+}
+
+function formatarDataHoraConclusao(dataHora) {
+    return formatarDataHoraEmpresaExemplo(dataHora);
 }
 
 function escapar(texto) {
@@ -160,6 +172,101 @@ function tarefasMinhasVisiveis() {
     });
 }
 
+function dataReferenciaAtraso(selecionada) {
+    const hoje = hojeLocal();
+    return selecionada && selecionada < hoje ? selecionada : hoje;
+}
+
+function diasEntreDatas(inicial, final) {
+    const lerUTC = data => {
+        const [ano, mes, dia] = String(data || "").slice(0, 10).split("-").map(Number);
+        return Date.UTC(ano, mes - 1, dia);
+    };
+    const dias = Math.round((lerUTC(final) - lerUTC(inicial)) / 86400000);
+    return Number.isFinite(dias) ? Math.max(0, dias) : 0;
+}
+
+function rotuloAtraso(item, data) {
+    const dias = diasEntreDatas(item.dataTarefa, dataReferenciaAtraso(data));
+    return `${dias} dia${dias === 1 ? "" : "s"} de atraso`;
+}
+
+function renderizarPendenciasAnteriores() {
+    if (!listaPendenciasAnteriores) return;
+    const data = dataMinha.value || hojeLocal();
+    const busca = String(buscaMinhas?.value || "").trim().toLowerCase();
+    const lista = minhasAtrasadas.filter(item =>
+        !busca || `${item.titulo || ""} ${item.descricao || ""} ${item.criadoPorNome || ""}`.toLowerCase().includes(busca)
+    );
+    if (contadorPendenciasAnteriores) {
+        const total = minhasAtrasadas.length;
+        contadorPendenciasAnteriores.textContent = `${total} atrasada${total === 1 ? "" : "s"}`;
+    }
+    if (!lista.length) {
+        listaPendenciasAnteriores.innerHTML = `<div class="pendencias-vazio">${minhasAtrasadas.length
+            ? "Nenhuma pendência anterior corresponde à pesquisa."
+            : "Nenhuma pendência anterior. As atividades dos outros dias estão em dia."}</div>`;
+        return;
+    }
+    listaPendenciasAnteriores.innerHTML = lista.map(item => `
+        <label class="pendencia-item">
+            <input class="tarefa-check check-atrasada" type="checkbox" data-id="${escapar(item.id)}"
+                   aria-label="Concluir tarefa atrasada ${escapar(item.titulo)}">
+            <div class="tarefa-texto">
+                <div class="tarefa-titulo">${escapar(item.titulo)}</div>
+                ${item.descricao ? `<div class="tarefa-descricao">${escapar(item.descricao)}</div>` : ""}
+                <div class="pendencia-dados">
+                    <span>Prevista para <strong>${escapar(formatarData(item.dataTarefa))}</strong></span>
+                    <span class="pendencia-atraso">${escapar(rotuloAtraso(item, data))}</span>
+                    ${item.criadoPorNome ? `<span>Atribuída por ${escapar(item.criadoPorNome)}</span>` : ""}
+                </div>
+            </div>
+        </label>
+    `).join("");
+    listaPendenciasAnteriores.querySelectorAll(".check-atrasada").forEach(input => {
+        input.addEventListener("change", async () => {
+            input.disabled = true;
+            try {
+                await atualizarTarefa(input.dataset.id, true);
+                await carregarMinhasTarefas();
+                if ((sessao.perfil === "admin" || sessao.permissoes?.['tarefas.gerenciar'] === true)) await carregarAdminTarefas();
+                mostrarToast("Tarefa anterior concluída. Data original preservada.");
+            } catch (erro) {
+                input.checked = false;
+                input.disabled = false;
+                mostrarToast(erro.message);
+            }
+        });
+    });
+}
+
+function renderizarPendenciasAdmin() {
+    if (!tabelaAdminPendencias) return;
+    const busca = String(buscaAdmin?.value || "").trim().toLowerCase();
+    const lista = tarefasAdminAtrasadas.filter(item =>
+        !busca || `${item.usuarioNome || ""} ${item.titulo || ""} ${item.descricao || ""}`.toLowerCase().includes(busca)
+    );
+    const total = tarefasAdminAtrasadas.length;
+    if (contadorAdminPendencias) contadorAdminPendencias.textContent = `${total} atrasada${total === 1 ? "" : "s"}`;
+    if (!lista.length) {
+        tabelaAdminPendencias.innerHTML = `<tr><td colspan="5" class="estado-vazio">${total
+            ? "Nenhuma pendência corresponde à pesquisa."
+            : "Nenhuma tarefa anterior pendente para o filtro selecionado."}</td></tr>`;
+        return;
+    }
+    const data = dataAdmin.value || hojeLocal();
+    tabelaAdminPendencias.innerHTML = lista.map(item => `
+        <tr>
+            <td><strong>${escapar(item.usuarioNome)}</strong></td>
+            <td>${escapar(formatarData(item.dataTarefa))}</td>
+            <td><strong>${escapar(item.titulo)}</strong>${item.descricao
+                ? `<div class="tarefa-descricao">${escapar(item.descricao)}</div>` : ""}</td>
+            <td><span class="pendencia-atraso">${escapar(rotuloAtraso(item, data))}</span></td>
+            <td><span class="status-badge pendente">Pendente</span></td>
+        </tr>
+    `).join("");
+}
+
 function renderizarMinhasTarefas() {
     atualizarResumo();
     const lista = tarefasMinhasVisiveis();
@@ -191,7 +298,7 @@ function renderizarMinhasTarefas() {
                 ${item.criadoPorNome ? `<div class="tarefa-meta">Atribuída por ${escapar(item.criadoPorNome)}</div>` : ""}
             </div>
             ${item.concluida
-                ? `<span class="tarefa-hora concluida-hora">✓ Concluída${item.concluidaEm ? ` às ${formatarHora(item.concluidaEm)}` : ""}</span>`
+                ? `<span class="tarefa-hora concluida-hora">✓ Concluída${item.concluidaEm ? ` em ${formatarDataHoraConclusao(item.concluidaEm)}` : ""}</span>`
                 : `<span class="tarefa-hora pendente-hora">Pendente</span>`}
         </label>
     `).join("");
@@ -213,18 +320,26 @@ function renderizarMinhasTarefas() {
 }
 
 async function carregarMinhasTarefas() {
-    try {
-        const data = dataMinha.value || hojeLocal();
-        const resposta = await fetch(
-            `${API}/api/tarefas/minhas?data=${encodeURIComponent(data)}`,
-            { headers: { "Authorization": `Bearer ${sessao.token}` }, cache: "no-store" }
-        );
-        minhasTarefas = await respostaJson(resposta);
+    const seq = ++seqMinhas;
+    const data = dataMinha.value || hojeLocal();
+    const opts = { headers: { "Authorization": `Bearer ${sessao.token}` }, cache: "no-store" };
+    const resultados = await Promise.allSettled([
+        fetch(`${API}/api/tarefas/minhas?data=${encodeURIComponent(data)}`, opts).then(respostaJson),
+        fetch(`${API}/api/tarefas/minhas/atrasadas?data=${encodeURIComponent(data)}`, opts).then(respostaJson)
+    ]);
+    if (seq !== seqMinhas) return; // resposta antiga nunca substitui a data mais recente
+    if (resultados[0].status === "fulfilled") {
+        minhasTarefas = resultados[0].value;
         renderizarMinhasTarefas();
-    } catch (erro) {
-        console.error(erro);
-        listaMinhasTarefas.innerHTML = `<div class="estado-vazio">${escapar(erro.message)}</div>`;
-        atualizarResumo();
+    } else {
+        listaMinhasTarefas.innerHTML = `<div class="estado-vazio">${escapar(resultados[0].reason.message)}</div>`;
+    }
+    if (resultados[1].status === "fulfilled") {
+        minhasAtrasadas = resultados[1].value;
+        renderizarPendenciasAnteriores();
+    } else if (listaPendenciasAnteriores) {
+        listaPendenciasAnteriores.innerHTML = `<div class="pendencias-vazio">${escapar(resultados[1].reason.message)}</div>`;
+        if (contadorPendenciasAnteriores) contadorPendenciasAnteriores.textContent = "Indisponível";
     }
 }
 
@@ -265,7 +380,7 @@ async function concluirPendentes() {
 }
 
 async function carregarUsuarios() {
-    if (sessao.perfil !== "admin") return;
+    if ((sessao.perfil !== "admin" && sessao.permissoes?.['tarefas.gerenciar'] !== true)) return;
 
     try {
         const resposta = await fetch(`${API}/api/tarefas/usuarios`, {
@@ -309,7 +424,7 @@ function tarefasAdminVisiveis() {
 }
 
 function atualizarResumoAdmin() {
-    if (sessao.perfil !== "admin") return;
+    if ((sessao.perfil !== "admin" && sessao.permissoes?.['tarefas.gerenciar'] !== true)) return;
     const total = tarefasAdmin.length;
     const concluidas = tarefasAdmin.filter(item => item.concluida).length;
     const pendentes = total - concluidas;
@@ -344,7 +459,7 @@ function renderizarAdmin() {
                     ${item.concluida ? "✓ Concluída" : "Pendente"}
                 </span>
             </td>
-            <td class="conclusao-hora">${item.concluida ? formatarHora(item.concluidaEm) : "—"}</td>
+            <td class="conclusao-hora">${item.concluida ? formatarDataHoraConclusao(item.concluidaEm) : "—"}</td>
             <td>
                 <button class="btn-excluir" type="button" data-excluir="${escapar(item.id)}">Excluir</button>
             </td>
@@ -377,25 +492,34 @@ function renderizarAdmin() {
 }
 
 async function carregarAdminTarefas() {
-    if (sessao.perfil !== "admin") return;
-
-    try {
-        const data = dataAdmin.value || hojeLocal();
-        const usuarioId = filtroUsuarioAdmin.value || "0";
-        const resposta = await fetch(
-            `${API}/api/tarefas/admin?data=${encodeURIComponent(data)}&usuarioId=${encodeURIComponent(usuarioId)}`,
-            { headers: { "Authorization": `Bearer ${sessao.token}` }, cache: "no-store" }
-        );
-        tarefasAdmin = await respostaJson(resposta);
+    if ((sessao.perfil !== "admin" && sessao.permissoes?.['tarefas.gerenciar'] !== true)) return;
+    const seq = ++seqAdmin;
+    const data = dataAdmin.value || hojeLocal();
+    const usuarioId = filtroUsuarioAdmin.value || "0";
+    const opts = { headers: { "Authorization": `Bearer ${sessao.token}` }, cache: "no-store" };
+    const params = `data=${encodeURIComponent(data)}&usuarioId=${encodeURIComponent(usuarioId)}`;
+    const resultados = await Promise.allSettled([
+        fetch(`${API}/api/tarefas/admin?${params}`, opts).then(respostaJson),
+        fetch(`${API}/api/tarefas/admin/atrasadas?${params}`, opts).then(respostaJson)
+    ]);
+    if (seq !== seqAdmin) return;
+    if (resultados[0].status === "fulfilled") {
+        tarefasAdmin = resultados[0].value;
         renderizarAdmin();
-    } catch (erro) {
-        console.error(erro);
-        tabelaAdminTarefas.innerHTML = `<tr><td colspan="5" class="estado-vazio">${escapar(erro.message)}</td></tr>`;
+    } else {
+        tabelaAdminTarefas.innerHTML = `<tr><td colspan="6" class="estado-vazio">${escapar(resultados[0].reason.message)}</td></tr>`;
+    }
+    if (resultados[1].status === "fulfilled") {
+        tarefasAdminAtrasadas = resultados[1].value;
+        renderizarPendenciasAdmin();
+    } else if (tabelaAdminPendencias) {
+        tabelaAdminPendencias.innerHTML = `<tr><td colspan="5">${escapar(resultados[1].reason.message)}</td></tr>`;
+        if (contadorAdminPendencias) contadorAdminPendencias.textContent = "Indisponível";
     }
 }
 
 async function copiarTarefasDeOntem() {
-    if (sessao.perfil !== "admin") return;
+    if ((sessao.perfil !== "admin" && sessao.permissoes?.['tarefas.gerenciar'] !== true)) return;
 
     const destino = dataAdmin.value || hojeLocal();
     const origem = adicionarDias(destino, -1);
@@ -471,14 +595,14 @@ filtrosMinha.forEach(botao => {
     });
 });
 
-buscaMinhas?.addEventListener("input", renderizarMinhasTarefas);
+buscaMinhas?.addEventListener("input", () => { renderizarMinhasTarefas(); renderizarPendenciasAnteriores(); });
 btnConcluirPendentes?.addEventListener("click", concluirPendentes);
 btnCopiarOntem?.addEventListener("click", copiarTarefasDeOntem);
 
 dataMinha.addEventListener("change", carregarMinhasTarefas);
 dataAdmin.addEventListener("change", carregarAdminTarefas);
 filtroUsuarioAdmin.addEventListener("change", carregarAdminTarefas);
-buscaAdmin?.addEventListener("input", renderizarAdmin);
+buscaAdmin?.addEventListener("input", () => { renderizarAdmin(); renderizarPendenciasAdmin(); });
 filtroStatusAdmin?.addEventListener("change", renderizarAdmin);
 btnHojeMinha?.addEventListener("click", () => {
     dataMinha.value = hojeLocal();
@@ -513,7 +637,7 @@ async function iniciar() {
     dataTarefa.value = hoje;
     dataAdmin.value = hoje;
 
-    if (sessao.perfil === "admin") {
+    if ((sessao.perfil === "admin" || sessao.permissoes?.['tarefas.gerenciar'] === true)) {
         painelAdmin.classList.remove("oculto");
         await carregarUsuarios();
         await carregarAdminTarefas();
@@ -524,8 +648,12 @@ async function iniciar() {
     const eventos = new EventSource(`${API}/api/eventos`);
     eventos.addEventListener("tarefas-atualizadas", async () => {
         await carregarMinhasTarefas();
-        if (sessao.perfil === "admin") await carregarAdminTarefas();
+        if ((sessao.perfil === "admin" || sessao.permissoes?.['tarefas.gerenciar'] === true)) await carregarAdminTarefas();
     });
 }
 
+window.addEventListener('ca:reconexao', () => {
+    carregarMinhasTarefas().catch(e => console.warn('Falha ao recuperar tarefas:', e.message));
+    if ((sessao.perfil === 'admin' || sessao.permissoes?.['tarefas.gerenciar'] === true)) carregarAdminTarefas().catch(e => console.warn('Falha ao recuperar tarefas administrativas:', e.message));
+});
 iniciar();

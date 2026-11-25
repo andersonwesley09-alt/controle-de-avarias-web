@@ -420,10 +420,10 @@ input:focus {
 }
 
 /* =========================
-   IDENTIDADE MANAÍRA - V8
+   IDENTIDADE EmpresaExemplo - V8
 ========================= */
 
-.logo-box.logo-box-manaira {
+.logo-box.logo-box-EmpresaExemplo {
     width: 100%;
     height: auto;
     min-height: 150px;
@@ -436,7 +436,7 @@ input:focus {
     justify-content: center;
 }
 
-.logo-manaira-login {
+.logo-EmpresaExemplo-login {
     display: block;
     width: min(280px, 100%);
     height: auto;
@@ -455,7 +455,7 @@ body {
             rgba(0, 0, 255, 0.12),
             rgba(0, 0, 0, 0.18)
         ),
-        url("fachada-manaira-login.jpg") center center / cover fixed no-repeat;
+        url("fachada-EmpresaExemplo-login.jpg") center center / cover fixed no-repeat;
 }
 
 .login-page {
@@ -675,36 +675,4 @@ body {
     .login-card {
         padding: 24px 20px;
     }
-}
-
-/* Credenciais visíveis somente na versão demonstrativa do GitHub Pages. */
-.acesso-demo {
-    margin-top: 16px;
-    padding: 13px 15px;
-    background: #f5f6ff;
-    border: 1px solid #dfe3ff;
-    border-radius: 10px;
-    color: #202536;
-    font-size: 12px;
-}
-.acesso-demo-titulo {
-    color: #0000cc;
-    font-weight: 700;
-    margin-bottom: 10px;
-}
-.acesso-demo-credenciais {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    flex-wrap: wrap;
-    margin-bottom: 8px;
-}
-.acesso-demo-credenciais strong {
-    color: #0000cc;
-    font-size: 13px;
-}
-.acesso-demo small {
-    display: block;
-    color: #697186;
-    line-height: 1.4;
 }

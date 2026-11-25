@@ -1,0 +1,18 @@
+/* V27.13: somente modal e botão de permissões. Mantém layout original. */
+.btn-permissoes{background:#1c4195;color:white;border:0;border-radius:6px;padding:7px 9px;cursor:pointer;font-size:12px;font-weight:600}
+.permissoes-overlay{display:none;position:fixed;inset:0;z-index:9999;background:rgba(17,27,54,.63);padding:15px;align-items:center;justify-content:center}
+.permissoes-overlay.ativo{display:flex}
+.permissoes-dialogo{background:white;border-radius:14px;max-width:780px;width:100%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;color:#1b2541;box-shadow:0 16px 60px #0005}
+.permissoes-cabecalho{display:flex;justify-content:space-between;align-items:start;padding:18px 22px;border-bottom:1px solid #e2e6f0;gap:12px}
+.permissoes-cabecalho h2{margin:0;font-size:19px}.permissoes-cabecalho p{color:#6b7485;font-size:13px;margin:5px 0 0}
+.permissoes-fechar{width:32px;height:32px;border:0;border-radius:8px;background:#f0f2f6;color:#27304e;font-size:23px;cursor:pointer}
+.permissoes-opcoes{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:12px 22px;background:#f7f9fc;font-size:13px}
+.permissoes-opcoes label{font-weight:bold}.permissoes-opcoes select{width:auto;max-width:100%;min-height:35px;border:1px solid #cbd4e4;border-radius:6px;padding:6px}
+.permissoes-opcoes span{font-size:12px;color:#687487}.permissoes-lista{overflow-y:auto;min-height:0;padding:12px 22px}
+.permissoes-grupo{border-bottom:1px solid #e4e8f1;padding:7px 0 12px}.permissoes-grupo h3{font-size:14px;color:#1838a6;margin:0 0 10px}
+.permissoes-grade{display:grid;grid-template-columns:1fr 1fr;column-gap:16px;row-gap:9px}
+.permissoes-item{display:flex;align-items:center;gap:8px;font-size:13px;line-height:1.25;cursor:pointer}
+.permissoes-item input{appearance:auto!important;width:16px!important;height:16px!important;min-height:0!important;margin:0!important;flex:0 0 16px;accent-color:#142df3}
+.permissoes-rodape{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 22px;border-top:1px solid #e4e8f1}
+.permissoes-rodape span{font-size:12px;color:#677086}.permissoes-rodape>div{display:flex;gap:8px}
+@media(max-width:540px){.permissoes-grade{grid-template-columns:1fr}.permissoes-cabecalho,.permissoes-opcoes,.permissoes-lista,.permissoes-rodape{padding-left:14px;padding-right:14px}.permissoes-rodape{flex-wrap:wrap}}

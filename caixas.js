@@ -1,5 +1,5 @@
 const formatarDataHoraSistema = (valor) => {
-    if (typeof window.formatarDataHoraManaira === "function") return window.formatarDataHoraManaira(valor);
+    if (typeof window.formatarDataHoraEmpresaExemplo === "function") return window.formatarDataHoraEmpresaExemplo(valor);
     const d = valor instanceof Date ? valor : new Date(valor);
     if (Number.isNaN(d.getTime())) return "-";
     return new Intl.DateTimeFormat("pt-BR", { timeZone: "America/Sao_Paulo", dateStyle: "short", timeStyle: "short" }).format(d);
@@ -36,7 +36,7 @@ function headersAutorizacao() {
    API
 ========================================================= */
 
-const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || "http://localhost:3000"));
+const API = window.CA_API_BASE || (window.CA_LOCAL_MODE ? "" : (window.location.origin || ""));
 
 
 /* =========================================================
@@ -636,7 +636,7 @@ async function carregarCaixas() {
 
         caixas =
             await resposta.json();
-
+        window.__caCaixasCarregadas = true;
 
         atualizarResumo();
         atualizarOpcoesFornecedorProduto();
@@ -657,20 +657,9 @@ async function carregarCaixas() {
         );
 
 
-        tabelaCaixas.innerHTML = `
-
-            <tr>
-
-                <td
-                    colspan="6"
-                    class="vazio"
-                >
-                    Erro ao carregar caixas.
-                </td>
-
-            </tr>
-
-        `;
+        if (!window.__caCaixasCarregadas && tabelaCaixas) {
+            tabelaCaixas.innerHTML = `<tr><td colspan="6" class="vazio">Falha ao consultar caixas. Aguardando reconexão.</td></tr>`;
+        }
 
     }
 
@@ -2467,7 +2456,7 @@ btnSair.addEventListener(
 ========================================================= */
 
 carregarCaixas();
-
+window.addEventListener('ca:reconexao', () => carregarCaixas());
 
 /* =========================================================
    TEMPO REAL ENTRE OS PCS
