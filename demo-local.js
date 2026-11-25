@@ -10,13 +10,13 @@
  const arrays=['avarias','historico-avarias','caixas','produtos','tarefas','devolucoes','recuperacoes','doacoes','documentos','avisos','nfs-pendentes','usuarios','auditoria','notificacoes','listas-pessoais','mapeamento'];
  const initial={
   produtos:[{id:1,codigo:'7891000000001',codigo_barras:'7891000000001',descricao:'Produto demonstrativo A',categoria:'Mercearia',fornecedor:'Fornecedor Exemplo',preco_custo:9.9},{id:2,codigo:'7891000000002',codigo_barras:'7891000000002',descricao:'Produto demonstrativo B',categoria:'Bebidas',fornecedor:'Fornecedor Exemplo',preco_custo:5.5}],
-  avarias:[], 'historico-avarias':[], caixas:[], tarefas:[], 'nfs-pendentes':[], usuarios:[{id:1,usuario:'demo',nome:'Usuário de Demonstração',perfil:'administrador',ativo:true}], auditoria:[]
+  avarias:[], 'historico-avarias':[], caixas:[], tarefas:[], 'nfs-pendentes':[], usuarios:[{id:1,usuario:'demo',nome:'Usuário de Demonstração',perfil:'admin',ativo:true}], auditoria:[]
  };
  for(const k of arrays)if(read(k)===null)write(k,initial[k]||[]);
  const originalFetch=window.fetch.bind(window);
  const originalEventSource=window.EventSource;
  const reply=(body,status=200,headers={})=>new Response(typeof body==='string'?body:JSON.stringify(body),{status,headers:{'content-type':'application/json; charset=utf-8',...headers}});
- const session=()=>({usuario:'demo',nome:'Usuário de Demonstração',perfil:'administrador',role:'administrador',permissoes:['*'],token:'demo-local',id:1});
+ const session=()=>({usuario:'demo',nome:'Usuário de Demonstração',perfil:'admin',role:'admin',permissoes:['*'],token:'demo-local',id:1});
  const parseBody=async opts=>{try{return typeof opts.body==='string'?JSON.parse(opts.body):opts.body||{}}catch(e){return {}}};
  const resource=(path)=>arrays.find(k=>path==='/api/'+k||path.startsWith('/api/'+k+'/'));
  window.fetch=async function(input,opts={}){
