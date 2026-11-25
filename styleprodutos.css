@@ -206,7 +206,7 @@ button:disabled {
 }
 
 /* =========================
-   IDENTIDADE EmpresaExemplo - V8
+   IDENTIDADE Generico - V8
 ========================= */
 
 .marca-header {
@@ -216,7 +216,7 @@ button:disabled {
     min-width: 0;
 }
 
-.logo-EmpresaExemplo-header {
+.logo-Generico-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -227,7 +227,7 @@ button:disabled {
 }
 
 @media (max-width: 650px) {
-    .logo-EmpresaExemplo-header {
+    .logo-Generico-header {
         width: 105px;
         height: 58px;
     }

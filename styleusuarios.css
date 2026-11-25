@@ -512,7 +512,7 @@ tbody tr:hover {
 
 
 /* =========================
-   IDENTIDADE EmpresaExemplo - V8
+   IDENTIDADE Generico - V8
 ========================= */
 
 .marca-header {
@@ -522,7 +522,7 @@ tbody tr:hover {
     min-width: 0;
 }
 
-.logo-EmpresaExemplo-header {
+.logo-Generico-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -533,7 +533,7 @@ tbody tr:hover {
 }
 
 @media (max-width: 650px) {
-    .logo-EmpresaExemplo-header {
+    .logo-Generico-header {
         width: 105px;
         height: 58px;
     }

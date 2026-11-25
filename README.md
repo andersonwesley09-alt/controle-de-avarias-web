@@ -12,3 +12,7 @@ Esta versão preserva os arquivos HTML/CSS/JS e a navegação do projeto origina
 
 ## Privacidade
 Arquivos de backup, banco de dados, fotos e logos reais, documentos, planilhas, logs, dependências e scripts de conexão operacional foram excluídos deliberadamente. O código de front-end foi mantido, incluindo suas limitações anteriores.
+
+
+## Página inicial
+A raiz do GitHub Pages (`index.html`) abre diretamente a tela de login, sem logo ou foto. Credenciais: `demo` / `demo123`. O Dashboard permanece em `dashboard.html`, acessível pelo menu.

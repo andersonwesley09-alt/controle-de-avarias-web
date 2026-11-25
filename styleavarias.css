@@ -2462,7 +2462,7 @@ body:not(.perfil-admin) .aviso-admin-historico {
 }
 
 /* =========================
-   IDENTIDADE EmpresaExemplo - V8
+   IDENTIDADE Generico - V8
 ========================= */
 
 .marca-header {
@@ -2472,7 +2472,7 @@ body:not(.perfil-admin) .aviso-admin-historico {
     min-width: 0;
 }
 
-.logo-EmpresaExemplo-header {
+.logo-Generico-header {
     display: block;
     width: 145px;
     max-width: 28vw;
@@ -2483,7 +2483,7 @@ body:not(.perfil-admin) .aviso-admin-historico {
 }
 
 @media (max-width: 650px) {
-    .logo-EmpresaExemplo-header {
+    .logo-Generico-header {
         width: 105px;
         height: 58px;
     }

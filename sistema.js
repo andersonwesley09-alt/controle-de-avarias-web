@@ -305,7 +305,7 @@ async function abrirDashboardComSessao() {
             sessionStorage.setItem("usuarioLogado", JSON.stringify(sessaoAtual));
             // A chamada acima também garante que o cookie HttpOnly esteja
             // disponível para a próxima página quando a autenticação veio por Bearer.
-            window.location.href = "index.html";
+            window.location.href = "dashboard.html";
             return;
         }
 

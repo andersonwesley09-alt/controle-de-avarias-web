@@ -420,10 +420,10 @@ input:focus {
 }
 
 /* =========================
-   IDENTIDADE EmpresaExemplo - V8
+   IDENTIDADE Generico - V8
 ========================= */
 
-.logo-box.logo-box-EmpresaExemplo {
+.logo-box.logo-box-Generico {
     width: 100%;
     height: auto;
     min-height: 150px;
@@ -436,7 +436,7 @@ input:focus {
     justify-content: center;
 }
 
-.logo-EmpresaExemplo-login {
+.logo-Generico-login {
     display: block;
     width: min(280px, 100%);
     height: auto;
@@ -455,7 +455,7 @@ body {
             rgba(0, 0, 255, 0.12),
             rgba(0, 0, 0, 0.18)
         ),
-        url("fachada-EmpresaExemplo-login.jpg") center center / cover fixed no-repeat;
+        none center center / cover fixed no-repeat;
 }
 
 .login-page {
@@ -676,3 +676,12 @@ body {
         padding: 24px 20px;
     }
 }
+
+/* V28.8: apresentação pública sem identidade empresarial */
+body {background:linear-gradient(135deg,#eef0ff 0%,#e3e5f2 55%,#f4f5fb 100%) !important;}
+.credenciais-demo{margin-top:18px;padding:16px 18px;border:1px solid #e3e5ee;border-radius:12px;background:#f8f9ff;color:#24283b;font:13px/1.5 Arial,sans-serif}
+.credenciais-demo strong{font-size:14px}
+.credenciais-demo p{margin:5px 0 12px;color:#666b7c}
+.credenciais-demo div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 0;border-top:1px solid #e9ebf4}
+.credenciais-demo code{font-family:Consolas,monospace;font-weight:700;font-size:14px;color:#1717ca}
+.credenciais-demo small{display:block;margin-top:10px;color:#697083;font-size:11px}

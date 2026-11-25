@@ -67,7 +67,7 @@
 @media(max-width:650px){
     .topbar .header-container{display:flex;flex-direction:column;align-items:stretch;gap:11px}
     .topbar .marca-header{min-width:0;gap:10px}
-    .topbar .logo-EmpresaExemplo-header{width:85px;height:49px;max-width:85px}
+    .topbar .logo-Generico-header{width:85px;height:49px;max-width:85px}
     .topbar h1{font-size:21px}
     .topbar .header-actions{display:flex;justify-content:flex-end;align-items:center;flex-wrap:wrap;gap:7px}
     .topbar .header-actions .btn-perfil{width:auto!important;min-width:98px!important}
